@@ -9,14 +9,14 @@
 <body>
     <main>
         <h1>Socket Programming</h1>
-        <div class="subtitle">Published May 22, 2025 • Tags: networks</div>
+        <div class="subtitle">Published May 22, 2025</div>
 
         <!-- Blog content starts here -->
-
+        
         <p>Socket programming is a fundamental concept in computer networking that enables real-time, bidirectional communication between devices over a network. Whether you’re building a chat app, a multiplayer game, or a live data streaming service, understanding sockets is key. In this quick guide, we’ll break down the essentials of socket programming in a way that’s easy to grasp, even if you’re just starting out. Let’s dive in!</p>
 
         <h2>What Are Sockets?</h2>
-        <p>At its core, a socket is an endpoint for sending and receiving data across a network. ...</p>
+        <p>At its core, a socket is an endpoint for sending and receiving data across a network. Think of it as a virtual “plug” or <em class="markup--em markup--p-em">handle</em> that allows two devices to communicate, whether they’re on the same machine or halfway across the world. A <em class="markup--em markup--p-em">handle</em> is an opaque integer used to refer to things that cross an API boundary, in the same way that a Twitter handle refers to a Twitter user. On Linux, a handle is called a <em class="markup--em markup--p-em">file descriptor</em> (fd) and it’s local to the process. The name “file descriptor” is just a name; it has nothing to do with files, nor does it describe anything.</p>
 
         <p>Sockets are widely used in client-server architectures. The server listens for incoming connections, while the client initiates a connection to the server. Once connected, they can exchange data seamlessly.</p>
 <h2 id="why-learn-socket-programming">Why Learn Socket Programming?</h2>
@@ -39,30 +39,30 @@
 </ol>
 
 <table>
-<thead>
-<tr>
-<th>Level</th>
-<th>Subject</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Higher</td>
-<td>TCP</td>
-<td>Reliable &amp; ordered bytes</td>
-</tr>
-<tr>
-<td>↕</td>
-<td>Port in TCP/UDP</td>
-<td>Multiplex to programs</td>
-</tr>
-<tr>
-<td>Lower</td>
-<td>IP</td>
-<td>Small &amp; Discrete messages</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Subject</th>
+      <th>Function</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Higher</td>
+      <td>TCP</td>
+      <td>Reliable & ordered bytes</td>
+    </tr>
+    <tr>
+      <td>Middle</td>
+      <td>Port in TCP/UDP</td>
+      <td>Multiplex to programs</td>
+    </tr>
+    <tr>
+      <td>Lower</td>
+      <td>IP</td>
+      <td>Small & discrete messages</td>
+    </tr>
+  </tbody>
 </table><h2 id="what’s-actually-relevant-to-us"><strong>What’s actually relevant to us</strong></h2>
 <p>The layers above IP are what we care about. Applications use TCP or UDP, either directly by rolling their own protocol, or indirectly by using an implementation of a well-known protocol. Both TCP and UDP are contained by IP. Everything is built on top of TCP or UDP.</p>
 <p>Ethernet is below IP, it’s also packet-based but uses a different type of address (MAC).</p>
