@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Socket Programming - Your Name</title>
+    <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+    <main>
+        <h1>Socket Programming</h1>
+        <div class="subtitle">Published May 22, 2025 • Tags: networks</div>
+
+        <!-- Blog content starts here -->
+
+        <p>Socket programming is a fundamental concept in computer networking that enables real-time, bidirectional communication between devices over a network. Whether you’re building a chat app, a multiplayer game, or a live data streaming service, understanding sockets is key. In this quick guide, we’ll break down the essentials of socket programming in a way that’s easy to grasp, even if you’re just starting out. Let’s dive in!</p>
+
+        <h2>What Are Sockets?</h2>
+        <p>At its core, a socket is an endpoint for sending and receiving data across a network. ...</p>
+
+        <p>Sockets are widely used in client-server architectures. The server listens for incoming connections, while the client initiates a connection to the server. Once connected, they can exchange data seamlessly.</p>
+<h2 id="why-learn-socket-programming">Why Learn Socket Programming?</h2>
+<p>Socket programming powers many modern applications. Here are a few reasons to learn it:</p>
+<ul>
+<li>Build real-time apps like chat systems or live notifications.</li>
+<li>Enable multiplayer features in games.</li>
+<li>Create custom protocols for specific data transfer needs.</li>
+</ul>
+<h3 id="key-concepts-to-understand">Key Concepts to Understand</h3>
+<p>Before diving into code, let’s cover the basics:</p>
+<p><strong>Layers of protocols</strong></p>
+<p>Abstract idea: Network protocols are divided into layers. A lower layer can contain a higher layer as payload, and the higher layer adds new functions.</p>
+<p>Reality: Ethernet contains IP, IP contains UDP or TCP, UDP or TCP contains application protocols.</p>
+<p>We can also divide the layers by function:</p>
+<ol>
+<li>The layer of small, discrete messages (IP): When downloading a large file, network hardware can only process smaller units called IP packets — it cannot store the entire file at once. This is why the lowest layer operates on packets. TCP, a higher layer protocol, handles the task of reassembling these packets into complete application data.</li>
+<li>The layer of multiplexing (port number): Multiple apps can share the same network on a single computer. How does the computer know which packet belongs to which app? This is called  <em>demultiplexing</em>. The next layer of IP (UDP or TCP) adds a 16-bit  <em>port number</em>  to distinguish different apps. Each app must claim an unused local port number before it can send or receive data. The computer uses the 4-tuple to identify a “flow” of information: (src_ip, src_port, dst_ip, dst_port)</li>
+<li>The layer of reliable and ordered bytes (TCP): TCP provides a layer of reliable &amp; ordered bytes on top of IP packets, it handles retransmission, reordering automatically.</li>
+</ol>
+
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Subject</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Higher</td>
+<td>TCP</td>
+<td>Reliable &amp; ordered bytes</td>
+</tr>
+<tr>
+<td>↕</td>
+<td>Port in TCP/UDP</td>
+<td>Multiplex to programs</td>
+</tr>
+<tr>
+<td>Lower</td>
+<td>IP</td>
+<td>Small &amp; Discrete messages</td>
+</tr>
+</tbody>
+</table><h2 id="what’s-actually-relevant-to-us"><strong>What’s actually relevant to us</strong></h2>
+<p>The layers above IP are what we care about. Applications use TCP or UDP, either directly by rolling their own protocol, or indirectly by using an implementation of a well-known protocol. Both TCP and UDP are contained by IP. Everything is built on top of TCP or UDP.</p>
+<p>Ethernet is below IP, it’s also packet-based but uses a different type of address (MAC).</p>
+<h2 id="listening-socket-and-connection-socket">Listening socket and connection socket</h2>
+<p><em>Listening</em>  is telling the OS that an app is ready to accept TCP connections from a given port. The OS then returns a socket handle for apps to refer to that port. From the listening socket, apps can retrieve (<em>accept</em>) incoming TCP connections, which is also represented as a socket handle. So there are 2 types of handles: listening socket &amp; connection socket.</p>
+<p>Creating a listening socket requires at least 3 API calls:</p>
+<ol>
+<li>Obtain a socket handle via  <code>socket()</code>.</li>
+<li>Set the listening IP:port via  <code>bind()</code>.</li>
+<li>Create the listening socket via  <code>listen()</code>.</li>
+</ol>
+<pre><code>fd = socket()  
+bind(fd, address)  
+listen(fd)  
+while True:  
+    conn_fd = accept(fd)  
+    do_something_with(conn_fd)  
+    close(conn_fd)
+</code></pre>
+<p>In summary, this code sets up a basic server that listens for incoming connections, accepts them in a loop, processes them (via a placeholder function), and then closes each connection afterwards.</p>
+<p><strong>Connect from a client</strong></p>
+<p>A connection socket is created from the client side with 2 API calls:</p>
+<ol>
+<li>Obtain a socket handle via  <code>socket()</code>.</li>
+<li>Create the connection socket via  <code>connect()</code>.</li>
+</ol>
+<pre><code>fd = socket()  
+connect(fd, address)  
+do_something_with(fd)  
+close(fd)
+</code></pre>
+<p><code>socket()</code>  creates a typeless socket; the socket type (listening or connection) is determined after the  <code>listen()</code>  or  <code>connect()</code>  call. The  <code>bind()</code>  between  <code>socket()</code>  and  <code>listen()</code>  merely sets a parameter.</p>
+<h2 id="a-simple-example-in-python">A Simple Example in Python</h2>
+<p>Python’s  <code>socket</code>  library makes it easy to experiment with socket programming. Below, we’ll create a basic client-server setup where the server listens for messages and the client sends a “Hello” message. You can run these scripts on your local machine to see sockets in action.</p>
+<p><code>server.py</code></p>
+<pre><code>import socket  
+  
+# Create a socket  
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+host = '127.0.0.1'  # Localhost  
+port = 12345  
+  
+# Bind the socket to an address and port  
+server_socket.bind((host, port))  
+  
+# Listen for incoming connections  
+server_socket.listen(5)  
+print("Server listening on port", port)  
+  
+# Accept a connection  
+client_socket, addr = server_socket.accept()  
+print("Connected to client:", addr)  
+  
+# Receive data from the client  
+data = client_socket.recv(1024).decode()  
+print("Received:", data)  
+  
+# Close the connection  
+client_socket.close()  
+server_socket.close()
+</code></pre>
+<p><code>client.py</code></p>
+<pre><code>import socket  
+  
+# Create a socket  
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+host = '127.0.0.1'  # Localhost  
+port = 12345  
+  
+# Connect to the server  
+client_socket.connect((host, port))  
+  
+# Send a message  
+message = "Hello!"  
+client_socket.send(message.encode())  
+  
+# Close the connection  
+client_socket.close()
+</code></pre>
+<p><strong>How to run this example</strong></p>
+<ol>
+<li>Open two terminal windows.</li>
+<li>In the first, run the server script with  <code>python server.py</code>.</li>
+<li>In the second, run the client script with  <code>python client.py</code>.</li>
+<li>Watch the server terminal display the “Hello!” message sent by the client.</li>
+</ol>
+<p>This simple setup demonstrates the core of socket programming: establishing a connection and exchanging data.</p>
+<h2 id="tips-for-beginners">Tips for Beginners</h2>
+<ul>
+<li>Start with TCP sockets (as shown above) since they handle reliability for you.</li>
+<li>Test locally using  <code>127.0.0.1</code>  as the IP address before moving to external networks.</li>
+<li>Handle errors gracefully — networks can be unpredictable.</li>
+<li>Explore libraries like  <code>socket.io</code>  for higher-level abstractions, especially for web apps.</li>
+</ul>
+<p>Note: C++ provides low-level control over socket programming through libraries like  <code>&lt;sys/socket.h&gt;</code>  on Unix-based systems (Linux/Mac) or Winsock on Windows. Python is too high-level for coding data structures like hashtables, because it’s built-in. Production stuff is mostly C with Python glue. Python only has a thin wrapper for socket, so the networking lessons are still suitable.</p>
+
+        <h2>Wrapping Up</h2>
+        <p>Socket programming opens the door to creating powerful, real-time applications. ...</p>
+
+        <p><em>Sources I took help from:</em></p>
+        <ol>
+            <li><a href="https://beej.us/guide/bgnet">https://beej.us/guide/bgnet</a></li>
+            <li><a href="https://build-your-own.org/">https://build-your-own.org</a></li>
+            <li><a href="https://hypnotic-single-224.notion.site/Socket-programming-1966392011f080fdb3bfd6b1adb7722d">https://hypnotic-single-224.notion.site/Socket-programming-1966392011f080fdb3bfd6b1adb7722d</a></li>
+        </ol>
+
+        <!-- Back to blog nav -->
+        <nav style="margin-top: 2em;">
+            <a href="index.html">← back to blog</a>
+        </nav>
+    </main>
+</body>
+</html>
+
