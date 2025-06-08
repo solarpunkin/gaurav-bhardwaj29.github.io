@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Socket Programming - Your Name</title>
+    <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+    <main>
+      <p><img src="https://cdn-images-1.medium.com/max/800/1*4hT_2zHBFF5ZzfDzw4dKLg.jpeg" alt=""></p>
+        <h1>Network Protocols</h1>
+      
+        <div class="subtitle">Published May 28, 2025 • Tags: networks</div>
+
+        <!-- Blog content starts here -->
+
+        <p>In the previous blog, we were introduced to internet sockets and their importance in sharing messages between devices, whether they’re in the same room or on opposite sides of the world. We learned about the layers of network protocols and how each layer encapsulates its underlying layer in a hierarchical fashion. We also explored how the actual message transfer (handshake) occurs between a client and server using IPv4 + TCP protocol through a simple Python API call.<br>
+We looked at protocols from a programmer’s perspective. It is important to understand how messages are sent and received through a shared interface between two systems — these are called network or transport protocols (TCP/IP/UDP). But it is equally important to understand how those systems interact with each other. This will be more clear when we learn about communication patterns.</p>
+<p>Internet Protocols (IP) attitude to transporting data packets can be characterised as “send and forget”. It means that IP does not guarantee to actually deliver the data to the destination, nor does it guarantee that the data will be delivered undamaged, nor does it guarantee that data packets will be delivered to the destination in the order in which they were sent by the source, nor does it guarantee that only one copy of the data will be delivered to the destination.<br>
+The no-promises service offered by IP is not directly useful to many applications. Applications typically rely on TCP or UDP to ensure data integrity and, in the case of TCP, ordered and complete data delivery. This allows IP to move packets around the network on its behalf.</p>
+<p>Transmission Control Protocol (TCP) provides a reliable byte-stream transfer service between two endpoints on an internet. But before diving deep, let’s take a step back and get ourselves familiar with socket API’s and how to create them. The code you will see in the following sections is incomplete and incorrect (…uhh-oh) because network programming is more than calling APIs, which you’ll learn as you go.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<h4 id="get-familiar-with-linux">Get familiar with Linux</h4>
+<p>Although the principles of network programming are the same, there are many platform differences on Windows &amp; MacOS. For beginners, it’s most convenient to just use Linux, even if you have no Linux experience. You don’t need to know much about Linux to program in it.</p>
+<ol>
+<li>Get a Linux environment either via VirtualBox, WSL, or cloud providers (VPS).</li>
+<li>Learn how to edit, move, copy, and delete files. You don’t have to write code in Linux. Learn how to copy files into Linux, or share files with a VM.</li>
+<li>Compile code with  <code>g++</code>. You don’t have to mess with build systems like makefiles.</li>
+</ol>
+<h4 id="learn-how-to-get-documentation">Learn how to get documentation</h4>
+<p>Hey, but why not just chatgpt? — probably yes, but it is only recommended when starting with networks — to just get away with a few things.<br>
+<code>man socket.2</code>This command shows the man page for the  <code>socket()</code>syscall (probably the first time i am using the term, also i like it). On Linux, all socket API methods are syscalls. It’s a good habit to read  <code>man</code>pages for looking up things you already know, but not for learning new things.</p>
+<hr>
+<h3 id="creating-a-tcp-server">Creating a TCP server</h3>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*FNpNKbDtIMpoASTHA8G6VQ.png" alt=""></p>
+<p>Client-Server interaction</p>
+<p>Let’s see a simple pseudocode: read data from a client, write a response, that’s it.</p>
+<p>fd = socket()<br>
+bind(fd, address)<br>
+listen(fd)<br>
+while True:<br>
+conn_fd = accept(fd)<br>
+do_something_with(conn_fd)<br>
+close(conn_fd)</p>
+<p>The  <code>socket()</code>syscall takes 3 integer arguments.<br>
+<code>int fd = socket(AF_INET, SOCK_STREAM, 0);</code><br>
+The combination of the 3 arguments determines the socket protocol.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table><p>We’ll only be using TCP, so you can forget about those arguments for now.</p>
+<h4 id="bind-to-an-address">Bind to an address</h4>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*eOg6r2f8kBHqDbKTt4Lskg.png" alt=""></p>
+<p>We’ll bind to the wildcard address  <code>0.0.0.0:1234</code>(can be left blank; the OS picks one for you). This is just a parameter for  <code>listen()</code></p>
+<pre><code>struct sockaddr_in addr = {};      
+addr.sin_family = AF_INET;        // IPv4  
+addr.sin_port = htons(1234);      // expose port 1234   
+addr.sin_addr.s_addr = htonl(0);  // wildcard IP 0.0.0.0   
+int rv = bind(fd, (const struct sockaddr *)&amp;addr,sizeof(addr));  
+if (rv)   
+{  
+  die("bind()");   
+}
+</code></pre>
+<p><code>struct sockaddr</code>is not used anywhere, so just type cast  <code>struct sockaddr_in</code>  to this  <code>*</code>  pointer type to match the function prototype.</p>
+<h4 id="listen">Listen</h4>
+<p>Before sending data across the network, TCP establishes a connection with the destination via an exchange of management packets. All the previous steps are just passing parameters. The socket is actually created after  <code>listen()</code>command.</p>
+<pre><code>rv = listen(fd, backlog);  
+if (rv)   
+{   
+ die("listen()");   
+}
+</code></pre>
+<p><em>backlog</em>  is the number of connections allowed on the incoming queue. What does that mean? Well, incoming connections are going to wait in this queue until you  <code>accept()</code>them, and this is the limit on how many can queue up.</p>
+<h4 id="accept-connections">Accept connections</h4>
+<p>You call  <code>accept()</code>  which tells the system to get the pending connection. It returns a brand new socket  <em>fd</em>  to use for this single connection. So, you now have two file descriptors. The original one (<em>fd</em>) is still listening for more new connections and the latter is ready to send and receive data. The server now enters a loop that accepts and processes each client connection.</p>
+<pre><code>while (true) {  
+ // accept  
+ struct sockaddr_in client_addr = {};          
+ socklen_t addrlen =sizeof(client_addr);          
+ int connfd = accept(fd, (struct sockaddr *)&amp;client_addr, &amp;addrlen);  
+ if (connfd &lt; 0)   
+ {  
+  continue; // error   
+ }          
+ do_something(connfd);          
+ close(connfd);      
+}
+</code></pre>
+<p>This should look familiar by now. We have established the connection and  <code>connfd()</code>is the  <code>listen()</code>ing socket descriptor.</p>
+<h4 id="read--write-—-talk-to-me">Read &amp; Write — Talk to me!</h4>
+<p>Let’s test our connection by doing something — by reading from and writing to the call.</p>
+<pre><code>static void do_something(int connfd) {      
+ char rbuf[64] = {};      
+ ssize_t n = read(connfd, rbuf, sizeof(rbuf) - 1);  
+ if (n &lt; 0) {          
+  msg("read() error");  
+  return;     
+ }     
+ printf("client says: %s\n", rbuf);     
+ char wbuf[] = "world";      
+ write(connfd, wbuf, strlen(wbuf));  
+}
+</code></pre>
+<p>You can now pass data back and forth on stream sockets.<br>
+<strong>Side note: get address of each side</strong><br>
+If you are using wildcard address or letting the OS pick the port, you don’t know the exact address.  <code>getsockname()</code>gets you the local address of a TCP connection and  <code>getpeername()</code>retrieves the remote address (the same address returned from  <em>accept).</em></p>
+<p><code>int getsockname(int fd,struct sockaddr *addr, socklen_t *addrlen); // local</code><br>
+<code>int getpeername(int fd,struct sockaddr *addr, socklen_t *addrlen); // remote</code></p>
+
+        <!-- Back to blog nav -->
+        <nav style="margin-top: 2em;">
+            <a href="index.html">← back to blog</a>
+        </nav>
+    </main>
+</body>
+</html>
