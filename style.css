@@ -46,3 +46,37 @@ img {
     margin: 1em 0;
     display: block;
 }
+table {
+    width: 100%; /* Use the full width of the container */
+    max-width: 800px; /* Cap the table width to avoid stretching too wide */
+    margin: 20px auto; /* Center the table with some spacing */
+    border-collapse: collapse; /* Remove gaps between cells */
+    font-size: 16px; /* Readable font size */
+}
+
+th, td {
+    padding: 12px 15px; /* Add padding for better spacing */
+    text-align: left; /* Align text for readability */
+    border-bottom: 1px solid #ddd; /* Add a subtle border between rows */
+}
+
+th {
+    background-color: #f4f4f4; /* Light background for headers */
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Zebra striping for readability */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+@media (max-width: 768px) {
+    table {
+        font-size: 14px; /* Smaller font on mobile */
+    }
+    th, td {
+        padding: 8px 10px; /* Reduce padding on smaller screens */
+    }
+}
