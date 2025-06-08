@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🔥 0x01</title>
+  <link rel="stylesheet" href="./blog-style.css" />
+</head>
+<body>
+  <main>
+    <p><img src="https://cdn-images-1.medium.com/max/800/1*Cc1qQOJP3lDrkG05Iy6scQ.png" alt=""></p>
+
+
+<h1>Serialization</h1>
+  <div class="subtitle">Published June 7, 2025</div>
+<p>When two applications talk over a network, they don’t exchange messages, they exchange bytes. But those bytes aren’t random: they follow a strict structure defined by protocols and data formats. In this post, we’ll dive into how structured data is serialized into byte streams, how headers give those streams meaning, and how receivers deserialize them back into usable data.<br>
+Recall how  <code>send()</code>returns the number of bytes sent out. But let me tell you that  <em>it may be less than what you actually wanted it to send.</em> This happens even in normal conditions when there is no error (-1) or end-of-file. The catch here is  <code>send()</code>  might not send all the bytes you asked it to. For example, if you want it to send 512 bytes, but it returns 412; the remaining 100 bytes are still in your little buffer waiting to be sent out. You have to continuously check the length of the string sent and compare with the actual  <em>len</em>  of buffer defined to send out the complete data. Fortunately, it can be easily done by looping over  <code>send()</code>function until we get an error (-1)<br>
+the accompanying code can be found at eop.</p>
+<p>Now we have gracefully handled the partial  <code>send()</code>problem. It is easy to send text data across the network, as you see, but what if you want to send some binary data like ints or floats? Well at this point you may think of some possibilities:</p>
+<ol>
+<li>convert the number into text and send the text (<a href="https://en.wikipedia.org/wiki/IRC">IRC</a>).</li>
+<li>send the raw data with a pointer attached.</li>
+</ol>
+<p>Each method has its own advantages and drawbacks, and the task of finding them is left as an exercise for the reader. Before I begin this section, I want to let you know that there are libraries specifically designed for this task. But rolling your own and keeping it portable and error-free is no easy feat. Fear not! (Were you afraid there for a second? No? Not even a little bit?) There is something we can do: we can pack (or “serialize”, or one of a thousand million other names) the data into a known binary format that the receiver can unpack on the remote side.</p>
+<pre><code>#include &lt;stdint.h&gt;  
+  
+uint32_t htonf(float f)  
+{  
+    uint32_t p;  
+    uint32_t sign;  
+  
+    if (f &lt; 0) { sign = 1; f = -f; }  
+    else { sign = 0; }  
+          
+    p = ((((uint32_t)f)&amp;0x7fff)&lt;&lt;16) | (sign&lt;&lt;31);     // whole part and sign  
+    p |= (uint32_t)(((f - (int)f) * 65536.0f))&amp;0xffff; // fraction  
+  
+    return p;  
+}  
+  
+float ntohf(uint32_t p)  
+{  
+    float f = ((p&gt;&gt;16)&amp;0x7fff);   // whole part  
+    f += (p&amp;0xffff) / 65536.0f;   // fraction  
+  
+    if (((p&gt;&gt;31)&amp;0x1) == 0x1) { f = -f; }   // sign bit set  
+  
+    return f;  
+}
+</code></pre>
+<p>The above code is sort of a naive implementation that stores a  <code>float</code>  in a 32-bit number. The high bit (31) is used to store the sign of the number (“1” means negative), and the next seven bits (30-16) are used to store the whole number portion of the  <code>float</code>. Finally, the remaining bits (15-0) are used to store the fractional portion of the number.<br>
+Usage is fairly straightforward:</p>
+<pre><code>#include &lt;stdio.h&gt;  
+  
+int main(void)  
+{  
+    float f = 3.1415926, f2;  
+    uint32_t netf;  
+  
+    netf = htonf(f);  // convert to "network" form  
+    f2 = ntohf(netf); // convert back to test  
+  
+    printf("Original: %f\n", f);        // 3.141593  
+    printf(" Network: 0x%08X\n", netf); // 0x0003243F  
+    printf("Unpacked: %f\n", f2);       // 3.141586  
+  
+    return 0;  
+}
+</code></pre>
+<p>The  <a href="https://en.wikipedia.org/wiki/IEEE_754">standard</a>  for storing floating point numbers is used by most  <a href="https://datatracker.ietf.org/doc/html/rfc4506">modern</a>  day computers internally for doing floating point math, so in those cases, strictly speaking, conversion wouldn’t need to be done. There are some  <a href="https://github.com/protobuf-c/protobuf-c">pointers</a>  if you want to implement your  <a href="https://beej.us/guide/bgnet/source/examples/pack2.c">custom</a>  serialization logic. Caution: I haven’t tried them yet but they look respectable. All in all, be aware while unpacking data sent over a network — a malicious user might send badly constructed packets in an effort to attack your system.<br>
+Now the data has been packed and sent over the network. What happens at the receiver’s end when a packet of data arrives? A common mistake is to assume that a  <code>read</code>  somehow corresponds to a  <code>write</code>  from the peer. This is not possible because a byte stream does not preserve any boundaries.<br>
+If the packets are of variable length, how does the receiver know when one packet ends and other begins?  <em>(lot of questions already)</em> This brings the concept of data encapsulation.</p>
+<h3 id="data-encapsulation">Data Encapsulation</h3>
+<p>Recall how each layer in a network protocol wraps its underlying layer in a hierarchical fashion i.e., Ethernet contains IP, IP contains UDP or TCP, UDP or TCP contains application protocols.<br>
+When a packet is created, it is wrapped (“encapsulated”) in a header by the first (say FTP/SFTP) protocol, which is(header + data) again wrapped by the second (TCP) protocol, and so on… When another computer receives the packet, the hardware strips the Ethernet header, the kernel strips the IP and TCP headers, the SFTP program strips the SFTP header, and it finally has the data.  <em>Header</em>  is some binary metadata associated with a packet.</p>
+<p>Each application running over TCP or UDP distinguishes itself from other applications using the service by reserving and using a 16-bit port number. An application protocol determines message length and has two structural levels:</p>
+<ol>
+<li>Message splitting in the byte stream</li>
+<li>Internal message structure (deserialization)</li>
+</ol>
+<h4 id="a-simple-binary-protocol">A simple binary protocol</h4>
+<p>The first step is to split the byte stream into messages. For now, both the request and response messages are just strings.</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*2CLLkrFIhQUbyWw02GlT0Q.png" alt=""></p>
+<p>The variable-length makes it difficult to parse the message stream. For example, one person named “Vishal” might say, “Hi”, and another person named “Sid” might say, “Hey everyone, what’s going on?” If we simply stream the raw data  <code>V i s h a l H i S i d H e y e v e r y o n e ..</code>there’s no way for the receiver to distinguish where one message ends and another begins. To solve this, we use  <strong>data encapsulation,</strong> wrapping each message in a structured packet that includes metadata. This helps both sender and receiver agree on how to interpret the data. It’s the basis of a  <strong>protocol</strong>.</p>
+<p>In this case, let’s assume the user name is a fixed length of 8 characters, padded with  <code>\0</code>. And then let’s assume the data is variable length, up to a maximum of 128 characters. Let’s have a look a sample packet structure that we might use in this situation:<br>
+•  <code>len</code>  (1 byte, unsigned) — The total length of the packet, counting the 8-byte name and data.<br>
+•  <code>name</code>  (8 bytes)—The user’s name, NUL-padded if shorter.<br>
+•  <code>chatdata</code>  (<em>upto</em>  128 bytes)—Actual message text<br>
+Using the above packet definition, the first packet would consist of the following information (in hex and ASCII):</p>
+<pre><code>0A       56 69 73 68 61 6C 00 00      48 69  
+(length)  V i  s  h  a  l (padding)   H  i
+</code></pre>
+<p>And the second is similar:</p>
+<pre><code>24       53 69 64 00 00 00 00 00      48 65 79 20 65 76 ...  
+(length)  S  i  d    (padding)        H  e  y     E  v ...
+</code></pre>
+<h4 id="why-this-works">Why This Works</h4>
+<p>The first byte tells the receiver how many total bytes to expect. The receiver reads the length, then reads that many bytes to get the full packet.<br>
+This prevents message mix-ups and enables the client to reconstruct each message cleanly.</p>
+<pre><code>#include &lt;sys/types.h&gt;  
+#include &lt;sys/socket.h&gt;  
+  
+int sendall(int s, char *buf, int *len)  
+{  
+    int total = 0;            // how many bytes are sent  
+    int bytesleft = *len;     // how many are left to send  
+    int n;  
+  
+    while(total &lt; *len) {  
+        n = send(s, buf+total, bytesleft, 0);  
+        if (n == -1) { break; }  
+        total += n;  
+        bytesleft -= n;  
+    }  
+  
+    *len = total;        // return number actually sent here  
+  
+    return n==-1?-1:0;   // return -1 on failure, 0 on success  
+} 
+</code></pre>
+<h4>More on protocols</h4>
+<blockquote>
+<p>Why  <strong>read_full()</strong>  and  <strong>write_all()</strong>?</p>
+</blockquote>
+<p><strong>read_full:</strong><br>
+When reading from a socket, a single read call might return fewer bytes than requested even when more data is coming. This happens because data is pushed by the remote peer and stored in a kernel buffer, so read simply copies whatever is available at the time. To ensure that you receive the full amount of data you expect, you must repeatedly call read until either the desired number of bytes is collected, an error occurs, or the end of the stream is reached. It’s also important to handle cases where read is interrupted by a signal  <em>(EINTR)</em>  by retrying the operation.</p>
+<p><strong>write_all:</strong><br>
+When writing data to a socket, the write call may not write all the bytes in one go. This can occur because the kernel buffer may be full or because the write operation was interrupted by a signal. To ensure that the entire data payload is sent, you need to loop and call write repeatedly until all bytes are successfully written. This approach guarantees that no portion of the message is lost due to partial writes.</p>
+<hr>
+<h3 id="references">References:</h3>
+<blockquote>
+<p><a href="https://beej.us/guide/bgnet/html/split-wide/index.html">Beej guide to network programming</a><br>
+[a link to my brain lol]</p>
+</blockquote>
+</div>
+</body>
+</html>
