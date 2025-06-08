@@ -1,0 +1,40 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background-color: #fafafa;
+  color: #222;
+  padding: 40px;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+p {
+  margin-bottom: 2em;
+}
+
+nav a {
+  display: inline-block;
+  margin-right: 20px;
+  text-decoration: none;
+  color: #222;
+  font-weight: 600;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
