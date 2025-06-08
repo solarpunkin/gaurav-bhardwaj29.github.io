@@ -46,7 +46,18 @@ img {
     margin: 1em 0;
     display: block;
 }
-figcaption {
+.image-caption {
+    max-width: 600px; /* Adjust width to fit your content area (you set 900px earlier) */
+    margin: 20px auto; /* Center the figure with some spacing */
+    text-align: center; /* Center the caption text */
+}
+
+.image-caption img {
+    max-width: 100%; /* Ensure image scales responsively */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.image-caption figcaption {
     margin-top: 8px; /* Space between image and caption */
     font-size: 0.9em; /* Slightly smaller text */
     color: #555; /* Dark gray for contrast */
