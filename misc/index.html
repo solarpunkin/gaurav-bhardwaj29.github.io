@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Blog - Your Name</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Misc - Your Name</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        .misc-item {
+            margin-bottom: 2em;
+        }
+
+        .misc-item a {
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .misc-item a:hover {
+            text-decoration: underline;
+        }
+
+        .subheading {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 0.3em;
+        }
+    </style>
 </head>
 <body>
-  <main>
-    <h1>Blog</h1>
-    <p>Coming soon...</p>
-    <nav>
-      <a href="/">home</a>
-      <a href="/blog">blog</a>
-      <a href="/code">code</a>
-      <a href="/misc">misc</a>
-    </nav>
-  </main>
+    <main>
+        <h1>Miscellaneous</h1>
+
+        <!-- Misc Item 1 -->
+        <div class="misc-item">
+            <a href="https://example.com/some-interesting-thing" target="_blank">Some Interesting Thing</a>
+            <div class="subheading">A short description about this thing.</div>
+        </div>
+
+        <!-- Misc Item 2 -->
+        <div class="misc-item">
+            <a href="https://example.com/another-link" target="_blank">Another Link or Resource</a>
+            <div class="subheading">A short description about this resource.</div>
+        </div>
+
+        <!-- Misc Item 3 -->
+        <div class="misc-item">
+            <a href="https://example.com/random-note" target="_blank">Random Note or Page</a>
+            <div class="subheading">Some note or page you want to share.</div>
+        </div>
+
+        <!-- Add more misc items here -->
+
+        <!-- Back to home nav -->
+        <nav style="margin-top: 2em;">
+            <a href="../">← home</a>
+        </nav>
+    </main>
 </body>
 </html>
