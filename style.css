@@ -46,6 +46,12 @@ img {
     margin: 1em 0;
     display: block;
 }
+figcaption {
+    margin-top: 8px; /* Space between image and caption */
+    font-size: 0.9em; /* Slightly smaller text */
+    color: #555; /* Dark gray for contrast */
+    font-style: italic; 
+}
 table {
     width: 100%; /* Use the full width of the container */
     max-width: 800px; /* Cap the table width to avoid stretching too wide */
