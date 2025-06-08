@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Socket Programming - Your Name</title>
+    <title>🔥 Network Protocols</title>
     <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
       <p><img src="https://cdn-images-1.medium.com/max/800/1*4hT_2zHBFF5ZzfDzw4dKLg.jpeg" alt=""></p>
         <h1>Network Protocols</h1>
       
-        <div class="subtitle">Published May 28, 2025 • Tags: networks</div>
+        <div class="subtitle">Published May 28, 2025</div>
 
         <!-- Blog content starts here -->
 
@@ -33,8 +33,10 @@ The no-promises service offered by IP is not directly useful to many application
 <code>man socket.2</code>This command shows the man page for the  <code>socket()</code>syscall (probably the first time i am using the term, also i like it). On Linux, all socket API methods are syscalls. It’s a good habit to read  <code>man</code>pages for looking up things you already know, but not for learning new things.</p>
 <hr>
 <h3 id="creating-a-tcp-server">Creating a TCP server</h3>
-<p><img src="https://cdn-images-1.medium.com/max/800/1*FNpNKbDtIMpoASTHA8G6VQ.png" alt=""></p>
-<p>Client-Server interaction</p>
+<figure class="image-caption">
+<img src="https://cdn-images-1.medium.com/max/800/1*FNpNKbDtIMpoASTHA8G6VQ.png" alt="">
+<figcaption>Client-Server interaction</figcaption>
+</figure>
 <p>Let’s see a simple pseudocode: read data from a client, write a response, that’s it.</p>
 <p>fd = socket()<br>
 bind(fd, address)<br>
