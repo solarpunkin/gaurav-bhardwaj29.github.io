@@ -124,3 +124,16 @@ td em, th em {
     color: #555;
     font-style: italic;
 }
+.til-link {
+  display: block;
+  font-size: 30%;
+  margin-top: 0.2em;
+  margin-bottom: 1em;
+  color: #888;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
+.til-link:hover {
+  color: #222;
+  text-decoration: underline;
+}
