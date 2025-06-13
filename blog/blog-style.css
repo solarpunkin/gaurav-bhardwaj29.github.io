@@ -10,7 +10,7 @@ body {
     background-color: #ffffff; /* White background for blog */
     color: #333; /* Slightly lighter text color */
     padding: 20px; /* Less padding than main page */
-    line-height: 1.6; /* Slightly more line spacing */
+    line-height: 1.4; /* Slightly more line spacing */
 }
 
 main {
@@ -20,12 +20,12 @@ main {
 
 h1 {
     font-size: 2.5em; /* Larger heading for blog */
-    margin-bottom: 0.8em;
+    margin-bottom: 0.3em;
     color: #1a1a1a; /* Darker heading color */
 }
 
 p {
-    margin-bottom: 1.5em; /* Slightly less spacing than main page */
+    margin-bottom: 1.0em; /* Slightly less spacing than main page */
 }
 
 /* Table styling (from previous messages) */
@@ -126,12 +126,11 @@ td em, th em {
 }
 .til-link {
   display: block;
-  font-size: 1.0em;
-  margin-top: 0.2em;
-  margin-bottom: 1em;
+  font-size: 1.5em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
   color: #1f1f1ff0;
   text-decoration: none;
-  letter-spacing: 0.1em;
 }
 .til-link:hover {
   color: #222;
