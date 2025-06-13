@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'til/posts/**'
-      - 'til/scripts/generate_til.py'
+      - 'scripts/generate_til.py'
 permissions:
   contents: write
 jobs:
