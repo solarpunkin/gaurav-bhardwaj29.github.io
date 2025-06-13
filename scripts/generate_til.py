@@ -25,10 +25,21 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md"), reverse=True):
         print(f"Skipping {md_file}: invalid frontmatter")
         continue
     meta = yaml.safe_load(fm)
+    # Parse date as datetime object for sorting
+    date_str = str(meta['date'])
+    try:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        try:
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+        except ValueError:
+            print(f"Skipping {md_file}: invalid date format {date_str}")
+            continue
     html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
     post = {
         'title': meta['title'],
-        'date': meta['date'],
+        'date': date_obj,
+        'date_str': date_str,
         'tags': meta.get('tags', []),
         'collection': meta.get('collection', None),
         'body': html_body,
@@ -57,7 +68,7 @@ for tag, tag_posts in tags_dict.items():
   <ul class="til-list">
 """)
         for post in tag_posts_sorted:
-            f.write(f'<li><span class="til-date">{post["date"]}</span> <a href="../posts/{post["filename"]}">{post["title"]}</a></li>\n')
+            f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="../posts/{post["filename"]}">{post["title"]}</a></li>\n')
         f.write("</ul>\n<a href='../index.html'>← Back to TIL</a>\n</body></html>")
 
 # Generate main index.html
@@ -81,13 +92,13 @@ with open(INDEX_FILE, 'w') as f:
     # Recent TILs
     f.write('<h2>Recent TILs</h2>\n<ul class="til-list" id="til-list">\n')
     for post in posts[:5]:
-        f.write(f'<li><span class="til-date">{post["date"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
+        f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
     f.write("</ul>\n")
 
     # All TILs (hidden, for search)
     f.write('<h2 style="display:none;">All TILs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
     for post in posts:
-        f.write(f'<li><span class="til-date">{post["date"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
+        f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
     f.write("</ul>\n")
 
     # Minimal JS for search (optional, can be removed for pure HTML)
