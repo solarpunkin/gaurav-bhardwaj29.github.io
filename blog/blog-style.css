@@ -126,10 +126,10 @@ td em, th em {
 }
 .til-link {
   display: block;
-  font-size: 30%;
+  font-size: 1.0em;
   margin-top: 0.2em;
   margin-bottom: 1em;
-  color: #888;
+  color: #1f1f1ff0;
   text-decoration: none;
   letter-spacing: 0.1em;
 }
