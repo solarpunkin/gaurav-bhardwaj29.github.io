@@ -2,22 +2,25 @@
 <html>
 <head>
   <link rel="stylesheet" href="til-style.css">
-  <title>TIL</title>
+  <title>🧠 TIL</title>
 </head>
 <body>
-  <h1>TIL</h1>
-  <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
+  <h1>Gaurav: TIL</h1>
+  <div style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 1em;">
+    <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
+    <button id="til-search-btn" onclick="filterTILs()">Search</button>
+  </div>
   <div class="til-tags">
-<a class="til-tag" href="tags/automation.html">automation (1)</a> <a class="til-tag" href="tags/blogging.html">blogging (1)</a> <a class="til-tag" href="tags/github.html">github (1)</a> <a class="til-tag" href="tags/writing.html">writing (1)</a> </div>
+<a class="til-tag" href="tags/automation.html">automation (1) •</a> <a class="til-tag" href="tags/blogging.html">blogging (1) •</a> <a class="til-tag" href="tags/github.html">github (1) •</a> <a class="til-tag" href="tags/writing.html">writing (1) •</a> </div>
 <h2>Recent TILs</h2>
 <ul class="til-list" id="til-list">
-<li><span class="til-date">2025-06-14</span> <a href="posts/2025-06-14-sample-til.md">How to write a blog post</a></li>
-<li><span class="til-date">2025-06-13 10:30</span> <a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a></li>
+<li><a href="posts/2025-06-14-sample-til.md">How to write a blog post</a> <span class="til-date">2025-06-14</span></li>
+<li><a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a> <span class="til-date">2025-06-13 10:30</span></li>
 </ul>
 <h2 style="display:none;">All TILs</h2>
 <ul class="til-list" id="all-tils" style="display:none;">
-<li><span class="til-date">2025-06-14</span> <a href="posts/2025-06-14-sample-til.md">How to write a blog post</a></li>
-<li><span class="til-date">2025-06-13 10:30</span> <a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a></li>
+<li><a href="posts/2025-06-14-sample-til.md">How to write a blog post</a> <span class="til-date">2025-06-14</span></li>
+<li><a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a> <span class="til-date">2025-06-13 10:30</span></li>
 </ul>
 
 <script>
