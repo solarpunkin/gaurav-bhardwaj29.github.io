@@ -68,8 +68,8 @@ for tag, tag_posts in tags_dict.items():
   <ul class="til-list">
 """)
         for post in tag_posts_sorted:
-            f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="../posts/{post["filename"]}">{post["title"]}</a></li>\n')
-        f.write("</ul>\n<a href='../index.html'>← Back to TIL</a>\n</body></html>")
+            f.write(f'<li><a href="../posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+        f.write("</ul>\n<a href='../index.html'>← TIL</a>\n</body></html>")
 
 # Generate main index.html
 with open(INDEX_FILE, 'w') as f:
@@ -77,28 +77,31 @@ with open(INDEX_FILE, 'w') as f:
 <html>
 <head>
   <link rel="stylesheet" href="til-style.css">
-  <title>TIL</title>
+  <title>🧠 TIL</title>
 </head>
 <body>
-  <h1>TIL</h1>
-  <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
+  <h1>Gaurav: TIL</h1>
+  <div style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 1em;">
+    <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
+    <button id="til-search-btn" onclick="filterTILs()">Search</button>
+  </div>
   <div class="til-tags">
 """)
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class="til-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)})</a> ')
+        f.write(f'<a class="til-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)}) •</a> ')
     f.write("</div>\n")
 
     # Recent TILs
     f.write('<h2>Recent TILs</h2>\n<ul class="til-list" id="til-list">\n')
-    for post in posts[:5]:
-        f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
+    for post in posts[:10]:
+        f.write(f'<li><a href="posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # All TILs (hidden, for search)
     f.write('<h2 style="display:none;">All TILs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
     for post in posts:
-        f.write(f'<li><span class="til-date">{post["date_str"]}</span> <a href="posts/{post["filename"]}">{post["title"]}</a></li>\n')
+        f.write(f'<li><a href="posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # Minimal JS for search (optional, can be removed for pure HTML)

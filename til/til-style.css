@@ -1,29 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background: #fafafa;
   color: #222;
   margin: 0;
-  padding: 0;
+  padding: 20px;
 }
 h1 {
   font-size: 2.5rem;
-  margin: 1rem 0 0.5rem 0;
+  margin: 2rem 0 0.6rem 0;
 }
 .til-tags {
   margin: 1rem 0;
 }
 .til-tag {
-  display: inline-block;
-  background: #eee;
+  display: inline;
+  background: none;
   color: #333;
-  border-radius: 16px;
-  padding: 0.2em 0.8em;
-  margin: 0 0.2em 0.2em 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 0.5em 0 0;
   font-size: 0.9em;
   text-decoration: none;
 }
 .til-tag:hover {
-  background: #ddd;
+  background: none;
+  color: #111;
+  text-decoration: underline;
 }
 .til-list {
   list-style: none;
@@ -31,17 +38,20 @@ h1 {
 }
 .til-list li {
   margin: 0.5em 0;
+  font-weight: bold;
+  font-size: 1.1em;
 }
 .til-date {
   color: #888;
   font-size: 0.9em;
-  margin-right: 0.5em;
+  margin-left: 0.5em;
+  font-weight: normal;
 }
 #til-search {
-  width: 100%;
-  font-size: 1.2em;
-  padding: 0.5em;
-  margin-bottom: 1em;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  width: 65%;
+  font-size: 1.0em;
+  padding: 0.7em;
+  margin-bottom: 0.5em;
+  border: 1.5px solid #655d5d;
+  border-radius: 5px;
 }
