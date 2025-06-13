@@ -6,15 +6,35 @@
 </head>
 <body>
   <h1>TIL</h1>
+  <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
   <div class="til-tags">
-<a class="til-tag" href="tags/automation.html">automation (1)</a> <a class="til-tag" href="tags/github.html">github (1)</a> </div>
-<div class="main-til-content">
-  <h2>Learned about GitHub Actions for TIL</h2>
-  <div><p>Today I learned how to use GitHub Actions to automate the generation of TIL pages and tag indexes. This will help streamline the process of updating my TIL repository and ensure that everything is kept up to date automatically...</p></div>
-  <div class="til-footer">
-    Posted 2025-06-13 10:30 · Follow me on <a href="#">Twitter</a>, <a href="#">GitHub</a>, <a href="#">Mastodon</a> or subscribe to my <a href="#">RSS</a>
-  </div>
-  <div class="til-sidebar">
-    <h3>Past TILs</h3>
-    <ul>
-</ul></div></div></body></html>
+<a class="til-tag" href="tags/automation.html">automation (1)</a> <a class="til-tag" href="tags/blogging.html">blogging (1)</a> <a class="til-tag" href="tags/github.html">github (1)</a> <a class="til-tag" href="tags/writing.html">writing (1)</a> </div>
+<h2>Recent TILs</h2>
+<ul class="til-list" id="til-list">
+<li><span class="til-date">2025-06-14</span> <a href="posts/2025-06-14-sample-til.md">How to write a blog post</a></li>
+<li><span class="til-date">2025-06-13 10:30</span> <a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a></li>
+</ul>
+<h2 style="display:none;">All TILs</h2>
+<ul class="til-list" id="all-tils" style="display:none;">
+<li><span class="til-date">2025-06-14</span> <a href="posts/2025-06-14-sample-til.md">How to write a blog post</a></li>
+<li><span class="til-date">2025-06-13 10:30</span> <a href="posts/2025-06-13-sample-til.md">Learned about GitHub Actions for TIL</a></li>
+</ul>
+
+<script>
+function filterTILs() {
+  var input = document.getElementById('til-search');
+  var filter = input.value.toLowerCase();
+  var ul = document.getElementById('til-list');
+  ul.innerHTML = '';
+  var allLis = document.getElementById('all-tils').getElementsByTagName('li');
+  var count = 0;
+  for (var i = 0; i < allLis.length; i++) {
+    var txt = allLis[i].textContent || allLis[i].innerText;
+    if (txt.toLowerCase().indexOf(filter) > -1 && count < 5) {
+      ul.appendChild(allLis[i].cloneNode(true));
+      count++;
+    }
+  }
+}
+</script>
+</body></html>
