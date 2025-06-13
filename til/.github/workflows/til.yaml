@@ -4,8 +4,9 @@ on:
   push:
     paths:
       - 'til/posts/**'
-      - 'scripts/generate_til.py'
-
+      - 'til/scripts/generate_til.py'
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
