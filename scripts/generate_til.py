@@ -164,15 +164,17 @@ for i, post in enumerate(posts):
         f_post.write(f"""<!DOCTYPE html>
       <html>
       <head>
-        <link rel=\"stylesheet\" href=\"../../til-style.css\">
+        <link rel="stylesheet" href="../../til-style.css">
         <title>{post['title']}</title>
       </head>
       <body>
         <h1>{post['title']}</h1>
-        <div class=\"til-body\">{post['body']}</div>
-        <div class=\"til-date\">Posted on {now_ist}</div>
-        <ul class=\"til-list\"><li><a href="../">← TIL</a></li></ul>
-        <div class=\"til-sidebar\">
+        <div class="til-body">{post['body']}</div>
+        <div class="til-date">Posted on {now_ist}</div>· Follow me on <a href="https://x.com/bardgaurav">Twitter</a>.
+        <ul class="til-list">
+          <li><a href="../../index.html">← TIL</a></li>
+        </ul>
+        <div class="til-sidebar">
           <h5>Jump to</h5>
           <ul>
       """)

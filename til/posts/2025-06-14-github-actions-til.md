@@ -12,5 +12,3 @@ The motivation behind this? I've recently grown into the habit of writing down s
 Writing a TIL resets that mental buffer,like clearing context from chat_history [] on a daily basis lul. It grounds me. It makes space.. It sits somewhere between a full-length blog and a tweet. Everything seems easier when looking in retrospect—like, *of course that idea was obvious*. But I want my TILs to reflect that moment of intrigue, even if they’re flawed.
 
 I feel like I’ll never stop writing them now. So if you’re reading this, [Simon](https://x.com/simonw), thank you for adding that half-measure of madness and meaning. Your words helped me appreciate the value in what I learn, and to write what I love.
-
-Posted <date> at <time> (IST) · Follow me on <a href="https://x.com/bardgaurav">Twitter</a>.
