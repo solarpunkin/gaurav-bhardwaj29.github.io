@@ -86,7 +86,7 @@ for tag, tag_posts in tags_dict.items():
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class=\"til-list\"><a href="../">← TIL</a>
+  <ul class=\"til-list\"><li><a href="../">← TIL</a></li>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
@@ -162,30 +162,30 @@ for i, post in enumerate(posts):
     now_ist = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S (IST)')
     with open(f"{out_dir}/index.html", "w") as f_post:
         f_post.write(f"""<!DOCTYPE html>
-<html>
-<head>
-  <link rel=\"stylesheet\" href=\"../../til-style.css\">
-  <title>{post['title']}</title>
-</head>
-<body>
-  <h1>{post['title']}</h1>
-  <div class=\"til-body\">{post['body']}</div>
-  <div class=\"til-date\">Posted on {now_ist}</div>
-  <ul class=\"til-list\"><a href="../">← TIL</a></ul>
-  <div class=\"til-sidebar\">
-    <h5>Jump to</h5>
-    <ul>
-""")
+      <html>
+      <head>
+        <link rel=\"stylesheet\" href=\"../../til-style.css\">
+        <title>{post['title']}</title>
+      </head>
+      <body>
+        <h1>{post['title']}</h1>
+        <div class=\"til-body\">{post['body']}</div>
+        <div class=\"til-date\">Posted on {now_ist}</div>
+        <ul class=\"til-list\"><li><a href="../">← TIL</a></li></ul>
+        <div class=\"til-sidebar\">
+          <h5>Jump to</h5>
+          <ul>
+      """)
+        # Ensure prev/next links are wrapped in <li> tags if present
         if prev_post:
             prev_slug = prev_post['slug']
             prev_url = f"../{prev_slug}/"
-            f_post.write(f'<li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
+            f_post.write(f'      <li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
         if next_post:
             next_slug = next_post['slug']
             next_url = f"../{next_slug}/"
-            f_post.write(f'<li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
-        f_post.write("""
-</ul>
+            f_post.write(f'      <li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
+        f_post.write("""    </ul>
   </div>
 </body>
 </html>
