@@ -83,9 +83,11 @@ with open(INDEX_FILE, 'w') as f:
 <body>
   <h1>Gaurav: TIL</h1>
   <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href="https://gaurv.me/blog/">blog</a>.</p>
-  <div style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 1em;">
-    <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
-    <button id="til-search-btn" onclick="filterTILs()">Search</button>
+  <div class="til-search-container">
+    <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
+      <input type="search" id="til-search" placeholder="Search TILs..." autofocus>
+      <button id="til-search-btn" type="submit">Search</button>
+    </form>
   </div>
   <div class="til-tags">
 """)

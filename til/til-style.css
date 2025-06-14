@@ -47,16 +47,21 @@ h1 {
   margin-left: 0.5em;
   font-weight: normal;
 }
+.til-search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
 #til-search {
   width: 50%;
-  font-size: 1.0em;
-  padding: 0.7em;
-  margin-bottom: 0.5em;
-  border: 1.5px solid #655d5d;
-  border-radius: 5px;
+  font-size: 1.2em;
+  padding: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 #til-search-btn {
-  background: #2463ea;
+  background: #2563eb;
   color: #fff;
   border: none;
   border-radius: 5px;
