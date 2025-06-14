@@ -86,12 +86,12 @@ for tag, tag_posts in tags_dict.items():
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class=\"til-list\"><a href="../">← home</a>
+  <ul class=\"til-list\"><a href="../">← TIL</a>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
             f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
-        f.write("</ul>\n<a href=\".../\">← TIL</a>\n</body></html>")
+        f.write("</ul>\n</body></html>")
 
 # Generate main index.html
 with open(INDEX_FILE, 'w') as f:
@@ -113,7 +113,7 @@ with open(INDEX_FILE, 'w') as f:
   <div class=\"til-tags\">\n""")
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag} ({len(tag_posts)})</a><span class=\"til-tag-sep\"> • </span>')
+        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag} ({len(tag_posts)})</a><span class=\"til-tag-sep\">• </span>')
     f.write("</div>\n")
 
     # Recent TILs
@@ -170,7 +170,8 @@ for i, post in enumerate(posts):
 <body>
   <h1>{post['title']}</h1>
   <div class=\"til-body\">{post['body']}</div>
-  <div class=\"til-date\">{post['date_str']} · Posted on {now_ist}</div>
+  <div class=\"til-date\">Posted on {now_ist}</div>
+  <ul class=\"til-list\"><a href="../">← TIL</a></ul>
   <div class=\"til-sidebar\">
     <h5>Jump to</h5>
     <ul>
