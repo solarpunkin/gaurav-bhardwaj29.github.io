@@ -109,7 +109,7 @@ with open(INDEX_FILE, 'w') as f:
   <div class=\"til-tags\">\n""")
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag} ({len(tag_posts)})</a><span class=\"til-tag-sep\"> • </span>')
+        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag}</a>({len(tag_posts)})<span class=\"til-tag-sep\"> • </span>')
     f.write("</div>\n")
 
     # Recent TILs
@@ -156,7 +156,7 @@ for i, post in enumerate(posts):
     os.makedirs(out_dir, exist_ok=True)
     prev_post = posts[i-1] if i > 0 else None
     next_post = posts[i+1] if i < len(posts)-1 else None
-    now_ist = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S IST')
+    now_ist = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S') + ' (IST)'
     with open(f"{out_dir}/index.html", "w") as f_post:
         f_post.write(f"""<!DOCTYPE html>
 <html>
