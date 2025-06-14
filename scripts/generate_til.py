@@ -3,7 +3,7 @@ import glob
 import markdown
 import yaml
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import re
 
 POSTS_DIR = 'til/posts'
@@ -16,6 +16,21 @@ os.makedirs(TAGS_DIR, exist_ok=True)
 posts = []
 tags_dict = defaultdict(list)
 
+# Helper for IST
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def slugify(text):
+    return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
+
+def parse_date_from_filename(filename):
+    # expects yyyy-mm-dd-slug.md
+    base = os.path.basename(filename)
+    parts = base.split('-')
+    if len(parts) < 4:
+        raise ValueError(f"Filename {filename} does not match yyyy-mm-dd-slug.md format")
+    year, month, day = parts[0], parts[1], parts[2]
+    return datetime(int(year), int(month), int(day), tzinfo=IST)
+
 # Parse all TIL markdown files
 for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md"), reverse=True):
     with open(md_file) as f:
@@ -26,26 +41,27 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md"), reverse=True):
         print(f"Skipping {md_file}: invalid frontmatter")
         continue
     meta = yaml.safe_load(fm)
-    # Parse date as datetime object for sorting
-    date_str = str(meta['date'])
+    # Get date from filename
     try:
-        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-    except ValueError:
-        try:
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
-        except ValueError:
-            print(f"Skipping {md_file}: invalid date format {date_str}")
-            continue
+        date_obj = parse_date_from_filename(md_file)
+    except Exception as e:
+        print(f"Skipping {md_file}: {e}")
+        continue
+    # Get slug from metadata
+    slug = meta.get('slug')
+    if not slug:
+        print(f"Skipping {md_file}: missing slug in frontmatter")
+        continue
     html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
     post = {
         'title': meta['title'],
         'date': date_obj,
-        'date_str': date_str,
+        'date_str': date_obj.strftime('%Y-%m-%d'),
         'tags': meta.get('tags', []),
         'collection': meta.get('collection', None),
         'body': html_body,
         'filename': os.path.basename(md_file),
-        'slug': os.path.splitext(os.path.basename(md_file))[0]
+        'slug': slug
     }
     posts.append(post)
     for tag in post['tags']:
@@ -61,15 +77,16 @@ for tag, tag_posts in tags_dict.items():
         f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="../til-style.css">
+  <link rel=\"stylesheet\" href=\"../til-style.css\">
   <title>TIL: {tag}</title>
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class="til-list">
+  <ul class=\"til-list\">
 """)
         for post in tag_posts_sorted:
-            f.write(f'<li><a href="../posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+            url = f"../posts/{post['date'].year}/{post['date'].month:02d}/{post['date'].day:02d}/{post['slug']}/"
+            f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
         f.write("</ul>\n<a href='../index.html'>← TIL</a>\n</body></html>")
 
 # Generate main index.html
@@ -77,35 +94,36 @@ with open(INDEX_FILE, 'w') as f:
     f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="til-style.css">
+  <link rel=\"stylesheet\" href=\"til-style.css\">
   <title>🧠 TIL</title>
 </head>
 <body>
   <h1>Gaurav: TIL</h1>
-  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href="https://gaurv.me/blog/">blog</a>.</p>
-  <div class="til-search-container">
-    <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="til-search" placeholder="Search TILs..." autofocus>
-      <button id="til-search-btn" type="submit">Search</button>
+  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href=\"https://gaurv.me/blog/\">blog</a>.</p>
+  <div class=\"til-search-container\">
+    <form onsubmit=\"filterTILs(); return false;\" style=\"display: flex; width: 100%;\">
+      <input type=\"search\" id=\"til-search\" placeholder=\"Search TILs...\" autofocus>
+      <button id=\"til-search-btn\" type=\"submit\">Search</button>
     </form>
   </div>
-  <div class="til-tags">
-""")
+  <div class=\"til-tags\">\n""")
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class="til-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)}) •</a> ')
+        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag} ({len(tag_posts)})</a><span class=\"til-tag-sep\"> • </span>')
     f.write("</div>\n")
 
     # Recent TILs
-    f.write('<h2>Recent TILs</h2>\n<ul class="til-list" id="til-list">\n')
+    f.write('<h2>Recent TILs</h2>\n<ul class=\"til-list\" id=\"til-list\">\n')
     for post in posts[:10]:
-        f.write(f'<li><a href="posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+        url = f"posts/{post['date'].year}/{post['date'].month:02d}/{post['date'].day:02d}/{post['slug']}/"
+        f.write(f'<li><a href=\"{url}\">{post["title"]}</a> <span class=\"til-date\">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # All TILs (hidden, for search)
-    f.write('<h2 style="display:none;">All TILs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
+    f.write('<h2 style=\"display:none;\">All TILs</h2>\n<ul class=\"til-list\" id=\"all-tils\" style=\"display:none;\">\n')
     for post in posts:
-        f.write(f'<li><a href="posts/{post["filename"]}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+        url = f"posts/{post['date'].year}/{post['date'].month:02d}/{post['date'].day:02d}/{post['slug']}/"
+        f.write(f'<li><a href=\"{url}\">{post["title"]}</a> <span class=\"til-date\">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # Minimal JS for search (optional, can be removed for pure HTML)
@@ -130,27 +148,25 @@ function filterTILs() {
 """)
     f.write("</body></html>")
 
-def slugify(title):
-    return re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
-
 # Generate HTML for each TIL post with indexed URLs and sidebar with prev/next links
 for i, post in enumerate(posts):
     dt = post['date']
-    slug = slugify(post['title'])
+    slug = post['slug']
     out_dir = f"til/posts/{dt.year}/{dt.month:02d}/{dt.day:02d}/{slug}"
     os.makedirs(out_dir, exist_ok=True)
     prev_post = posts[i-1] if i > 0 else None
     next_post = posts[i+1] if i < len(posts)-1 else None
+    now_ist = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S IST')
     with open(f"{out_dir}/index.html", "w") as f_post:
         f_post.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel=\"stylesheet\" href=\"../../../til-style.css\">
+  <link rel=\"stylesheet\" href=\"../../../../til-style.css\">
   <title>{post['title']}</title>
 </head>
 <body>
   <h1>{post['title']}</h1>
-  <div class=\"til-date\">{post['date_str']}</div>
+  <div class=\"til-date\">{post['date_str']} · Generated at {now_ist}</div>
   <div class=\"til-body\">{post['body']}</div>
   <div class=\"til-sidebar\">
     <h3>Navigation</h3>
@@ -158,12 +174,12 @@ for i, post in enumerate(posts):
 """)
         if prev_post:
             prev_dt = prev_post['date']
-            prev_slug = slugify(prev_post['title'])
+            prev_slug = prev_post['slug']
             prev_url = f"../../{prev_dt.year}/{prev_dt.month:02d}/{prev_dt.day:02d}/{prev_slug}/"
             f_post.write(f'<li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
         if next_post:
             next_dt = next_post['date']
-            next_slug = slugify(next_post['title'])
+            next_slug = next_post['slug']
             next_url = f"../../{next_dt.year}/{next_dt.month:02d}/{next_dt.day:02d}/{next_slug}/"
             f_post.write(f'<li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
         f_post.write("""

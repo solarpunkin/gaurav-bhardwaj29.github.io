@@ -1,7 +1,7 @@
 ---
 title: "GitHub Actions for Automating My TIL"
-date: 2025-06-14
 tags: [github, markdown]
+slug: "github-actions-til"
 ---
 Today I learned about GitHub Actions for automating TILs on my blog. My stack is simple(HTML&CSS): I append a markdown file to my GitHub repository, and a GitHub Action formats it into a static page on my TIL site. Yes, I push one `.md` file per TIL.
 
