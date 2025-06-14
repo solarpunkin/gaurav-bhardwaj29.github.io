@@ -86,12 +86,12 @@ for tag, tag_posts in tags_dict.items():
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class=\"til-list\">
+  <ul class=\"til-list\"><a href="../">← home</a>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
             f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
-        f.write("</ul>\n<a href='../index.html'>← TIL</a>\n</body></html>")
+        f.write("</ul>\n<a href=\".../\">← TIL</a>\n</body></html>")
 
 # Generate main index.html
 with open(INDEX_FILE, 'w') as f:
@@ -169,10 +169,10 @@ for i, post in enumerate(posts):
 </head>
 <body>
   <h1>{post['title']}</h1>
-  <div class=\"til-date\">{post['date_str']} · Generated at {now_ist}</div>
   <div class=\"til-body\">{post['body']}</div>
+  <div class=\"til-date\">{post['date_str']} · Posted on {now_ist}</div>
   <div class=\"til-sidebar\">
-    <h3>Navigation</h3>
+    <h5>Jump to</h5>
     <ul>
 """)
         if prev_post:
@@ -184,7 +184,7 @@ for i, post in enumerate(posts):
             next_url = f"../{next_slug}/"
             f_post.write(f'<li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
         f_post.write("""
-    </ul>
+</ul>
   </div>
 </body>
 </html>
