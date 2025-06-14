@@ -48,10 +48,24 @@ h1 {
   font-weight: normal;
 }
 #til-search {
-  width: 65%;
+  width: 50%;
   font-size: 1.0em;
   padding: 0.7em;
   margin-bottom: 0.5em;
   border: 1.5px solid #655d5d;
   border-radius: 5px;
+}
+#til-search-btn {
+  background: #2463ea;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.7em 1.2em;
+  font-size: 1em;
+  margin-left: 0.5em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#til-search-btn:hover {
+  background: #1741a6;
 }

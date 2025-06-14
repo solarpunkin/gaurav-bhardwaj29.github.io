@@ -4,6 +4,7 @@ import markdown
 import yaml
 from collections import defaultdict
 from datetime import datetime
+import re
 
 POSTS_DIR = 'til/posts'
 TAGS_DIR = 'til/tags'
@@ -81,6 +82,7 @@ with open(INDEX_FILE, 'w') as f:
 </head>
 <body>
   <h1>Gaurav: TIL</h1>
+  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href="https://gaurv.me/blog/">blog</a>.</p>
   <div style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 1em;">
     <input type="search" id="til-search" placeholder="Search TILs..." oninput="filterTILs()" autofocus>
     <button id="til-search-btn" onclick="filterTILs()">Search</button>
@@ -125,3 +127,46 @@ function filterTILs() {
 </script>
 """)
     f.write("</body></html>")
+
+def slugify(title):
+    return re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+
+# Generate HTML for each TIL post with indexed URLs and sidebar with prev/next links
+for i, post in enumerate(posts):
+    dt = post['date']
+    slug = slugify(post['title'])
+    out_dir = f"til/posts/{dt.year}/{dt.month:02d}/{dt.day:02d}/{slug}"
+    os.makedirs(out_dir, exist_ok=True)
+    prev_post = posts[i-1] if i > 0 else None
+    next_post = posts[i+1] if i < len(posts)-1 else None
+    with open(f"{out_dir}/index.html", "w") as f_post:
+        f_post.write(f"""<!DOCTYPE html>
+<html>
+<head>
+  <link rel=\"stylesheet\" href=\"../../../til-style.css\">
+  <title>{post['title']}</title>
+</head>
+<body>
+  <h1>{post['title']}</h1>
+  <div class=\"til-date\">{post['date_str']}</div>
+  <div class=\"til-body\">{post['body']}</div>
+  <div class=\"til-sidebar\">
+    <h3>Navigation</h3>
+    <ul>
+""")
+        if prev_post:
+            prev_dt = prev_post['date']
+            prev_slug = slugify(prev_post['title'])
+            prev_url = f"../../{prev_dt.year}/{prev_dt.month:02d}/{prev_dt.day:02d}/{prev_slug}/"
+            f_post.write(f'<li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
+        if next_post:
+            next_dt = next_post['date']
+            next_slug = slugify(next_post['title'])
+            next_url = f"../../{next_dt.year}/{next_dt.month:02d}/{next_dt.day:02d}/{next_slug}/"
+            f_post.write(f'<li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
+        f_post.write("""
+    </ul>
+  </div>
+</body>
+</html>
+""")
