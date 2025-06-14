@@ -10,6 +10,10 @@ body {
   margin: 0;
   padding: 20px;
 }
+main {
+    max-width: 900px; /* Wider content area, as you requested earlier */
+    margin: 0 auto;
+}
 h1 {
   font-size: 2.5rem;
   margin: 2rem 0 0.6rem 0;

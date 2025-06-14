@@ -168,6 +168,7 @@ for i, post in enumerate(posts):
         <title>{post['title']}</title>
       </head>
       <body>
+      <main>
         <h1>{post['title']}</h1>
         <div class="til-body">{post['body']}</div>
         <div class="til-date">Posted on {now_ist} · Follow me on <a href="https://x.com/bardgaurav">Twitter</a>.</div>
@@ -189,6 +190,7 @@ for i, post in enumerate(posts):
             f_post.write(f'      <li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
         f_post.write("""    </ul>
   </div>
+  </main>
 </body>
 </html>
 """)
