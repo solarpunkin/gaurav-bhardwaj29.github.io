@@ -82,16 +82,3 @@ p {
 #til-search-btn:hover {
   background: #1741a6;
 }
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #222;
-    color: #fafafa;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  body {
-    background: #fafafa;
-    color: #222;
-  }
-}
