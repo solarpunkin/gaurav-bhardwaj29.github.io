@@ -1,44 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="til-style.css">
-  <title>🧠 TIL</title>
-</head>
-<body>
-  <h1>Gaurav: TIL</h1>
-  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href="https://gaurv.me/blog/">blog</a>.</p>
-  <div class="til-search-container">
-    <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="til-search" placeholder="Search TILs..." autofocus>
-      <button id="til-search-btn" type="submit">Search</button>
-    </form>
-  </div>
-  <div class="til-tags">
-<a class="til-tag" href="tags/github.html">github (1)</a><span class="til-tag-sep">• </span><a class="til-tag" href="tags/markdown.html">markdown (1)</a><span class="til-tag-sep">• </span></div>
-<h2>Recent TILs</h2>
-<ul class="til-list" id="til-list">
-<li><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="til-date">2025-06-14</span></li>
-</ul>
-<h2 style="display:none;">All TILs</h2>
-<ul class="til-list" id="all-tils" style="display:none;">
-<li><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="til-date">2025-06-14</span></li>
-</ul>
-
-<script>
-function filterTILs() {
-  var input = document.getElementById('til-search');
-  var filter = input.value.toLowerCase();
-  var ul = document.getElementById('til-list');
-  ul.innerHTML = '';
-  var allLis = document.getElementById('all-tils').getElementsByTagName('li');
-  var count = 0;
-  for (var i = 0; i < allLis.length; i++) {
-    var txt = allLis[i].textContent || allLis[i].innerText;
-    if (txt.toLowerCase().indexOf(filter) > -1 && count < 10) {
-      ul.appendChild(allLis[i].cloneNode(true));
-      count++;
-    }
-  }
-}
-</script>
-</body></html>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>TIL</title>
+<link rel="stylesheet" href="/til/til-style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css"> <!-- [3] -->
+</head><body><main>
+<h1>Today I Learned</h1>
+<ul class="til-list">
+<li><a href="/til/perlin-noise-textures.html">Creating Image textures using perlin noise</a> <span class="til-date">2025-06-16</span></li>
+<li><a href="/til/github-actions-til.html">GitHub Actions for Automating My TIL</a> <span class="til-date">2025-06-14</span></li>
+</ul></main></body></html>

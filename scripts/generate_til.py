@@ -56,7 +56,8 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
     slug = parse_slug_from_filename(md_file)
     # Get date from filename if present, else use now
     date_obj = parse_date_from_filename(md_file)
-    html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
+    md = markdown.Markdown(extensions=['fenced_code', 'codehilite','attr_list', 'mdx_math'])
+    html_body=md.convert(body)
     post = {
         'title': meta['title'],
         'date': date_obj,
@@ -169,6 +170,26 @@ for i, post in enumerate(posts):
 <html>
 <head>
   <link rel="stylesheet" href="../../til-style.css">
+                     <head>
+  <link rel="stylesheet" href="til-style.css">
+  <!-- KaTeX core CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
+      integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP"
+      crossorigin="anonymous">
+
+<!-- KaTeX core JS -->
+<script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"
+        integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6"
+        crossorigin="anonymous"></script>
+
+<!-- Auto-render helper -->
+<script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh"
+        crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
   <title>{post['title']}</title>
 </head>
 <body>
@@ -181,20 +202,12 @@ for i, post in enumerate(posts):
   </ul>
   <div class="til-sidebar">
     <h5>Jump to</h5>
-    <ul>
-""")
-        if prev_post:
-            prev_slug = prev_post['slug']
-            prev_url = f"../{prev_slug}/"
-            f_post.write(f'      <li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
-        if next_post:
-            next_slug = next_post['slug']
-            next_url = f"../{next_slug}/"
-            f_post.write(f'      <li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
-        f_post.write("""    </ul>
+<nav class="til-nav">""" +
+ (f'<a href="/til/{p["prev_slug"]}.html">← Previous</a>' if p['prev_slug'] else '') +
+ (f'<a href="/til/{p["next_slug"]}.html" style="float:right">Next →</a>' if p['next_slug'] else '') +
+ f"""</nav>
   </div>
 </main>
 </body>
 </html>
 """)
-        
