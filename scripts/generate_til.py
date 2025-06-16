@@ -172,12 +172,13 @@ for i, post in enumerate(posts):
 <body>
 <main>
   <h1>{post['title']}</h1>
-  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://mastodon.social/@yourhandle">Mastodon</a>, <a href="https://bsky.app/profile/yourhandle">Bluesky</a>, <a href="https://x.com/wiredguys">Twitter</a> or subscribe to my <a href="https://yournewsletter.com">newsletter</a></div>
   <div class="til-body">{post['body']}</div>
   <ul class="til-list">
     <li><a href="../../index.html">← TIL</a></li>
   </ul>
+  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a></div>
   <div class="til-sidebar">
+  
     <h5>Jump to</h5>
     <ul>
 """)
