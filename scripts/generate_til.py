@@ -173,12 +173,11 @@ for i, post in enumerate(posts):
 <main>
   <h1>{post['title']}</h1>
   <div class="til-body">{post['body']}</div>
+  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a></div>
   <ul class="til-list">
     <li><a href="../../index.html">← TIL</a></li>
   </ul>
-  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a></div>
   <div class="til-sidebar">
-  
     <h5>Jump to</h5>
     <ul>
 """)
