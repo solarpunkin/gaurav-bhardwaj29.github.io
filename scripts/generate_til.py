@@ -25,7 +25,7 @@ def slugify(text):
 def parse_slug_from_filename(filename):
     # expects yyyy-mm-dd-slug.md or slug.md
     base = os.path.basename(filename)
-    if base.count('-') >= 3:
+    if base.count('-') >= 3 and base[:4].isdigit():
         parts = base.split('-')
         slug = '-'.join(parts[3:]).replace('.md', '')
     else:
@@ -43,8 +43,8 @@ def parse_date_from_filename(filename):
         return datetime.now(IST)
 
 # Parse all TIL markdown files
-for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md"), reverse=True):
-    with open(md_file) as f:
+for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
+    with open(md_file, encoding="utf-8") as f:
         content = f.read()
     try:
         _, fm, body = content.split('---', 2)
@@ -71,63 +71,64 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md"), reverse=True):
     for tag in post['tags']:
         tags_dict[tag].append(post)
 
-# Sort posts by date descending
-posts.sort(key=lambda p: p['date'], reverse=True)
+# Sort posts by date ascending for navigation (oldest to newest)
+posts.sort(key=lambda p: p['date'])
 
 # Generate tag pages
 for tag, tag_posts in tags_dict.items():
     tag_posts_sorted = sorted(tag_posts, key=lambda p: p['date'], reverse=True)
-    with open(f"{TAGS_DIR}/{tag}.html", 'w') as f:
+    with open(f"{TAGS_DIR}/{tag}.html", 'w', encoding="utf-8") as f:
         f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel=\"stylesheet\" href=\"../til-style.css\">
+  <link rel="stylesheet" href="../til-style.css">
   <title>TIL: {tag}</title>
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class=\"til-list\"><li><a href="../">← TIL</a></li>
+  <ul class="til-list"><li><a href="../">← TIL</a></li>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
             f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
         f.write("</ul>\n</body></html>")
 
-# Generate main index.html
-with open(INDEX_FILE, 'w') as f:
+# Generate main index.html (recent TILs: newest first)
+posts_desc = sorted(posts, key=lambda p: p['date'], reverse=True)
+with open(INDEX_FILE, 'w', encoding="utf-8") as f:
     f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel=\"stylesheet\" href=\"til-style.css\">
+  <link rel="stylesheet" href="til-style.css">
   <title>🧠 TIL</title>
 </head>
 <body>
   <h1>Gaurav: TIL</h1>
-  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href=\"https://gaurv.me/blog/\">blog</a>.</p>
-  <div class=\"til-search-container\">
-    <form onsubmit=\"filterTILs(); return false;\" style=\"display: flex; width: 100%;\">
-      <input type=\"search\" id=\"til-search\" placeholder=\"Search TILs...\" autofocus>
-      <button id=\"til-search-btn\" type=\"submit\">Search</button>
+  <p>A TIL: <strong>Today I Learned</strong>, also check out my <a href="https://gaurv.me/blog/">blog</a>.</p>
+  <div class="til-search-container">
+    <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
+      <input type="search" id="til-search" placeholder="Search TILs..." autofocus>
+      <button id="til-search-btn" type="submit">Search</button>
     </form>
   </div>
-  <div class=\"til-tags\">\n""")
+  <div class="til-tags">\n""")
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class=\"til-tag\" href=\"tags/{tag}.html\">{tag} ({len(tag_posts)})</a><span class=\"til-tag-sep\">• </span>')
+        f.write(f'<a class="til-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)})</a><span class="til-tag-sep">• </span>')
     f.write("</div>\n")
 
     # Recent TILs
-    f.write('<h2>Recent TILs</h2>\n<ul class=\"til-list\" id=\"til-list\">\n')
-    for post in posts[:10]:
+    f.write('<h2>Recent TILs</h2>\n<ul class="til-list" id="til-list">\n')
+    for post in posts_desc[:10]:
         url = f"posts/{post['slug']}/"
-        f.write(f'<li><a href=\"{url}\">{post["title"]}</a> <span class=\"til-date\">{post["date_str"]}</span></li>\n')
+        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # All TILs (hidden, for search)
-    f.write('<h2 style=\"display:none;\">All TILs</h2>\n<ul class=\"til-list\" id=\"all-tils\" style=\"display:none;\">\n')
-    for post in posts:
+    f.write('<h2 style="display:none;">All TILs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
+    for post in posts_desc:
         url = f"posts/{post['slug']}/"
-        f.write(f'<li><a href=\"{url}\">{post["title"]}</a> <span class=\"til-date\">{post["date_str"]}</span></li>\n')
+        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # Minimal JS for search (optional, can be removed for pure HTML)
@@ -142,7 +143,7 @@ function filterTILs() {
   var count = 0;
   for (var i = 0; i < allLis.length; i++) {
     var txt = allLis[i].textContent || allLis[i].innerText;
-    if (txt.toLowerCase().indexOf(filter) > -1 && count < 5) {
+    if (txt.toLowerCase().indexOf(filter) > -1 && count < 10) {
       ul.appendChild(allLis[i].cloneNode(true));
       count++;
     }
@@ -159,27 +160,27 @@ for i, post in enumerate(posts):
     os.makedirs(out_dir, exist_ok=True)
     prev_post = posts[i-1] if i > 0 else None
     next_post = posts[i+1] if i < len(posts)-1 else None
-    now_ist = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S (IST)')
-    with open(f"{out_dir}/index.html", "w") as f_post:
+    # Use the post's date for display, not current time
+    display_time = post['date'].strftime('%d %B %Y (IST)')
+    with open(f"{out_dir}/index.html", "w", encoding="utf-8") as f_post:
         f_post.write(f"""<!DOCTYPE html>
-      <html>
-      <head>
-        <link rel="stylesheet" href="../../til-style.css">
-        <title>{post['title']}</title>
-      </head>
-      <body>
-      <main>
-        <h1>{post['title']}</h1>
-        <div class="til-body">{post['body']}</div>
-        <div class="til-date">Posted on {now_ist} · Follow me on <a href="https://x.com/wiredguys">Twitter</a>.</div>
-        <ul class="til-list">
-          <li><a href="../../index.html">← TIL</a></li>
-        </ul>
-        <div class="til-sidebar">
-          <h5>Jump to</h5>
-          <ul>
-      """)
-        # Ensure prev/next links are wrapped in <li> tags if present
+<html>
+<head>
+  <link rel="stylesheet" href="../../til-style.css">
+  <title>{post['title']}</title>
+</head>
+<body>
+<main>
+  <h1>{post['title']}</h1>
+  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://mastodon.social/@yourhandle">Mastodon</a>, <a href="https://bsky.app/profile/yourhandle">Bluesky</a>, <a href="https://x.com/wiredguys">Twitter</a> or subscribe to my <a href="https://yournewsletter.com">newsletter</a></div>
+  <div class="til-body">{post['body']}</div>
+  <ul class="til-list">
+    <li><a href="../../index.html">← TIL</a></li>
+  </ul>
+  <div class="til-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+""")
         if prev_post:
             prev_slug = prev_post['slug']
             prev_url = f"../{prev_slug}/"
@@ -190,7 +191,8 @@ for i, post in enumerate(posts):
             f_post.write(f'      <li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
         f_post.write("""    </ul>
   </div>
-  </main>
+</main>
 </body>
 </html>
 """)
+        
