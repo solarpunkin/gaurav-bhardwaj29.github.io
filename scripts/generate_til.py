@@ -169,7 +169,7 @@ for i, post in enumerate(posts):
         f_post.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="../til-style.css">
+  <link rel="stylesheet" href="../til/til-style.css">
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
       crossorigin="anonymous">
