@@ -82,3 +82,5 @@ p {
 #til-search-btn:hover {
   background: #1741a6;
 }
+.codehilite, pre code{background:#f7f9fc;border-radius:6px;padding:0.6em 0.8em;} /* subtle box */  /* [1] */
+main img{max-width:100%;height:auto;}                                               /* keeps Notion sizing */ /* [2] */

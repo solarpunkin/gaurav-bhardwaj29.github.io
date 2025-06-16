@@ -13,7 +13,7 @@ DATABASE_ID = os.environ["NOTION_DATABASE_ID"]
 
 notion = Client(auth=NOTION_TOKEN)
 OUTPUT_DIR = Path("til")
-STYLE_CSS = "../til-style.css"
+STYLE_CSS = "til/til-style.css"
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
