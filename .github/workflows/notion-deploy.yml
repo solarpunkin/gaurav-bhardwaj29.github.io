@@ -38,3 +38,7 @@ jobs:
           git add .
           git commit -m "🤖 Auto-update from Notion TIL database + index + RSS" || echo "No changes"
           git push
+      - name: Debug file tree
+        run: |
+          echo "📂 File structure:"
+          ls -R til/
