@@ -4,7 +4,8 @@ from notion_client import Client
 from markdownify import markdownify as md
 import html
 from pathlib import Path
-
+from dotenv import load_dotenv
+load_dotenv()
 NOTION_TOKEN = os.environ["NOTION_TOKEN"]
 DATABASE_ID = os.environ["NOTION_DATABASE_ID"]
 
