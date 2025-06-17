@@ -1,3 +1,0 @@
-notion-client
-markdownify
-html5lib

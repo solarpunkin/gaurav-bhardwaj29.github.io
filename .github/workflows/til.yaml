@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install dependencies
-        run: pip install markdown pyyaml python-markdown-math
+        run: pip install markdown pyyaml
       - name: Generate TIL pages
         run: python scripts/generate_til.py
       - name: Commit and push changes

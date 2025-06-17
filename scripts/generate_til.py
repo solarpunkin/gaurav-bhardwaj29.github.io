@@ -82,6 +82,23 @@ for tag, tag_posts in tags_dict.items():
 <html>
 <head>
   <link rel="stylesheet" href="../til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {{
+      if (window.renderMathInElement) {{
+        renderMathInElement(document.body, {{
+          delimiters: [
+            {{left: '$$', right: '$$', display: true}},
+            {{left: '$', right: '$', display: false}}
+          ]
+        }});
+      }}
+    }});
+  </script>
   <title>TIL: {tag}</title>
 </head>
 <body>
@@ -100,6 +117,23 @@ with open(INDEX_FILE, 'w', encoding="utf-8") as f:
 <html>
 <head>
   <link rel="stylesheet" href="til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {{
+      if (window.renderMathInElement) {{
+        renderMathInElement(document.body, {{
+          delimiters: [
+            {{left: '$$', right: '$$', display: true}},
+            {{left: '$', right: '$', display: false}}
+          ]
+        }});
+      }}
+    }});
+  </script>
   <title>🧠 TIL</title>
 </head>
 <body>
@@ -158,8 +192,8 @@ for i, post in enumerate(posts):
     slug = post['slug']
     out_dir = f"til/posts/{slug}"
     os.makedirs(out_dir, exist_ok=True)
-    prev_post = posts[i-1] if i > 0 else None
-    next_post = posts[i+1] if i < len(posts)-1 else None
+    prev_post = posts[i+1] if i < len(posts)-1 else None
+    next_post = posts[i-1] if i > 0 else None
     # Use the post's date for display, not current time
     display_time = post['date'].strftime('%d %B %Y (IST)')
     with open(f"{out_dir}/index.html", "w", encoding="utf-8") as f_post:
@@ -167,12 +201,48 @@ for i, post in enumerate(posts):
 <html>
 <head>
   <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {{
+      if (window.renderMathInElement) {{
+        renderMathInElement(document.body, {{
+          delimiters: [
+            {{left: '$$', right: '$$', display: true}},
+            {{left: '$', right: '$', display: false}}
+          ]
+        }});
+      }}
+    }});
+  </script>
   <title>{post['title']}</title>
 </head>
 <body>
 <main>
   <h1>{post['title']}</h1>
-  <div class="til-body">{post['body']}</div>
+  <div class="til-body">{post['body']}
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  {'' if post['slug'] != 'perlin-noise' else '''
+  <div style=\"display: flex; justify-content: center; gap: 2em; margin: 2em 0;\">
+    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
+      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/input_image.jpg\" alt=\"Input Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
+      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">Input Image (400x400)</figcaption>
+    </figure>
+    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
+      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/fractal_terrain_400x400.png\" alt=\"x Perlin noise\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
+      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">x Perlin noise</figcaption>
+    </figure>
+    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
+      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/output_distorted_400x400.png\" alt=\"Output Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
+      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">= Output Image</figcaption>
+    </figure>
+  </div>
+  '''}
+  </div>
   <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a></div>
   <ul class="til-list">
     <li><a href="../../index.html">← TIL</a></li>
@@ -184,15 +254,14 @@ for i, post in enumerate(posts):
         if prev_post:
             prev_slug = prev_post['slug']
             prev_url = f"../{prev_slug}/"
-            f_post.write(f'      <li><a href="{prev_url}">← Previous: {prev_post["title"]}</a></li>\n')
+            f_post.write(f'      <li><a href="{prev_url}">Next: {prev_post["title"]} →</a></li>\n')
         if next_post:
             next_slug = next_post['slug']
             next_url = f"../{next_slug}/"
-            f_post.write(f'      <li><a href="{next_url}">Next: {next_post["title"]} →</a></li>\n')
+            f_post.write(f'      <li><a href="{next_url}">← Previous: {next_post["title"]}</a></li>\n')
         f_post.write("""    </ul>
   </div>
 </main>
 </body>
 </html>
 """)
-        

@@ -82,3 +82,78 @@ p {
 #til-search-btn:hover {
   background: #1741a6;
 }
+
+/* Code block styling */
+pre, code {
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', monospace;
+  font-size: 1em;
+}
+pre {
+  background: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 1.2em 0;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+}
+code {
+  background: #f3f3f7;
+  color: #c7254e;
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.97em;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* Syntax highlighting for code blocks (light theme, minimal) */
+.token.comment, .token.prolog, .token.doctype, .token.cdata {
+  color: #6a737d;
+}
+.token.punctuation {
+  color: #393a34;
+}
+.token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol {
+  color: #005cc5;
+}
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted {
+  color: #22863a;
+}
+.token.operator, .token.entity, .token.url, .token.variable {
+  color: #d73a49;
+}
+.token.atrule, .token.attr-value, .token.keyword {
+  color: #6f42c1;
+}
+.token.regex, .token.important {
+  color: #e36209;
+}
+.token.deleted {
+  color: #b31d28;
+}
+
+/* Inline math (KaTeX/MathJax) */
+.katex, .math.inline-math {
+  background: #f3f3f7;
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+  font-size: 1.05em;
+  color: #2d3a4a;
+}
+
+/* Block math (KaTeX/MathJax) */
+.katex-display, .math.display-math {
+  display: block;
+  background: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 1.2em 0;
+  overflow-x: auto;
+  font-size: 1.15em;
+  color: #2d3a4a;
+  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+}

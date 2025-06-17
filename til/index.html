@@ -2,6 +2,23 @@
 <html>
 <head>
   <link rel="stylesheet" href="til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
   <title>🧠 TIL</title>
 </head>
 <body>
@@ -14,13 +31,15 @@
     </form>
   </div>
   <div class="til-tags">
-<a class="til-tag" href="tags/github.html">github (1)</a><span class="til-tag-sep">• </span><a class="til-tag" href="tags/markdown.html">markdown (1)</a><span class="til-tag-sep">• </span></div>
+<a class="til-tag" href="tags/cgi.html">cgi (1)</a><span class="til-tag-sep">• </span><a class="til-tag" href="tags/github.html">github (1)</a><span class="til-tag-sep">• </span><a class="til-tag" href="tags/markdown.html">markdown (1)</a><span class="til-tag-sep">• </span><a class="til-tag" href="tags/textures.html">textures (1)</a><span class="til-tag-sep">• </span></div>
 <h2>Recent TILs</h2>
 <ul class="til-list" id="til-list">
+<li><a href="posts/perlin-noise/">Create image textures using Perlin Noise</a> <span class="til-date">2025-06-16</span></li>
 <li><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="til-date">2025-06-14</span></li>
 </ul>
 <h2 style="display:none;">All TILs</h2>
 <ul class="til-list" id="all-tils" style="display:none;">
+<li><a href="posts/perlin-noise/">Create image textures using Perlin Noise</a> <span class="til-date">2025-06-16</span></li>
 <li><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="til-date">2025-06-14</span></li>
 </ul>
 
