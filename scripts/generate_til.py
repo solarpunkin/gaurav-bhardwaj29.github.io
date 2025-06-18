@@ -243,7 +243,7 @@ for i, post in enumerate(posts):
   </div>
   '''}
   </div>
-  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a></div>
+  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter or</a><a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
   <ul class="til-list">
     <li><a href="../../index.html">← TIL</a></li>
   </ul>
