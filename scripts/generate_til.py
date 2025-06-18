@@ -200,6 +200,7 @@ for i, post in enumerate(posts):
         f_post.write(f"""<!DOCTYPE html>
 <html>
 <head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../til-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
