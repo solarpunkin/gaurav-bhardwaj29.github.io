@@ -200,15 +200,16 @@ for i, post in enumerate(posts):
         f_post.write(f"""<!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
-  <link rel="stylesheet" href="../../til-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+   <meta name=\"fediverse:creator\" content=\"@wiredguy@mastodon.social\">                  
+  <link rel=\"stylesheet\" href=\"../../til-style.css\">
+  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css\">
+  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css\">
+  <script defer src=\"https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js\"></script>
+  <script defer src=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js\"></script>
+  <script defer src=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js\"></script>
+  <script src=\"https://challenges.cloudflare.com/turnstile/v0/api.js\" async defer></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {{
+    document.addEventListener(\"DOMContentLoaded\", function() {{
       if (window.renderMathInElement) {{
         renderMathInElement(document.body, {{
           delimiters: [
@@ -220,11 +221,39 @@ for i, post in enumerate(posts):
     }});
   </script>
   <title>{post['title']}</title>
+  <style>
+    .upvote-btn {{
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0.2em 0.4em;
+      margin-left: 0.5em;
+      transition: color 0.2s;
+      color: #aaa;
+      font-size: 1.2em;
+    }}
+    .upvote-btn.upvoted {{
+      color: #222;
+      font-weight: bold;
+    }}
+    .upvote-arrow {{
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: middle;
+    }}
+    #turnstile-container {{
+      margin-top: 1em;
+      display: none;
+    }}
+  </style>
 </head>
 <body>
 <main>
   <h1>{post['title']}</h1>
-  <div class="til-body">{post['body']}
+  <div class=\"til-body\">{post['body']}
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   {'' if post['slug'] != 'perlin-noise' else '''
@@ -244,11 +273,17 @@ for i, post in enumerate(posts):
   </div>
   '''}
   </div>
-  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-  <ul class="til-list">
-    <li><a href="../../index.html">← TIL</a></li>
+  <div class=\"til-date\">Posted on {display_time} · Follow me on <a href=\"https://x.com/wiredguys\">Twitter</a> or <a rel=\"me\" href=\"https://mastodon.social/@wiredguy\">Mastodon</a></div>
+  <button class=\"upvote-btn\" id=\"upvote-btn\" title=\"Upvote this TIL\">
+    <svg class=\"upvote-arrow\" viewBox=\"0 0 20 20\"><polygon points=\"10,3 17,15 3,15\"/></svg>
+  </button>
+  <div id=\"turnstile-container\">
+    <div id=\"cf-turnstile\" class=\"cf-turnstile\" data-sitekey=\"0x4AAAAAABiDRLV2JxUJ_Qv6\"></div>
+  </div>
+  <ul class=\"til-list\">
+    <li><a href=\"../../index.html\">← TIL</a></li>
   </ul>
-  <div class="til-sidebar">
+  <div class=\"til-sidebar\">
     <h5>Jump to</h5>
     <ul>
 """)
@@ -262,6 +297,90 @@ for i, post in enumerate(posts):
             f_post.write(f'      <li><a href="{next_url}">← Previous: {next_post["title"]}</a></li>\n')
         f_post.write("""    </ul>
   </div>
+  <script>
+    // --- Upvote logic ---
+    const slug = "{slug}";
+    const upvoteBtn = document.getElementById('upvote-btn');
+    const turnstileContainer = document.getElementById('turnstile-container');
+    const sessionKey = 'cf_upvote_verified';
+    const upvotedKey = 'til_upvoted_' + slug;
+    function isSessionVerified() {
+      return localStorage.getItem(sessionKey) === '1';
+    }
+    function setSessionVerified() {
+      localStorage.setItem(sessionKey, '1');
+    }
+    function isUpvoted() {
+      return localStorage.getItem(upvotedKey) === '1';
+    }
+    function setUpvoted() {
+      localStorage.setItem(upvotedKey, '1');
+      upvoteBtn.classList.add('upvoted');
+    }
+    if (isUpvoted()) {
+      upvoteBtn.classList.add('upvoted');
+      upvoteBtn.disabled = true;
+    }
+    upvoteBtn.addEventListener('click', function() {
+      if (isUpvoted()) return;
+      if (isSessionVerified()) {
+        sendUpvote();
+      } else {
+        turnstileContainer.style.display = 'block';
+      }
+    });
+    window.turnstileCallback = function(token) {
+      // POST to backend for verification and upvote
+      fetch('/api/upvote', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({slug: slug, token: token})
+      }).then(r => r.json()).then(data => {
+        if (data.success) {
+          setSessionVerified();
+          setUpvoted();
+          upvoteBtn.disabled = true;
+          // Fire Cloudflare Analytics event
+          if (window.cfAnalytics && window.cfAnalytics.trackEvent) {
+            window.cfAnalytics.trackEvent('upvote', {slug: slug, type: 'til'});
+          }
+        } else {
+          alert('Verification failed.');
+        }
+        turnstileContainer.style.display = 'none';
+      });
+    }
+    function sendUpvote() {
+      fetch('/api/upvote', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({slug: slug})
+      }).then r => r.json()).then(data => {
+        if (data.success) {
+          setUpvoted();
+          upvoteBtn.disabled = true;
+          if (window.cfAnalytics && window.cfAnalytics.trackEvent) {
+            window.cfAnalytics.trackEvent('upvote', {slug: slug, type: 'til'});
+          }
+        } else {
+          alert('Upvote failed.');
+        }
+      });
+    }
+    // Cloudflare Turnstile callback
+    window.onloadTurnstile = function() {
+      if (window.turnstile) {
+        window.turnstile.render('#cf-turnstile', {
+          sitekey: '0x4AAAAAABiDRLV2JxUJ_Qv6',
+          callback: window.turnstileCallback
+        });
+      }
+    }
+    // Listen for Turnstile ready
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.turnstile) window.onloadTurnstile();
+    });
+  </script>
 </main>
 </body>
 </html>
