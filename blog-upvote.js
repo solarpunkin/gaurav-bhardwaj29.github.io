@@ -17,11 +17,14 @@
     return localStorage.getItem(upvotedKey) === '1';
   }
   function setUpvoted() {
-    localStorage.setItem(upvotedKey, '1');
-    upvoteBtn.classList.add('upvoted');
-    upvoteBtn.style.transform = 'scale(1.2)';
-    setTimeout(() => upvoteBtn.style.transform = '', 120);
-  }
+  localStorage.setItem(upvotedKey, '1');
+  upvoteBtn.classList.add('upvoted');
+  const svg = upvoteBtn.querySelector('.upvote-arrow');
+  if (svg) svg.setAttribute('fill', '#4b4e50'); 
+  upvoteBtn.style.transform = 'scale(1.2)';
+  setTimeout(() => upvoteBtn.style.transform = '', 120);
+}
+
   if (isUpvoted()) {
     upvoteBtn.classList.add('upvoted');
     upvoteBtn.disabled = true;
@@ -31,8 +34,9 @@
   var upvoteBtn = document.createElement('button');
   upvoteBtn.className = 'upvote-btn';
   upvoteBtn.title = 'Upvote this blog';
-  upvoteBtn.innerHTML = '<svg class="upvote-arrow" viewBox="0 0 24 24" fill="none" stroke="#ff4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,4 19,20 5,20"/></svg>';
-  upvoteBtn.style.marginLeft = '0.5em';
+upvoteBtn.innerHTML = '<svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,4 19,20 5,20"/></svg>';
+
+  upvoteBtn.style.marginLeft = '0.2em';
   if (isUpvoted()) {
     upvoteBtn.classList.add('upvoted');
     upvoteBtn.disabled = true;
@@ -84,7 +88,7 @@
       navigator.clipboard.writeText(window.location.href);
       shareBtn.classList.add('shared');
       shareBtn.title = 'Copied!';
-      setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this blog'; }, 1200);
+      setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this blog'; }, 800);
     }
   });
 
@@ -113,7 +117,7 @@
 
   // Add minimal CSS for upvote and share button
   var style = document.createElement('style');
-  style.textContent = '.upvote-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.4em;margin-left:0.5em;transition:color 0.2s,transform 0.1s;color:#aaa;font-size:1.5em;}.upvote-btn.upvoted{color:#ff4500;font-weight:bold;transform:scale(1.2);}.upvote-arrow{width:1.2em;height:1.2em;display:inline-block;vertical-align:middle;transition:stroke 0.2s;}.upvote-btn.upvoted .upvote-arrow{stroke:#ff4500;}.share-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.4em;margin-left:0.2em;color:#555;font-size:1.3em;transition:color 0.2s;}.share-btn.shared,.share-btn:hover .share-icon{stroke:#2563eb;color:#2563eb;}.share-icon{width:1.1em;height:1.1em;display:inline-block;vertical-align:middle;transition:stroke 0.2s;}#turnstile-container{margin-top:1em;}';
+  style.textContent = '.upvote-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.2em;margin-left:0.5em;transition:color 0.1s,transform 0.1s;color:#aaa;font-size:1.5em;}.upvote-btn.upvoted{color:#393a3b;font-weight:bold;transform:scale(1.3);}.upvote-arrow{width:0.9em;height:0.9em;display:inline-block;vertical-align:middle;transition:stroke 0.1s;}..upvote-btn.upvoted .upvote-arrow {stroke: #4b4e50;fill: #4b4e50;}.share-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.2em;margin-left:0.2em;color:#555;font-size:1.1em;transition:color 0.1s;}.share-btn.shared,.share-btn:hover .share-icon{stroke:#2563eb;color:#2563eb;}.share-icon{width:1.1em;height:1.1em;display:inline-block;vertical-align:middle;transition:stroke 0.1s;}#turnstile-container{margin-top:1em;}';
   document.head.appendChild(style);
 
   // Load Turnstile script if not present
