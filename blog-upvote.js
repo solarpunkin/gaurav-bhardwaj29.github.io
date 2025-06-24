@@ -25,16 +25,25 @@
   var upvoteBtn = document.createElement('button');
   upvoteBtn.className = 'upvote-btn';
   upvoteBtn.title = 'Upvote this blog';
-  upvoteBtn.innerHTML = '<svg class="upvote-arrow" viewBox="0 0 20 20"><polygon points="10,3 17,15 3,15"/></svg>';
+  upvoteBtn.innerHTML = '<svg class="upvote-arrow" viewBox="0 0 24 24" fill="none" stroke="#ff4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,4 19,20 5,20"/></svg>';
   upvoteBtn.style.marginLeft = '0.5em';
   if (isUpvoted()) {
     upvoteBtn.classList.add('upvoted');
     upvoteBtn.disabled = true;
   }
 
-  // Insert upvote button after blog title (h1)
+  // Create share button
+  var shareBtn = document.createElement('button');
+  shareBtn.className = 'share-btn';
+  shareBtn.title = 'Share this blog';
+  shareBtn.innerHTML = '<svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
+
+  // Insert upvote and share buttons after blog title (h1)
   var h1 = document.querySelector('h1');
-  if (h1) h1.parentNode.insertBefore(upvoteBtn, h1.nextSibling);
+  if (h1) {
+    h1.parentNode.insertBefore(upvoteBtn, h1.nextSibling);
+    h1.parentNode.insertBefore(shareBtn, upvoteBtn.nextSibling);
+  }
 
   // Create Turnstile container
   var turnstileContainer = document.createElement('div');
@@ -53,6 +62,19 @@
       }
     } else {
       turnstileContainer.style.display = 'block';
+    }
+  });
+
+  shareBtn.addEventListener('click', function() {
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      shareBtn.title = 'Copied!';
+      setTimeout(() => shareBtn.title = 'Share this blog', 1200);
     }
   });
 
@@ -79,9 +101,9 @@
     if (window.turnstile) window.onloadTurnstile();
   });
 
-  // Add minimal CSS for upvote button
+  // Add minimal CSS for upvote and share button
   var style = document.createElement('style');
-  style.textContent = '.upvote-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.4em;margin-left:0.5em;transition:color 0.2s;color:#aaa;font-size:1.2em;}.upvote-btn.upvoted{color:#222;font-weight:bold;}.upvote-arrow{width:1em;height:1em;display:inline-block;vertical-align:middle;}#turnstile-container{margin-top:1em;}';
+  style.textContent = '.upvote-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.4em;margin-left:0.5em;transition:color 0.2s,transform 0.1s;color:#aaa;font-size:1.5em;}.upvote-btn.upvoted{color:#ff4500;font-weight:bold;transform:scale(1.2);}.upvote-arrow{width:1.2em;height:1.2em;display:inline-block;vertical-align:middle;transition:stroke 0.2s;}.upvote-btn.upvoted .upvote-arrow{stroke:#ff4500;}.share-btn{display:inline-flex;align-items:center;cursor:pointer;border:none;background:none;padding:0.2em 0.4em;margin-left:0.2em;color:#555;font-size:1.3em;transition:color 0.2s;}.share-btn:hover .share-icon{stroke:#2563eb;}.share-icon{width:1.1em;height:1.1em;display:inline-block;vertical-align:middle;transition:stroke 0.2s;}#turnstile-container{margin-top:1em;}';
   document.head.appendChild(style);
 
   // Load Turnstile script if not present
