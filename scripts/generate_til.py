@@ -261,8 +261,9 @@ for i, post in enumerate(posts):
       font-size: 1.3em;
       transition: color 0.2s;
     }}
-    .share-btn:hover .share-icon {{
+    .share-btn.shared, .share-btn:hover .share-icon {{
       stroke: #2563eb;
+      color: #2563eb;
     }}
     .share-icon {{
       width: 1.1em;
@@ -347,6 +348,8 @@ for i, post in enumerate(posts):
     function setUpvoted() {{
       localStorage.setItem(upvotedKey, '1');
       upvoteBtn.classList.add('upvoted');
+      upvoteBtn.style.transform = 'scale(1.2)';
+      setTimeout(() => upvoteBtn.style.transform = '', 120);
     }}
     if (isUpvoted()) {{
       upvoteBtn.classList.add('upvoted');
@@ -354,6 +357,9 @@ for i, post in enumerate(posts):
     }}
     upvoteBtn.addEventListener('click', function() {{
       if (isUpvoted()) return;
+      upvoteBtn.classList.add('upvoted');
+      upvoteBtn.style.transform = 'scale(1.2)';
+      setTimeout(() => upvoteBtn.style.transform = '', 120);
       if (isSessionVerified()) {{
         sendUpvote();
       }} else {{
@@ -368,8 +374,9 @@ for i, post in enumerate(posts):
         }});
       }} else {{
         navigator.clipboard.writeText(window.location.href);
+        shareBtn.classList.add('shared');
         shareBtn.title = 'Copied!';
-        setTimeout(() => shareBtn.title = 'Share this TIL', 1200);
+        setTimeout(() => {{ shareBtn.classList.remove('shared'); shareBtn.title = 'Share this TIL'; }}, 1200);
       }}
     }});
     window.turnstileCallback = function(token) {
