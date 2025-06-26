@@ -56,3 +56,29 @@ nav a {
 nav a:hover {
   color: var(--link-hover);
 }
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --heading: #1a1a1a;
+  --link: #007700;
+  --link-hover: #1741a6;
+  --muted: #888;
+  --code-bg: rgba(135, 131, 120, 0.15);
+  --code-text: #eb5757;
+  --blockquote: #37352f;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --text: #f1f1f1;
+    --heading: #f1f1f1;
+    --link: #00ff00;
+    --link-hover: #00ff88;
+    --muted: #aaaaaa;
+    --code-bg: #232323;
+    --code-text: #00ff00;
+    --blockquote: #00ff00;
+  }
+}
