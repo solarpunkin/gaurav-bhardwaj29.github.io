@@ -80,5 +80,7 @@ nav a:hover {
     --code-bg: #232323;
     --code-text: #00ff00;
     --blockquote: #00ff00;
+    --project-bg: #2c2c2c;
+    --project-text: #16df52;
   }
 }
