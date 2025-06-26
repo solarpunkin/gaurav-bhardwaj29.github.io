@@ -270,6 +270,22 @@ for i, post in enumerate(posts):
 <body>
 <main>
   <h1>{post['title']}</h1>
+  <div class="til-actions">
+    <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
+      <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12,4 19,20 5,20" />
+      </svg>
+    </button>
+    <button class="share-btn" id="share-btn" title="Share this TIL">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </button>
+  </div>
   <div class=\"til-body\">{post['body']}
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
@@ -291,21 +307,6 @@ for i, post in enumerate(posts):
   '''}
   </div>
   <div class=\"til-date\">Posted on {display_time} · Follow me on <a href=\"https://x.com/wiredguys\">Twitter</a> or <a rel=\"me\" href=\"https://mastodon.social/@wiredguy\">Mastodon</a></div>
-  <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
-  <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="12,4 19,20 5,20" />
-  </svg>
-</button>
-
-<button class="share-btn" id="share-btn" title="Share this TIL">
-  <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-  </svg>
-</button>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>

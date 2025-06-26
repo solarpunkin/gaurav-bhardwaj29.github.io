@@ -157,3 +157,17 @@ pre code {
   color: #2d3a4a;
   box-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
 }
+
+/* Group upvote/share buttons in a row */
+.til-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-left: 0.2em;
+  margin-bottom: 0.5em;
+}
+
+/* Upvote and share button tweaks for alignment */
+.upvote-btn, .share-btn {
+  vertical-align: middle;
+}

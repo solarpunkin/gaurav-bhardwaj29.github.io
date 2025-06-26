@@ -71,6 +71,22 @@
 <body>
 <main>
   <h1>Create image textures using Perlin Noise</h1>
+  <div class="til-actions">
+    <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
+      <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12,4 19,20 5,20" />
+      </svg>
+    </button>
+    <button class="share-btn" id="share-btn" title="Share this TIL">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </button>
+  </div>
   <div class="til-body"><p>This other day, I was looking up ways to create synthetic data to capture foggy patterns in endoscopic videos as a side project for my mid-term. I found out that perlin noise can be used to create realistic textures at low computational overhead and provide temporal consistency across frames due to its pseudo-random changes to variables. Perlin noise is a type of gradient noise and can be created in three simple <a href="https://en.wikipedia.org/wiki/Perlin_noise#Algorithm_detail">steps</a>.</p>
 <h2>Setup</h2>
 <p>Input Point: Let the input point be $(x,y)$, located inside a grid cell.</p>
@@ -182,21 +198,6 @@ def generate_noise(w, h, grid_width=10, grid_height=10, scale=10.0):
   
   </div>
   <div class="til-date">Posted on 16 June 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-  <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
-  <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="12,4 19,20 5,20" />
-  </svg>
-</button>
-
-<button class="share-btn" id="share-btn" title="Share this TIL">
-  <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-  </svg>
-</button>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
