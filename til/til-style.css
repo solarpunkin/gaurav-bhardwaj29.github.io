@@ -3,10 +3,63 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Theme variables: Light mode (default) */
+:root {
+  --bg: #fafafa;
+  --text: #222;
+  --link: #007700;
+  --link-hover: #1741a6;
+  --muted: #888;
+  --code-bg: #f3f3f7;
+  --code-text: #c7254e;
+  --pre-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  --pre-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+  --inline-math-bg: #f3f3f7;
+  --inline-math-text: #2d3a4a;
+  --block-math-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  --block-math-text: #2d3a4a;
+  --til-tag: #333;
+  --til-tag-hover: #111;
+  --upvote-arrow: #d1d1d1;
+  --upvote-arrow-active: #4b4e50;
+  --share: #555;
+  --share-hover: #2563eb;
+  --search-btn-bg: #007700;
+  --search-btn-bg-hover: #1741a6;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --text: #f1f1f1;
+    --link: #00ff00;
+    --link-hover: #00ff88;
+    --muted: #aaaaaa;
+    --code-bg: #232323;
+    --code-text: #00ff00;
+    --pre-bg: linear-gradient(90deg, #232323 60%, #222822 100%);
+    --pre-shadow: 0 2px 8px 0 rgba(0,255,0,0.04);
+    --inline-math-bg: #232323;
+    --inline-math-text: #00ff88;
+    --block-math-bg: linear-gradient(90deg, #232323 60%, #222822 100%);
+    --block-math-text: #00ff88;
+    --til-tag: #00ff00;
+    --til-tag-hover: #00ff88;
+    --upvote-arrow: #444;
+    --upvote-arrow-active: #00ff00;
+    --share: #00ff00;
+    --share-hover: #00ff88;
+    --search-btn-bg: #00b060;         /* Slightly different green for dark mode */
+    --search-btn-bg-hover: #00ff88;   /* Neon green for hover in dark mode */
+  }
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  background: #fafafa;
-  color: #222;
+  background: var(--bg);
+  color: var(--text);
   margin: 0;
   padding: 20px;
 }
@@ -28,7 +81,7 @@ p {
 .til-tag {
   display: inline;
   background: none;
-  color: #333;
+  color: var(--til-tag);
   border-radius: 0;
   padding: 0;
   margin: 0 0.5em 0 0;
@@ -37,7 +90,7 @@ p {
 }
 .til-tag:hover {
   background: none;
-  color: #111;
+  color: var(--til-tag-hover);
   text-decoration: underline;
 }
 .til-list {
@@ -50,7 +103,7 @@ p {
   font-size: 1.1em;
 }
 .til-date {
-  color: #888;
+  color: var(--muted);
   font-size: 0.9em;
   margin-left: 0.5em;
   font-weight: normal;
@@ -69,7 +122,7 @@ p {
   border-radius: 6px;
 }
 #til-search-btn {
-  background: #2563eb;
+  background: var(--search-btn-bg);
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -80,7 +133,7 @@ p {
   transition: background 0.2s;
 }
 #til-search-btn:hover {
-  background: #1741a6;
+  background: var(--search-btn-bg-hover);
 }
 
 /* Code block styling */
@@ -89,16 +142,16 @@ pre, code {
   font-size: 1em;
 }
 pre {
-  background: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  background: var(--pre-bg);
   border-radius: 8px;
   padding: 1em 1.2em;
   margin: 1.2em 0;
   overflow-x: auto;
-  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+  box-shadow: var(--pre-shadow);
 }
 code {
-  background: #f3f3f7;
-  color: #c7254e;
+  background: var(--code-bg);
+  color: var(--code-text);
   border-radius: 4px;
   padding: 0.15em 0.4em;
   font-size: 0.97em;
@@ -106,56 +159,15 @@ code {
 pre code {
   background: none;
   color: inherit;
-  padding: 0;
-  font-size: 1em;
 }
-
-/* Syntax highlighting for code blocks (light theme, minimal) */
-.token.comment, .token.prolog, .token.doctype, .token.cdata {
-  color: #6a737d;
-}
-.token.punctuation {
-  color: #393a34;
-}
-.token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol {
-  color: #005cc5;
-}
-.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted {
-  color: #22863a;
-}
-.token.operator, .token.entity, .token.url, .token.variable {
-  color: #d73a49;
-}
-.token.atrule, .token.attr-value, .token.keyword {
-  color: #6f42c1;
-}
-.token.regex, .token.important {
-  color: #e36209;
-}
-.token.deleted {
-  color: #b31d28;
-}
-
-/* Inline math (KaTeX/MathJax) */
 .katex, .math.inline-math {
-  background: #f3f3f7;
-  border-radius: 4px;
-  padding: 0.1em 0.3em;
-  font-size: 1.05em;
-  color: #2d3a4a;
+  background: var(--inline-math-bg);
+  color: var(--inline-math-text);
 }
-
-/* Block math (KaTeX/MathJax) */
 .katex-display, .math.display-math {
-  display: block;
-  background: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
-  border-radius: 8px;
-  padding: 1em 1.2em;
-  margin: 1.2em 0;
-  overflow-x: auto;
-  font-size: 1.15em;
-  color: #2d3a4a;
-  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+  background: var(--block-math-bg);
+  color: var(--block-math-text);
+  box-shadow: var(--pre-shadow);
 }
 
 /* Group upvote/share buttons in a row */
@@ -170,4 +182,122 @@ pre code {
 /* Upvote and share button tweaks for alignment */
 .upvote-btn, .share-btn {
   vertical-align: middle;
+}
+.upvote-arrow {
+  fill: var(--upvote-arrow);
+  stroke: var(--upvote-arrow);
+}
+.upvote-btn.upvoted .upvote-arrow {
+  fill: var(--upvote-arrow-active);
+  stroke: var(--upvote-arrow-active);
+}
+.share-btn, .share-icon {
+  color: var(--share);
+  stroke: var(--share);
+}
+.share-btn.shared, .share-btn:hover .share-icon {
+  color: var(--share-hover);
+  stroke: var(--share-hover);
+}
+/* Theme variables: Light mode (default) */
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --link: #007700;
+  --link-hover: #1741a6;
+  --muted: #888;
+  --code-bg: #f4f4f4;
+  --code-text: #333;
+  --pre-bg: #f4f4f4;
+  --pre-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+  --subtitle: #333;
+  --til-link: #1f1f1ff0;
+  --til-link-hover: #222;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --text: #f1f1f1;
+    --link: #00ff00;
+    --link-hover: #00ff88;
+    --muted: #aaaaaa;
+    --code-bg: #232323;
+    --code-text: #00ff00;
+    --pre-bg: #232323;
+    --pre-shadow: 0 2px 8px 0 rgba(0,255,0,0.04);
+    --subtitle: #aaaaaa;
+    --til-link: #00ff00;
+    --til-link-hover: #00ff88;
+  }
+}
+
+/* Apply theme variables */
+a, a:visited {
+    color: var(--link);
+}
+a:hover {
+    color: var(--link-hover);
+}
+.subtitle {
+    color: var(--subtitle);
+}
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --heading: #1a1a1a;
+  --link: #007700;
+  --link-hover: #1741a6;
+  --muted: #888;
+  --code-bg: rgba(135, 131, 120, 0.15);
+  --code-text: #eb5757;
+  --blockquote: #37352f;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --text: #f1f1f1;
+    --heading: #f1f1f1;
+    --link: #00ff00;
+    --link-hover: #00ff88;
+    --muted: #aaaaaa;
+    --code-bg: #232323;
+    --code-text: #00ff00;
+    --blockquote: #00ff00;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3, .page-title {
+  color: var(--heading);
+}
+em {color: var(--subtitle)}
+a, a:visited {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+figcaption, time, .pdf-relative-link-path, .page-description {
+  color: var(--muted);
+}
+
+blockquote {
+  border-left: 3px solid var(--blockquote);
+  color: var(--text);
+}
+
+code, .code {
+  background: var(--code-bg);
+  color: var(--code-text);
 }
