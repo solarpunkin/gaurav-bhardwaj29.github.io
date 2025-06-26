@@ -14,7 +14,8 @@
             font-size: 1.2em;
             font-weight: 600;
             text-decoration: none;
-            color: #222;
+            color: var(--project-title, #222);
+            transition: color 0.2s;
         }
 
         .project a:hover {
@@ -25,6 +26,14 @@
             font-size: 0.9em;
             color: #555;
             margin-top: 0.3em;
+        }
+        :root {
+            --project-title: #222;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --project-title: #25eb43d8;
+            }
         }
     </style>
 </head>
