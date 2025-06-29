@@ -19,7 +19,6 @@
     --bg: #1e1e1e;
     --text: #f1f1f1;
     --link: #00ff00;
-    --link-hover: #00ff88;
   }
 }
 
@@ -75,7 +74,6 @@ nav a:hover {
     --text: #f1f1f1;
     --heading: #f1f1f1;
     --link: #00ff00;
-    --link-hover: #00ff88;
     --muted: #aaaaaa;
     --code-bg: #232323;
     --code-text: #00ff00;
