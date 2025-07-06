@@ -33,6 +33,7 @@ if (tls) {
     mbedtls_ssl_setup(&ssl, &conf);
 }
 #endif
+```
 
 Fallback to HTTP works via `--dev` or when certs are not supplied. Devs can toggle TLS with `--tls --cert cert.pem --key key.pem`. It is platform-agnostic and uses no system daemon.
 
