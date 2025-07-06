@@ -21,7 +21,7 @@
       }
     });
   </script>
-  <title>Bypassing macOS code signing for ZIP-appended binaries</title>
+  <title>Integrating TLS via mbedTLS in web server</title>
   <style>
     .upvote-btn {
       display: inline-flex;
@@ -70,7 +70,7 @@
 </head>
 <body>
 <main>
-  <h1>Bypassing macOS code signing for ZIP-appended binaries</h1>
+  <h1>Integrating TLS via mbedTLS in web server</h1>
   <div class="til-actions">
     <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
       <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,15 +87,40 @@
       </svg>
     </button>
   </div>
-  <div class="til-body"><p>I wanted to append a zip data to the end of a binary executable in C to create a single executable server that reads its own zip tail on launch. </p>
-<p>Doing this directly on my mac M2 via <code>cat repl site.zip &gt; repl.app</code>  and <code>chmod +x repl.app</code> returned a corrupted file which did not run. </p>
-<p>Apparently macOS kills Mach-O binaries with appended data due to <a href="https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution">some code signing &amp; notarization rules</a>. </p>
-<p>There is a possible <a href="https://stackoverflow.com/questions/1604673/how-do-i-embed-data-into-a-mac-os-x-mach-o-binary-files-text-section/1605237">workaround solution</a> that looks like it should work, instead I tried a simpler approach by creating a ‘polyglot file’ (a techie jargon for header files) which is part shell script and part binary. Claude helped me with this. Now doing <code>cat header.sh repl site.zip &gt; repl.app</code>  works with a little catch: I have to calculate (#bytes in repl - #bytes in site.zip) and update the header.sh dynamically when either of the two files change.</p>
+  <div class="til-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
+<p>Initially, I tried wiring in <code>mbedtls_ssl_conf_rng()</code>, as almost all examples suggested. It failed. After digging through the migration guide, I realized that mbedTLS 4.0+ dropped this function entirely in favor of internal PSA crypto. So I dropped the legacy logic and focused on initializing TLS, cleaning deprecated APIs.</p>
+<p>In the actual server setup, this is how I gated TLS setup logic:</p>
+<p>```c</p>
+<h1>ifdef USE_TLS</h1>
+<p>if (tls) {
+    psa_crypto_init();</p>
+<pre class="codehilite"><code>mbedtls_ssl_init(&amp;ssl);
+mbedtls_ssl_config_init(&amp;conf);
+mbedtls_x509_crt_init(&amp;srvcert);
+mbedtls_pk_init(&amp;pkey);
+
+mbedtls_x509_crt_parse_file(&amp;srvcert, tls_cert_path);
+mbedtls_pk_parse_keyfile(&amp;pkey, tls_key_path, NULL);
+
+mbedtls_ssl_config_defaults(&amp;conf,
+    MBEDTLS_SSL_IS_SERVER,
+    MBEDTLS_SSL_TRANSPORT_STREAM,
+    MBEDTLS_SSL_PRESET_DEFAULT);
+
+mbedtls_ssl_conf_ca_chain(&amp;conf, srvcert.next, NULL);
+mbedtls_ssl_conf_own_cert(&amp;conf, &amp;srvcert, &amp;pkey);
+mbedtls_ssl_setup(&amp;ssl, &amp;conf);
+</code></pre>
+
+<p>}</p>
+<h1>endif</h1>
+<p>Fallback to HTTP works via <code>--dev</code> or when certs are not supplied. Devs can toggle TLS with <code>--tls --cert cert.pem --key key.pem</code>. It is platform-agnostic and uses no system daemon.</p>
+<p>This TLS handshake now works directly over port 443 or any specified port, and can handle browser connections.</p>
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 02 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="til-date">Posted on 06 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
@@ -106,8 +131,7 @@
   <div class="til-sidebar">
     <h5>Jump to</h5>
     <ul>
-      <li><a href="../tls-handshakes/">Next: Integrating TLS via mbedTLS in web server →</a></li>
-      <li><a href="../hosting-gcp/">← Previous: Hosting website as a subdomain on Google Cloud</a></li>
+      <li><a href="../bypassing-code-signing-mac-zip-binaries/">← Previous: Bypassing macOS code signing for ZIP-appended binaries</a></li>
     </ul>
   </div>
   <script>
