@@ -172,18 +172,18 @@ pre code {
   border-radius: 0;
 }
 
-/* --- Night mode yellowish reading tint for code blocks --- */
+/* --- Night mode: off-whitish-yellow reading mode for code blocks --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --pre-bg: #23283b;      /* deep blue-grey, not yellowish */
-    --code-bg: #23283b;
-    --code-text: #e6eaf3;   /* soft off-white for code */
+    --pre-bg: #23221c;
+    --code-bg: #23221c;
+    --code-text: #ffe9b3; /* soft off-white yellow */
   }
   pre {
     background: var(--pre-bg) !important;
     color: var(--code-text) !important;
-    border: 1px solid #2d3142;
-    box-shadow: 0 2px 8px 0 rgba(60, 80, 120, 0.10);
+    border: 1px solid #39341f;
+    box-shadow: 0 2px 8px 0 rgba(255, 230, 120, 0.04);
   }
   code {
     background: var(--code-bg) !important;
