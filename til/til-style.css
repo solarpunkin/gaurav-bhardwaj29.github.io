@@ -142,25 +142,23 @@ pre, code {
   font-size: 1em;
   line-height: 1.6;
   border-radius: 8px;
-  /* Remove border for code, handled below */
 }
 
 pre {
-  background: #23272e; /* dark slate for light mode */
-  color: #2d3a4a;
+  background: var(--pre-bg);
+  color: var(--code-text);
   padding: 1.1em 1.3em;
   margin: 1.3em 0;
   overflow-x: auto;
-  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
+  box-shadow: var(--pre-shadow);
   border-radius: 10px;
   border: 1px solid #e3e8ee;
-  /* Soft border for light mode */
   transition: background 0.2s, color 0.2s;
 }
 
 code {
-  background: #f3f3f7;
-  color: #c7254e;
+  background: var(--code-bg);
+  color: var(--code-text);
   border-radius: 5px;
   padding: 0.18em 0.45em;
   font-size: 0.98em;
@@ -172,20 +170,6 @@ pre code {
   color: inherit;
   padding: 0;
   border-radius: 0;
-}
-
-/* --- Dark mode overrides for code blocks --- */
-@media (prefers-color-scheme: dark) {
-  pre {
-    background: #181c20; /* deep slate, easy on eyes */
-    color: #e0e6f0;      /* soft white-blue for contrast */
-    border: 1px solid #23272e;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.18);
-  }
-  code {
-    background: #23272e;
-    color: #7ec699; /* soft green for C keywords, readable */
-  }
 }
 
 /* --- Syntax highlight tweaks for C code (PrismJS or similar) --- */
@@ -254,50 +238,6 @@ pre code {
 :root {
   --bg: #ffffff;
   --text: #000000;
-  --link: #007700;
-  --link-hover: #1741a6;
-  --muted: #888;
-  --code-bg: #f4f4f4;
-  --code-text: #333;
-  --pre-bg: #f4f4f4;
-  --pre-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
-  --subtitle: #333;
-  --til-link: #1f1f1ff0;
-  --til-link-hover: #222;
-}
-
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1e1e1e;
-    --text: #f1f1f1;
-    --link: #00ff00;
-    --link-hover: #00ff88;
-    --muted: #aaaaaa;
-    --code-bg: #232323;
-    --code-text: #00ff00;
-    --pre-bg: #232323;
-    --pre-shadow: 0 2px 8px 0 rgba(0,255,0,0.04);
-    --subtitle: #aaaaaa;
-    --til-link: #00ff00;
-    --til-link-hover: #00ff88;
-  }
-}
-
-/* Apply theme variables */
-a, a:visited {
-    color: var(--link);
-}
-a:hover {
-    color: var(--link-hover);
-}
-.subtitle {
-    color: var(--subtitle);
-}
-:root {
-  --bg: #ffffff;
-  --text: #000000;
-  --heading: #1a1a1a;
   --link: #007700;
   --link-hover: #1741a6;
   --muted: #888;
