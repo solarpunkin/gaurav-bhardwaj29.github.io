@@ -90,30 +90,30 @@
   <div class="til-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
 <p>Initially, I tried wiring in <code>mbedtls_ssl_conf_rng()</code>, as almost all examples suggested. It failed. After digging through the migration guide, I realized that mbedTLS 4.0+ dropped this function entirely in favor of internal PSA crypto. So I dropped the legacy logic and focused on initializing TLS, cleaning deprecated APIs.</p>
 <p>In the actual server setup, this is how I gated TLS setup logic:</p>
-<p>```c</p>
-<h1>ifdef USE_TLS</h1>
-<p>if (tls) {
-    psa_crypto_init();</p>
-<pre class="codehilite"><code>mbedtls_ssl_init(&amp;ssl);
-mbedtls_ssl_config_init(&amp;conf);
-mbedtls_x509_crt_init(&amp;srvcert);
-mbedtls_pk_init(&amp;pkey);
+<pre class="codehilite"><code class="language-c">#ifdef USE_TLS
+if (tls) {
+    psa_crypto_init();
 
-mbedtls_x509_crt_parse_file(&amp;srvcert, tls_cert_path);
-mbedtls_pk_parse_keyfile(&amp;pkey, tls_key_path, NULL);
+    mbedtls_ssl_init(&amp;ssl);
+    mbedtls_ssl_config_init(&amp;conf);
+    mbedtls_x509_crt_init(&amp;srvcert);
+    mbedtls_pk_init(&amp;pkey);
 
-mbedtls_ssl_config_defaults(&amp;conf,
-    MBEDTLS_SSL_IS_SERVER,
-    MBEDTLS_SSL_TRANSPORT_STREAM,
-    MBEDTLS_SSL_PRESET_DEFAULT);
+    mbedtls_x509_crt_parse_file(&amp;srvcert, tls_cert_path);
+    mbedtls_pk_parse_keyfile(&amp;pkey, tls_key_path, NULL);
 
-mbedtls_ssl_conf_ca_chain(&amp;conf, srvcert.next, NULL);
-mbedtls_ssl_conf_own_cert(&amp;conf, &amp;srvcert, &amp;pkey);
-mbedtls_ssl_setup(&amp;ssl, &amp;conf);
+    mbedtls_ssl_config_defaults(&amp;conf,
+        MBEDTLS_SSL_IS_SERVER,
+        MBEDTLS_SSL_TRANSPORT_STREAM,
+        MBEDTLS_SSL_PRESET_DEFAULT);
+
+    mbedtls_ssl_conf_ca_chain(&amp;conf, srvcert.next, NULL);
+    mbedtls_ssl_conf_own_cert(&amp;conf, &amp;srvcert, &amp;pkey);
+    mbedtls_ssl_setup(&amp;ssl, &amp;conf);
+}
+#endif
 </code></pre>
 
-<p>}</p>
-<h1>endif</h1>
 <p>Fallback to HTTP works via <code>--dev</code> or when certs are not supplied. Devs can toggle TLS with <code>--tls --cert cert.pem --key key.pem</code>. It is platform-agnostic and uses no system daemon.</p>
 <p>This TLS handshake now works directly over port 443 or any specified port, and can handle browser connections.</p>
 
