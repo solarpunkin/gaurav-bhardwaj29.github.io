@@ -136,38 +136,89 @@ p {
   background: var(--search-btn-bg-hover);
 }
 
-/* Code block styling */
+/* --- Custom code block styling for TILs (C-friendly, night mode vibes) --- */
 pre, code {
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', monospace;
   font-size: 1em;
-}
-pre {
-  background: var(--pre-bg);
+  line-height: 1.6;
   border-radius: 8px;
-  padding: 1em 1.2em;
-  margin: 1.2em 0;
+  /* Remove border for code, handled below */
+}
+
+pre {
+  background: #23272e; /* dark slate for light mode */
+  color: #2d3a4a;
+  padding: 1.1em 1.3em;
+  margin: 1.3em 0;
   overflow-x: auto;
-  box-shadow: var(--pre-shadow);
+  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
+  border-radius: 10px;
+  border: 1px solid #e3e8ee;
+  /* Soft border for light mode */
+  transition: background 0.2s, color 0.2s;
 }
+
 code {
-  background: var(--code-bg);
-  color: var(--code-text);
-  border-radius: 4px;
-  padding: 0.15em 0.4em;
-  font-size: 0.97em;
+  background: #f3f3f7;
+  color: #c7254e;
+  border-radius: 5px;
+  padding: 0.18em 0.45em;
+  font-size: 0.98em;
+  transition: background 0.2s, color 0.2s;
 }
+
 pre code {
   background: none;
   color: inherit;
+  padding: 0;
+  border-radius: 0;
 }
-.katex, .math.inline-math {
-  background: var(--inline-math-bg);
-  color: var(--inline-math-text);
+
+/* --- Dark mode overrides for code blocks --- */
+@media (prefers-color-scheme: dark) {
+  pre {
+    background: #181c20; /* deep slate, easy on eyes */
+    color: #e0e6f0;      /* soft white-blue for contrast */
+    border: 1px solid #23272e;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.18);
+  }
+  code {
+    background: #23272e;
+    color: #7ec699; /* soft green for C keywords, readable */
+  }
 }
-.katex-display, .math.display-math {
-  background: var(--block-math-bg);
-  color: var(--block-math-text);
-  box-shadow: var(--pre-shadow);
+
+/* --- Syntax highlight tweaks for C code (PrismJS or similar) --- */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a9955; /* green comments */
+  font-style: italic;
+}
+.token.keyword {
+  color: #7ec699; /* soft green for C keywords */
+}
+.token.string {
+  color: #d69d85; /* warm beige for strings */
+}
+.token.function {
+  color: #82aaff; /* blue for functions */
+}
+.token.number {
+  color: #b5cea8; /* light green for numbers */
+}
+.token.operator {
+  color: #e0e6f0;
+}
+.token.punctuation {
+  color: #e0e6f0;
+}
+.token.type {
+  color: #ffcb8b; /* yellow for types */
+}
+.token.constant {
+  color: #d7ba7d;
 }
 
 /* Group upvote/share buttons in a row */
