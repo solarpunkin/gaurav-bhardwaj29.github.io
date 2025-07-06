@@ -172,6 +172,25 @@ pre code {
   border-radius: 0;
 }
 
+/* --- Night mode yellowish reading tint for code blocks --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pre-bg: linear-gradient(90deg, #23221c 60%, #28251a 100%);
+    --code-bg: #23221c;
+    --code-text: #ffe9b3; /* soft yellow for code text */
+  }
+  pre {
+    background: var(--pre-bg) !important;
+    color: var(--code-text) !important;
+    border: 1px solid #39341f;
+    box-shadow: 0 2px 8px 0 rgba(255, 230, 120, 0.04);
+  }
+  code {
+    background: var(--code-bg) !important;
+    color: var(--code-text) !important;
+  }
+}
+
 /* --- Syntax highlight tweaks for C code (PrismJS or similar) --- */
 .token.comment,
 .token.prolog,
