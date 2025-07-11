@@ -172,18 +172,18 @@ pre code {
   border-radius: 0;
 }
 
-/* --- Night mode: off-whitish-yellow reading mode for code blocks --- */
+/* --- Night mode: code background same as light mode --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --pre-bg: #23221c;
-    --code-bg: #23221c;
-    --code-text: #ffe9b3; /* soft off-white yellow */
+    --pre-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+    --code-bg: #f3f3f7;
+    --code-text: #c7254e;
   }
   pre {
     background: var(--pre-bg) !important;
     color: var(--code-text) !important;
-    border: 1px solid #39341f;
-    box-shadow: 0 2px 8px 0 rgba(255, 230, 120, 0.04);
+    border: 1px solid #e3e8ee;
+    box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
   }
   code {
     background: var(--code-bg) !important;
