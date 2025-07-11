@@ -38,4 +38,3 @@ if (tls) {
 Fallback to HTTP works via `--dev` or when certs are not supplied. Devs can toggle TLS with `--tls --cert cert.pem --key key.pem`. It is platform-agnostic and uses no system daemon.
 
 This TLS handshake now works directly over port 443 or any specified port, and can handle browser connections.
-

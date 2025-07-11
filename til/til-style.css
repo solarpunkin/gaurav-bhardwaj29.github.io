@@ -136,92 +136,38 @@ p {
   background: var(--search-btn-bg-hover);
 }
 
-/* --- Custom code block styling for TILs (C-friendly, night mode vibes) --- */
+/* Code block styling */
 pre, code {
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', monospace;
   font-size: 1em;
-  line-height: 1.6;
-  border-radius: 8px;
 }
-
 pre {
   background: var(--pre-bg);
-  color: var(--code-text);
-  padding: 1.1em 1.3em;
-  margin: 1.3em 0;
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 1.2em 0;
   overflow-x: auto;
   box-shadow: var(--pre-shadow);
-  border-radius: 10px;
-  border: 1px solid #e3e8ee;
-  transition: background 0.2s, color 0.2s;
 }
-
 code {
   background: var(--code-bg);
   color: var(--code-text);
-  border-radius: 5px;
-  padding: 0.18em 0.45em;
-  font-size: 0.98em;
-  transition: background 0.2s, color 0.2s;
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.97em;
 }
-
 pre code {
   background: none;
   color: inherit;
-  padding: 0;
-  border-radius: 0;
 }
-
-/* --- Night mode: code background same as light mode --- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --pre-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
-    --code-bg: #f3f3f7;
-    --code-text: #c7254e;
-  }
-  pre {
-    background: var(--pre-bg) !important;
-    color: var(--code-text) !important;
-    border: 1px solid #e3e8ee;
-    box-shadow: 0 2px 8px 0 rgba(224, 224, 224, 0.922);
-  }
-  code {
-    background: var(--code-bg) !important;
-    color: var(--code-text) !important;
-  }
+.katex, .math.inline-math {
+  background: var(--inline-math-bg);
+  color: var(--inline-math-text);
 }
-
-/* --- Syntax highlight tweaks for C code (PrismJS or similar) --- */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-  color: #6a9955; /* green comments */
-  font-style: italic;
-}
-.token.keyword {
-  color: #7ec699; /* soft green for C keywords */
-}
-.token.string {
-  color: #d69d85; /* warm beige for strings */
-}
-.token.function {
-  color: #82aaff; /* blue for functions */
-}
-.token.number {
-  color: #b5cea8; /* light green for numbers */
-}
-.token.operator {
-  color: #e0e6f0;
-}
-.token.punctuation {
-  color: #e0e6f0;
-}
-.token.type {
-  color: #ffcb8b; /* yellow for types */
-}
-.token.constant {
-  color: #d7ba7d;
+.katex-display, .math.display-math {
+  background: var(--block-math-bg);
+  color: var(--block-math-text);
+  box-shadow: var(--pre-shadow);
 }
 
 /* Group upvote/share buttons in a row */
@@ -257,6 +203,50 @@ pre code {
 :root {
   --bg: #ffffff;
   --text: #000000;
+  --link: #007700;
+  --link-hover: #1741a6;
+  --muted: #888;
+  --code-bg: #f4f4f4;
+  --code-text: #333;
+  --pre-bg: #f4f4f4;
+  --pre-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
+  --subtitle: #333;
+  --til-link: #1f1f1ff0;
+  --til-link-hover: #222;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --text: #f1f1f1;
+    --link: #00ff00;
+    --link-hover: #00ff88;
+    --muted: #aaaaaa;
+    --code-bg: #232323;
+    --code-text: #00ff00;
+    --pre-bg: #232323;
+    --pre-shadow: 0 2px 8px 0 rgba(0,255,0,0.04);
+    --subtitle: #aaaaaa;
+    --til-link: #00ff00;
+    --til-link-hover: #00ff88;
+  }
+}
+
+/* Apply theme variables */
+a, a:visited {
+    color: var(--link);
+}
+a:hover {
+    color: var(--link-hover);
+}
+.subtitle {
+    color: var(--subtitle);
+}
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --heading: #1a1a1a;
   --link: #007700;
   --link-hover: #1741a6;
   --muted: #888;
