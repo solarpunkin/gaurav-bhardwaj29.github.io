@@ -34,32 +34,22 @@ def parse_date_from_filename(filename):
 def slugify(text):
     return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
 
-# Gather blog posts
+# No blog markdown files, so skip blog_posts
 blog_posts = []
-for md_file in sorted(glob.glob("blog/*.md")):
-    meta, body = parse_frontmatter(md_file)
-    if not meta: continue
-    slug = os.path.splitext(os.path.basename(md_file))[0]
-    date_obj = parse_date_from_filename(md_file)
-    url = f"{SITE_URL}/blog/{slug}.html"
-    blog_posts.append({
-        "title": meta.get("title", slug),
-        "link": url,
-        "description": escape(meta.get("description", "") or body[:180]),
-        "pubDate": date_obj.strftime('%a, %d %b %Y %H:%M:%S %z'),
-        "category": "blog"
-    })
 
 # Gather TILs
 til_posts = []
 for md_file in sorted(glob.glob("til/posts/*.md")):
     meta, body = parse_frontmatter(md_file)
     if not meta: continue
-    slug = os.path.splitext(os.path.basename(md_file))[0]
+    filename = os.path.basename(md_file)
+    name = os.path.splitext(filename)[0]
+    match = re.match(r'^\d{4}-\d{2}-\d{2}-(.+)', name)
+    slug = match.group(1) if match else name
     date_obj = parse_date_from_filename(md_file)
     url = f"{SITE_URL}/til/posts/{slug}/"
     til_posts.append({
-        "title": meta.get("title", slug),
+        "title": meta.get("title", slug.replace('-', ' ').title()),
         "link": url,
         "description": escape(body[:180]),
         "pubDate": date_obj.strftime('%a, %d %b %Y %H:%M:%S %z'),
@@ -86,7 +76,7 @@ if os.path.exists(code_html):
                 })
 
 # Combine and sort all items by date (desc)
-all_items = blog_posts + til_posts + code_projects
+all_items = til_posts + code_projects
 all_items.sort(key=lambda x: x["pubDate"], reverse=True)
 
 # Write RSS XML
@@ -95,7 +85,20 @@ with open(RSS_FILE, "w", encoding="utf-8") as f:
     f.write('<rss version="2.0">\n<channel>\n')
     f.write('<title>Gaurav Bhardwaj - Updates</title>\n')
     f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<description>Unified RSS feed for blog, TILs, and code updates.</description>\n')
+    f.write('<description>RSS feed for TIL and code updates</description>\n')
+    for item in all_items[:30]:
+        f.write('<item>\n')
+        f.write(f'<title>{escape(item["title"])}</title>\n')
+        f.write(f'<link>{item["link"]}</link>\n')
+        f.write(f'<description>{item["description"]}</description>\n')
+        f.write(f'<pubDate>{item["pubDate"]}</pubDate>\n')
+        f.write(f'<category>{item["category"]}</category>\n')
+        f.write('</item>\n')
+    f.write('</channel>\n</rss>\n')
+    f.write('<rss version="2.0">\n<channel>\n')
+    f.write('<title>Gaurav Bhardwaj - Updates</title>\n')
+    f.write(f'<link>{SITE_URL}/</link>\n')
+    f.write('<description>RSS feed for blog and code updates</description>\n')
     for item in all_items[:30]:
         f.write('<item>\n')
         f.write(f'<title>{escape(item["title"])}</title>\n')
