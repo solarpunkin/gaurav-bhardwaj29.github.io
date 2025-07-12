@@ -97,7 +97,7 @@ with open(RSS_FILE, "w", encoding="utf-8") as f:
     f.write('<rss version="2.0">\n<channel>\n')
     f.write('<title>Gaurav - updates</title>\n')
     f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<descriptionRSS feed for blog, TILs, and code updates.</description>\n')
+    f.write('<description>RSS feed for blog, TILs, and code updates.</description>\n')
 
     for item in all_items[:30]:
         f.write('<item>\n')

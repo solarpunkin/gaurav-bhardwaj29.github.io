@@ -3,7 +3,7 @@
 <channel>
 <title>Gaurav - updates</title>
 <link>https://gaurv.me/</link>
-<descriptionRSS feed for blog, TILs, and code updates.</description>
+<description>RSS feed for blog, TILs, and code updates.</description>
 <item>
 <title>Bypassing macOS code signing for ZIP-appended binaries</title>
 <link>https://gaurv.me/til/posts/bypassing-code-signing-mac-zip-binaries/</link>
