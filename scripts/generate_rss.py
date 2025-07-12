@@ -1,15 +1,13 @@
 import os
 import glob
-import markdown
 import yaml
 from datetime import datetime, timedelta, timezone
 import re
 from xml.sax.saxutils import escape
+from bs4 import BeautifulSoup
 
 SITE_URL = "https://gaurv.me"
 RSS_FILE = "rss.xml"
-
-# Helper for IST
 IST = timezone(timedelta(hours=5, minutes=30))
 
 def parse_frontmatter(md_file):
@@ -31,17 +29,32 @@ def parse_date_from_filename(filename):
     else:
         return datetime.now(IST)
 
-def slugify(text):
-    return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
-
-# No blog markdown files, so skip blog_posts
+# ----------- Blog posts (HTML-based) -----------
 blog_posts = []
+for html_file in sorted(glob.glob("blog/*.html")):
+    if os.path.basename(html_file) == "index.html":
+        continue
+    with open(html_file, encoding="utf-8") as f:
+        soup = BeautifulSoup(f, "html.parser")
+        title = soup.title.string.strip() if soup.title else os.path.splitext(os.path.basename(html_file))[0]
+        slug = os.path.splitext(os.path.basename(html_file))[0]
+        url = f"{SITE_URL}/blog/{slug}.html"
+        description = soup.find("meta", attrs={"name": "description"})
+        desc_text = description["content"].strip() if description else ""
+        blog_posts.append({
+            "title": title,
+            "link": url,
+            "description": escape(desc_text),
+            "pubDate": datetime.now(IST).strftime('%a, %d %b %Y %H:%M:%S %z'),
+            "category": "blog"
+        })
 
-# Gather TILs
+# ----------- TIL posts (Markdown) -----------
 til_posts = []
 for md_file in sorted(glob.glob("til/posts/*.md")):
     meta, body = parse_frontmatter(md_file)
-    if not meta: continue
+    if not meta:
+        continue
     filename = os.path.basename(md_file)
     name = os.path.splitext(filename)[0]
     match = re.match(r'^\d{4}-\d{2}-\d{2}-(.+)', name)
@@ -56,11 +69,10 @@ for md_file in sorted(glob.glob("til/posts/*.md")):
         "category": "til"
     })
 
-# Gather code projects (from code/index.html)
+# ----------- Code Projects (from HTML listing) -----------
 code_projects = []
 code_html = "code/index.html"
 if os.path.exists(code_html):
-    from bs4 import BeautifulSoup
     with open(code_html, encoding="utf-8") as f:
         soup = BeautifulSoup(f, "html.parser")
         for div in soup.select(".project"):
@@ -75,17 +87,18 @@ if os.path.exists(code_html):
                     "category": "code"
                 })
 
-# Combine and sort all items by date (desc)
-all_items = til_posts + code_projects
+# ----------- Combine All -----------
+all_items = blog_posts + til_posts + code_projects
 all_items.sort(key=lambda x: x["pubDate"], reverse=True)
 
-# Write RSS XML
+# ----------- Generate RSS XML -----------
 with open(RSS_FILE, "w", encoding="utf-8") as f:
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     f.write('<rss version="2.0">\n<channel>\n')
-    f.write('<title>Gaurav Bhardwaj - Updates</title>\n')
+    f.write('<title>Gaurav - updates</title>\n')
     f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<description>RSS feed for TIL and code updates</description>\n')
+    f.write('<descriptionRSS feed for blog, TILs, and code updates.</description>\n')
+
     for item in all_items[:30]:
         f.write('<item>\n')
         f.write(f'<title>{escape(item["title"])}</title>\n')
@@ -94,17 +107,5 @@ with open(RSS_FILE, "w", encoding="utf-8") as f:
         f.write(f'<pubDate>{item["pubDate"]}</pubDate>\n')
         f.write(f'<category>{item["category"]}</category>\n')
         f.write('</item>\n')
-    f.write('</channel>\n</rss>\n')
-    f.write('<rss version="2.0">\n<channel>\n')
-    f.write('<title>Gaurav Bhardwaj - Updates</title>\n')
-    f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<description>RSS feed for blog and code updates</description>\n')
-    for item in all_items[:30]:
-        f.write('<item>\n')
-        f.write(f'<title>{escape(item["title"])}</title>\n')
-        f.write(f'<link>{item["link"]}</link>\n')
-        f.write(f'<description>{item["description"]}</description>\n')
-        f.write(f'<pubDate>{item["pubDate"]}</pubDate>\n')
-        f.write(f'<category>{item["category"]}</category>\n')
-        f.write('</item>\n')
+
     f.write('</channel>\n</rss>\n')
