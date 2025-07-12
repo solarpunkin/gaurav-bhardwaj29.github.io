@@ -17,13 +17,15 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install dependencies
-        run: pip install markdown pyyaml
+        run: pip install markdown pyyaml beautifulsoup4
       - name: Generate TIL pages
         run: python scripts/generate_til.py
+      - name: Generate RSS feed
+        run: python scripts/generate_rss.py
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add til/index.html til/tags/
-          git commit -m 'Auto-generate TIL index and tag pages' || echo "No changes to commit"
+          git add til/index.html til/tags/ rss.xml
+          git commit -m 'Auto-generate TIL index, tag pages, and RSS feed' || echo "No changes to commit"
           git push
