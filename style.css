@@ -88,22 +88,23 @@ footer {
   padding: 1rem 0;
   text-align: center;
   font-size: 14px;
-  color: #777;
-  border-top: 1px solid #eee;
+  color: #aaa;
+  border-top: 1px solid #333;
 }
 
 .footer-rss {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
 }
 
 .footer-rss img {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   opacity: 0.8;
   transition: opacity 0.2s ease;
+  vertical-align: middle;
 }
 
 .footer-rss img:hover {
