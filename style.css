@@ -83,16 +83,18 @@ nav a:hover {
   }
 }
 
-footer {
+footer.footer {
   margin-top: 3rem;
-  padding: 1rem 0;
+  padding: 2rem 0 4rem;
+  border-top: 1px solid #333;
+}
+
+.footer-inner {
+  max-width: 600px;
+  margin: 0 auto;
   text-align: center;
   font-size: 14px;
-  color: #aaa;
-  border-top: 1px solid #333;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  color: var(--muted);
 }
 
 .footer-rss {
@@ -100,6 +102,8 @@ footer {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .footer-rss svg {
@@ -108,6 +112,6 @@ footer {
   vertical-align: middle;
 }
 
-.footer-rss svg:hover {
+.footer-rss:hover svg {
   opacity: 1;
 }
