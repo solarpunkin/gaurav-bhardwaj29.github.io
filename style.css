@@ -90,23 +90,24 @@ footer {
   font-size: 14px;
   color: #aaa;
   border-top: 1px solid #333;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer-rss {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   justify-content: center;
+  gap: 6px;
 }
 
-.footer-rss img {
-  width: 16px;
-  height: 16px;
+.footer-rss svg {
   opacity: 0.8;
   transition: opacity 0.2s ease;
   vertical-align: middle;
 }
 
-.footer-rss img:hover {
+.footer-rss svg:hover {
   opacity: 1;
 }
