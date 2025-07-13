@@ -21,7 +21,7 @@
       }
     });
   </script>
-  <title>Integrating TLS via mbedTLS in web server</title>
+  <title>Subscribe via RSS</title>
   <style>
     .upvote-btn {
       display: inline-flex;
@@ -70,7 +70,7 @@
 </head>
 <body>
 <main>
-  <h1>Integrating TLS via mbedTLS in web server</h1>
+  <h1>Subscribe via RSS</h1>
   <div class="til-actions">
     <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
       <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,40 +87,14 @@
       </svg>
     </button>
   </div>
-  <div class="til-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
-<p>Initially, I tried wiring in <code>mbedtls_ssl_conf_rng()</code>, as almost all examples suggested. It failed. After digging through the migration guide, I realized that mbedTLS 4.0+ dropped this function entirely in favor of internal PSA crypto. So I dropped the legacy logic and focused on initializing TLS, cleaning deprecated APIs.</p>
-<p>In the actual server setup, this is how I gated TLS setup logic:</p>
-<pre class="codehilite"><code class="language-c">#ifdef USE_TLS
-if (tls) {
-    psa_crypto_init();
-
-    mbedtls_ssl_init(&amp;ssl);
-    mbedtls_ssl_config_init(&amp;conf);
-    mbedtls_x509_crt_init(&amp;srvcert);
-    mbedtls_pk_init(&amp;pkey);
-
-    mbedtls_x509_crt_parse_file(&amp;srvcert, tls_cert_path);
-    mbedtls_pk_parse_keyfile(&amp;pkey, tls_key_path, NULL);
-
-    mbedtls_ssl_config_defaults(&amp;conf,
-        MBEDTLS_SSL_IS_SERVER,
-        MBEDTLS_SSL_TRANSPORT_STREAM,
-        MBEDTLS_SSL_PRESET_DEFAULT);
-
-    mbedtls_ssl_conf_ca_chain(&amp;conf, srvcert.next, NULL);
-    mbedtls_ssl_conf_own_cert(&amp;conf, &amp;srvcert, &amp;pkey);
-    mbedtls_ssl_setup(&amp;ssl, &amp;conf);
-}
-#endif
-</code></pre>
-
-<p>Fallback to HTTP works via <code>--dev</code> or when certs are not supplied. Devs can toggle TLS with <code>--tls --cert cert.pem --key key.pem</code>. It is platform-agnostic and uses no system daemon.</p>
-<p>This TLS handshake now works directly over port 443 or any specified port, and can handle browser connections.</p>
+  <div class="til-body"><p>Really simple syndication–commonly known as RSS is a cool (old) way that allows users to get updates for new content posted on the website. Readers subscribe to the feed to get updates on their favourite authors, content creators, influencers. The reason I say this is an old way is partly due to the automation of webpages (mailing list, push notifications etc.) and partly because most people shifted to centralised and curated platforms for content creation and consumption. For example, chrome dropped native feed support in 2013. Algorithmic feeds now dominate i.e., they “surface” content instead of manual subscriptions, though manual subscriptions are still alive via newsletters. </p>
+<p>Lots of yapping ahead, if you want to see how I created RSS builder for my website, <a href="https://gist.github.com/gaurav-bhardwaj29/d917f1d076385498032cfa9aeeaa2d72">click here</a>.</p>
+<p>RSS was decentralized and did not generate ad revenue. Developers and power users moved to modern tools like Feedly and Inoreader. As content moved behind walled gardens, the “mainstream” herd was drawn to relentless scrolling and absorbing “For You” feeds flavoured with cheap dopamin hits to boost the “psyche” as pretentious woke people call it. Look, I am in no way against the use of algorithm by the social media apps wanting to push algorithmic content discovery–organising feed by who, not what. I think that recommendation systems are good way to share important news, conduct social experiments and aggregate data for marketing purpose and/or organising the feed better. But this must be regulated in favour of the larger population by not forcing what needs to be displayed rather what the user wants to see. But this is not always easy and downplaying this lead to people eventually getting frustrated with doomscrolling and manipulative algorithms (especially on X, instagram). Algorithm fatigue (and a couple other factors) just compounds to the point of it being unbearable, and has been a major reason why apps like facebook witnessed their major chunk of power users (between ages 16 - 25) shift to other platforms. This is particularly the reason I decided to go with the legacy, indie web way. RSS solves this by showing exactly what you subscribed to–simple, ad free, open, and private. I am vocal about the use of decentralized blogging platforms(like bear blog, micro.blog, smol.pub) partly because it fits well with the “own your content” philosophy of the Indieweb, and partly because I believe that a better algorithm is out there which will denoise and cut through the bullshit of having two extremes–the algorithm and the anti-algorithm communities. But for the time being, having no control seems like the best control.</p>
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 06 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="til-date">Posted on 13 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
@@ -131,8 +105,7 @@ if (tls) {
   <div class="til-sidebar">
     <h5>Jump to</h5>
     <ul>
-      <li><a href="../rss-feed/">Next: Subscribe via RSS →</a></li>
-      <li><a href="../bypassing-code-signing-mac-zip-binaries/">← Previous: Bypassing macOS code signing for ZIP-appended binaries</a></li>
+      <li><a href="../tls-handshakes/">← Previous: Integrating TLS via mbedTLS in web server</a></li>
     </ul>
   </div>
   <script>
