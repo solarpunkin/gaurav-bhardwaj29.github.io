@@ -1,6 +1,6 @@
 ---
 title: "Create image textures using Perlin Noise"
-tags: [cgi, textures]
+tags: [cgi, textures, python]
 slug: "perlin-noise"
 ---
 
