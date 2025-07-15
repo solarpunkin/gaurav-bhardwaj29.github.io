@@ -64,7 +64,7 @@ body {
   padding: 20px;
 }
 main {
-    max-width: 900px; /* Wider content area, as you requested earlier */
+    max-width: 600px; 
     margin: 0 auto;
 }
 h1 {
@@ -74,6 +74,8 @@ h1 {
 p {
   font-size: 1rem;
   margin: 0.2rem 0 0.6rem 0;
+  text-align: justify;
+  text-align-last: left;
 }
 .til-tags {
   margin: 1rem 0;
