@@ -21,7 +21,7 @@
       }
     });
   </script>
-  <title>Subscribe via RSS</title>
+  <title>Custom browser picker on macOS with finicky</title>
   <style>
     .upvote-btn {
       display: inline-flex;
@@ -70,7 +70,7 @@
 </head>
 <body>
 <main>
-  <h1>Subscribe via RSS</h1>
+  <h1>Custom browser picker on macOS with finicky</h1>
   <div class="til-actions">
     <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
       <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,14 +87,110 @@
       </svg>
     </button>
   </div>
-  <div class="til-body"><p>Really simple syndication–commonly known as RSS is a cool (old) way that allows users to get updates for new content posted on the website. Readers subscribe to the feed to get updates on their favourite authors, content creators, influencers. The reason I say this is an old way is partly due to the automation of webpages (mailing list, push notifications etc.) and partly because most people shifted to centralised and curated platforms for content creation and consumption. For example, chrome dropped native feed support in 2013. Algorithmic feeds now dominate i.e., they “surface” content instead of manual subscriptions, though manual subscriptions are still alive via newsletters. </p>
-<p>Lots of yapping ahead, if you want to see how I created RSS builder for my website, <a href="https://gist.github.com/gaurav-bhardwaj29/d917f1d076385498032cfa9aeeaa2d72">click here</a>.</p>
-<p>RSS was decentralized and did not generate ad revenue. Developers and power users moved to modern tools like Feedly and Inoreader. As content moved behind walled gardens, the “mainstream” herd was drawn to relentless scrolling and absorbing “For You” feeds flavoured with cheap dopamin hits to boost the “psyche” as pretentious woke people call it. Look, I am in no way against the use of algorithm by the social media apps wanting to push algorithmic content discovery–organising feed by who, not what. I think that recommendation systems are good way to share important news, conduct social experiments and aggregate data for marketing purpose and/or organising the feed better. But this must be regulated in favour of the larger population by not forcing what needs to be displayed rather what the user wants to see. But this is not always easy and downplaying this lead to people eventually getting frustrated with doomscrolling and manipulative algorithms (especially on X, instagram). Algorithm fatigue (and a couple other factors) just compounds to the point of it being unbearable, and has been a major reason why apps like facebook witnessed their major chunk of power users (between ages 16 - 25) shift to other platforms. This is particularly the reason I decided to go with the legacy, indie web way. RSS solves this by showing exactly what you subscribed to–simple, ad free, open, and private. I am vocal about the use of decentralized blogging platforms(like bear blog, micro.blog, smol.pub) partly because it fits well with the “own your content” philosophy of the Indieweb, and partly because I believe that a better algorithm is out there which will denoise and cut through the bullshit of having two extremes–the algorithm and the anti-algorithm communities. But for the time being, having no control seems like the best control.</p>
+  <div class="til-body"><p>Many apps and links on macOS simply open in whatever browser is set as the default or last active, without offering a choice each time. By default, macOS uses the single system default browser (set in System Preferences/Settings) and does not prompt per-link. This means you might end up opening links repeatedly in the same browser even when you want to choose a different one.
+I created a <strong>custom browser picker pop-up (aka kawaii)</strong> using <a href="https://github.com/johnste/finicky">Finicky</a>. This allows me to <strong>intercept link clicks</strong> and choose between browsers like Safari, Chrome, Firefox, and Brave — and even choose which browser profile to use — all from a native-looking UI.</p>
+<hr />
+<h2>kawaii UI</h2>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/kawaii-ui.png" style="max-width: 100%; height: auto;" />
+  <figcaption>Example custom pop-up dialog (AppleScript) for choosing a browser. The Finicky handler runs this script, captures the result, and opens the link in the chosen browser.</figcaption>
+</figure>
+
+<hr />
+<h2>what I followed</h2>
+<h3>1. <strong>install finicky</strong></h3>
+<pre class="codehilite"><code class="language-bash">brew install --cask finicky
+</code></pre>
+
+<p>Then run it once manually to grant permissions(launch at login and default browser to intecept links and route them).</p>
+<h3>2. <strong>write the <code>popup.sh</code></strong></h3>
+<p>Create a script at <code>~/.config/kawaii/popup.sh</code>:</p>
+<pre class="codehilite"><code class="language-bash">#!/bin/bash
+
+# osascript to prompt for browser &amp; profile
+CHOICE=$(osascript &lt;&lt;EOD
+set browsers to {&quot;Safari&quot;, &quot;Chrome&quot;, &quot;Firefox&quot;, &quot;DuckDuckGo&quot;}
+set browserChoice to choose from list browsers with prompt &quot;Choose your browser&quot; without multiple selections allowed
+if browserChoice is false then
+  return &quot;Safari&quot;
+end if
+
+set profiles to {&quot;Personal&quot;, &quot;Work&quot;}
+set profileChoice to choose from list profiles with prompt &quot;Choose profile for &quot; &amp; item 1 of browserChoice without multiple selections allowed
+if profileChoice is false then
+  return item 1 of browserChoice
+end if
+
+return (item 1 of browserChoice) &amp; &quot; - &quot; &amp; (item 1 of profileChoice)
+EOD
+)
+
+echo &quot;$CHOICE&quot;
+</code></pre>
+
+<p>Make it executable:</p>
+<pre class="codehilite"><code class="language-bash">chmod +x ~/.config/kawaii/popup.sh
+</code></pre>
+
+<h3>3. <strong>create <code>finicky.js</code></strong></h3>
+<pre class="codehilite"><code class="language-js">// ~/.finicky.js
+export default {
+  defaultBrowser: &quot;Safari&quot;,
+  asyncBrowser: async (url) =&gt; {
+    const result = await finicky.run({
+      command: &quot;~/.config/kawaii/popup.sh&quot;
+    })
+
+    const choice = result.stdout.trim()
+
+    switch (choice) {
+      case &quot;Chrome - Personal&quot;:
+        return { name: &quot;Google Chrome&quot;, profile: &quot;Gaurav&quot; }
+      case &quot;Chrome - Work&quot;:
+        return { name: &quot;Google Chrome&quot;, profile: &quot;spencer&quot; }
+      case &quot;Firefox - Personal&quot;:
+        return { name: &quot;Firefox&quot;, profile: &quot;personal&quot; }
+      case &quot;Firefox - Work&quot;:
+        return { name: &quot;Firefox&quot;, profile: &quot;work&quot; }
+      case &quot;DuckDuckGo - Personal&quot;:
+        return { name: &quot;DuckDuckGo&quot;, profile: &quot;personal&quot; }
+      case &quot;DuckDuckGo - Work&quot;:
+        return { name: &quot;DuckDuckGo&quot;, profile: &quot;work&quot; }
+      case &quot;Safari&quot;:
+      default:
+        return &quot;Safari&quot;
+    }
+  }
+}
+</code></pre>
+
+<p>In this setup, whenever Finicky intercepts a link, it runs the async browser function. The function calls our popup script via execSync, reads the chosen name, and returns it in an object <code>{name: "...", profile: "..."}</code> if needed. Finicky then launches that browser (and profile). If the user cancels, we return null to let Finicky use the default or do nothing. (Since Finicky v4, the browser function can be async and use modern syntax. We avoid any old legacy callbacks).</p>
+<hr />
+<h2>some walls i hit</h2>
+<ul>
+<li>
+<p><strong>Validation error: <code>defaultBrowser</code> missing</strong><br />
+    This must be set explicitly, even if you're overriding with <code>asyncBrowser</code>.</p>
+</li>
+<li>
+<p><strong>No chooseBrowser API</strong> 
+    Any mention of a built-in chooseBrowser is outdated. Finicky no longer provides a GUI chooser; we handle it ourselves via AppleScript.</p>
+</li>
+</ul>
+<blockquote>
+<p>Pro Tip: For more advanced UI, you can build your picker using tools like Raycast, Hammerspoon, or SwiftUI.</p>
+</blockquote>
+<hr />
+<h2>orz</h2>
+<ul>
+<li><a href="https://github.com/johnste/finicky">Finicky GitHub Repo</a></li>
+<li><a href="https://github.com/koekeishiya/yabai">Yabai</a></li>
+</ul>
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 13 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="til-date">Posted on 29 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
@@ -105,8 +201,7 @@
   <div class="til-sidebar">
     <h5>Jump to</h5>
     <ul>
-      <li><a href="../kawaii/">Next: Custom browser picker on macOS with finicky →</a></li>
-      <li><a href="../tls-handshakes/">← Previous: Integrating TLS via mbedTLS in web server</a></li>
+      <li><a href="../rss-feed/">← Previous: Subscribe via RSS</a></li>
     </ul>
   </div>
   <script>
