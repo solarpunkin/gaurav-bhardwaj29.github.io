@@ -6,7 +6,7 @@ slug: "simplex-noise"
 
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/simplex-city.jpg" style="max-width: 100%; height: auto;" />
-  <figcaption>minecraft 3D simplex terrain</figcaption>
+  <figcaption>minecraft 3D simplex city terrain</figcaption>
 </figure>
 
 Simplex noise is a type of gradient noise just like the [Perlin noise](https://gaurv.me/til/posts/perlin-noise/). Infact, the creator of both noises is the same person–Kenneth [Ken] Perlin. Ken thought that his implementation of perlin noise is not good enough, especially in higher dimensions, so he came up with a better algorithm to address the limitation of classic noise function. So simplex is better, what else? Obviously I am not going into the details of the algorithm ([Stefan Gustavson already does the job far better than I ever could](https://www.researchgate.net/publication/216813608_Simplex_noise_demystified)), but let me just say how simplex performs better than the perlin noise.
