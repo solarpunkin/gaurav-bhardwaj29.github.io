@@ -308,6 +308,19 @@ for i, post in enumerate(posts):
     </figure>
   </div>
   '''}
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  {'' if post['slug'] != 'simplex-noise' else '''
+  <div style=\"display: flex; justify-content: center; gap: 2em; margin: 2em 0;\">
+    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
+      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg2zyjbwAAj3dN.png\" alt=\"Input Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
+      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\"></figcaption>
+    </figure>
+    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
+      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg4eP9awAIyrKT.png\" alt=\"x Perlin noise\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
+      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\"></figcaption>
+    </figure>
+  </div>
+  '''}
   </div>
   <div class=\"til-date\">Posted on {display_time} · Follow me on <a href=\"https://x.com/wiredguys\">Twitter</a> or <a rel=\"me\" href=\"https://mastodon.social/@wiredguy\">Mastodon</a></div>
 
