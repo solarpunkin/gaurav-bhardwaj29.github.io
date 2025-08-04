@@ -113,4 +113,6 @@ def noise2d(xin, yin):
     return 70.0 * (n0 + n1 + n2)
 ```
 
-Here are some fractals that I created by stacking up octaves.
+Here are some fractals that I created by stacking up octaves. [This other one is on X](https://x.com/wiredguys/status/1952161874956718185).
+
+
