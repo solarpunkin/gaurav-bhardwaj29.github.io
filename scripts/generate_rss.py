@@ -41,11 +41,14 @@ for html_file in sorted(glob.glob("blog/*.html")):
         url = f"{SITE_URL}/blog/{slug}.html"
         description = soup.find("meta", attrs={"name": "description"})
         desc_text = description["content"].strip() if description else ""
+        mtime = os.path.getmtime(html_file)
+        pub_date = datetime.fromtimestamp(mtime, tz=IST)
         blog_posts.append({
             "title": title,
             "link": url,
             "description": escape(desc_text),
-            "pubDate": datetime.now(IST).strftime('%a, %d %b %Y %H:%M:%S %z'),
+            "pubDate_obj": pub_date,
+            "pubDate": pub_date.strftime('%a, %d %b %Y %H:%M:%S %z'),
             "category": "blog"
         })
 
@@ -73,6 +76,8 @@ for md_file in sorted(glob.glob("til/posts/*.md")):
 code_projects = []
 code_html = "code/index.html"
 if os.path.exists(code_html):
+    mtime = os.path.getmtime(code_html)
+    code_pub_date = datetime.fromtimestamp(mtime, tz=IST)
     with open(code_html, encoding="utf-8") as f:
         soup = BeautifulSoup(f, "html.parser")
         for div in soup.select(".project"):
@@ -83,13 +88,14 @@ if os.path.exists(code_html):
                     "title": a.text.strip(),
                     "link": a["href"],
                     "description": escape(desc.text.strip() if desc else ""),
-                    "pubDate": datetime.now(IST).strftime('%a, %d %b %Y %H:%M:%S %z'),
+                    "pubDate_obj": code_pub_date,
+                    "pubDate": code_pub_date.strftime('%a, %d %b %Y %H:%M:%S %z'),
                     "category": "code"
                 })
 
 # ----------- Combine All -----------
 all_items = blog_posts + til_posts + code_projects
-all_items.sort(key=lambda x: x["pubDate"], reverse=True)
+all_items.sort(key=lambda x: x.get("pubDate_obj") or datetime.strptime(x["pubDate"], '%a, %d %b %Y %H:%M:%S %z'), reverse=True)
 
 # ----------- Generate RSS XML -----------
 with open(RSS_FILE, "w", encoding="utf-8") as f:
