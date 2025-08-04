@@ -4,7 +4,7 @@ tags: [python, textures, cgi]
 slug: "simplex-noise"
 ---
 
-Simplex noise is a type of gradient noise just like the Perlin noise. Infact, the creator of both noises is the same person–Kenneth [Ken] Perlin. Ken thought that his implementation of perlin noise is not good enough, especially in higher dimensions, so he came up with a better algorithm to address the limitation of classic noise function. So simplex is better, what else? Obviously I am not going into the details of the algorithm ([Stefan Gustavson already does the job far better than I ever could](https://www.researchgate.net/publication/216813608_Simplex_noise_demystified)), but let me just say how simplex performs better than the perlin noise.
+Simplex noise is a type of gradient noise just like the [Perlin noise](https://gaurv.me/til/posts/perlin-noise/). Infact, the creator of both noises is the same person–Kenneth [Ken] Perlin. Ken thought that his implementation of perlin noise is not good enough, especially in higher dimensions, so he came up with a better algorithm to address the limitation of classic noise function. So simplex is better, what else? Obviously I am not going into the details of the algorithm ([Stefan Gustavson already does the job far better than I ever could](https://www.researchgate.net/publication/216813608_Simplex_noise_demystified)), but let me just say how simplex performs better than the perlin noise.
 
 1. simplex noise requires fewer multiplications and scales to higher dimensions (4D and up) with much less computational cost, the complexity is $O(n^2)$ for $n$ dimensions instead of $O(2^n)$ of perlin noise.
 2. simplex noise has no visually-significant directional artifacts.
