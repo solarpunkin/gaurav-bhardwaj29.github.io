@@ -21,7 +21,7 @@
       }
     });
   </script>
-  <title>Bypassing macOS code signing for ZIP-appended binaries</title>
+  <title>finding sweet spots in simplex noise</title>
   <style>
     .upvote-btn {
       display: inline-flex;
@@ -70,7 +70,7 @@
 </head>
 <body>
 <main>
-  <h1>Bypassing macOS code signing for ZIP-appended binaries</h1>
+  <h1>finding sweet spots in simplex noise</h1>
   <div class="til-actions">
     <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
       <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,17 +87,130 @@
       </svg>
     </button>
   </div>
-  <div class="til-body"><p>I wanted to append a zip data to the end of a binary executable in C to create a single executable server that reads its own zip tail on launch. </p>
-<p>Doing this directly on my mac M2 via <code>cat repl site.zip &gt; repl.app</code>  and <code>chmod +x repl.app</code> returned a corrupted file which did not run. </p>
-<p>Apparently macOS kills Mach-O binaries with appended data due to <a href="https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution">some code signing &amp; notarization rules</a>. </p>
-<p>There is a possible <a href="https://stackoverflow.com/questions/1604673/how-do-i-embed-data-into-a-mac-os-x-mach-o-binary-files-text-section/1605237">workaround solution</a> that looks like it should work, instead I tried a simpler approach by creating a ‘polyglot file’ (a techie jargon for header files) which is part shell script and part binary. Claude helped me with this. Now doing <code>cat header.sh repl site.zip &gt; repl.app</code>  works with a little catch: I have to calculate (#bytes in repl - #bytes in site.zip) and update the header.sh dynamically when either of the two files change.</p>
+  <div class="til-body"><p>Simplex noise is a type of gradient noise just like the Perlin noise. Infact, the creator of both noises is the same person–Kenneth [Ken] Perlin. Ken thought that his implementation of perlin noise is not good enough, especially in higher dimensions, so he came up with a better algorithm to address the limitation of classic noise function. So simplex is better, what else? Obviously I am not going into the details of the algorithm (<a href="https://www.researchgate.net/publication/216813608_Simplex_noise_demystified">Stefan Gustavson already does the job far better than I ever could</a>), but let me just say how simplex performs better than the perlin noise.</p>
+<ol>
+<li>simplex noise requires fewer multiplications and scales to higher dimensions (4D and up) with much less computational cost, the complexity is $O(n^2)$ for $n$ dimensions instead of $O(2^n)$ of perlin noise.</li>
+<li>simplex noise has no visually-significant directional artifacts.</li>
+</ol>
+<p>For a high-level overview, it’s enough to know that the algorithm uses something known as a simplex grid to add nearby values and produce numbers between -1 and 1 that look linearly-interpolated like classic Perlin noise. How these grids are selected? </p>
+<p>For a space with $N$ dimensions, pick the simplest and most compact shape that can be repeated to fill the entire space. A straight line segment is a 1D simplex. A triangle is a 2D simplex. A square is not a 2D simplex, because it has one more corner and side than a triangle and this isn't the simplest possible shape. A straight line segment is also not a 2D simplex, because it has only a single dimension, no matter how it is oriented in 2D space. Finally, a tetrahedron is a 3D simplex. In general, <a href="https://www.math.uci.edu/~mathcircle/materials/MCsimplex.pdf">a simplex shape for $N$ dimensions has $N+1$ corners.</a> </p>
+<p>I implemented OpenSimplexNoise for two-dimensional as <a href="https://patents.google.com/patent/US6867776">OpenSimplex is patented</a>. I stole the permutation table from Stefan Gustavson’s paper and refashioned the code in python.</p>
+<pre class="codehilite"><code class="language-python">import math
+
+# gradient table for 2D noise
+grad3 = [
+    [1,1,0], [-1,1,0], [1,-1,0], [-1,-1,0],
+    [1,0,1], [-1,0,1], [1,0,-1], [-1,0,-1],
+    [0,1,1], [0,-1,1], [0,1,-1], [0,-1,-1]
+]
+
+# permutation table
+perm = [
+    151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,
+    140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,
+    247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,
+    57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,
+    74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,
+    60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,
+    65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,
+    200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,
+    52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,
+    207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,
+    119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,
+    129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,
+    218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,
+    81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,
+    184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,
+    222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
+] * 2 # avoid index out of range
+
+def fastfloor(x):
+    return int(math.floor(x))
+
+def dot(g, x, y):
+    return g[0] * x + g[1] * y
+
+def fade(t):
+    return t * t * t * (t * (t * 6 - 15) + 10)
+
+def noise2d(xin, yin):
+    n0, n1, n2 = 0.0, 0.0, 0.0  # noise contributions from the three corners
+
+    # skew the input space to determine which simplex cell we're in
+    F2 = 0.5 * (math.sqrt(3.0) - 1.0)
+    s = (xin + yin) * F2
+    i = fastfloor(xin + s)
+    j = fastfloor(yin + s)
+    G2 = (3.0 - math.sqrt(3.0)) / 6.0
+    t = (i + j) * G2
+    X0 = i - t
+    Y0 = j - t
+    x0 = xin - X0
+    y0 = yin - Y0
+
+    # determine which simplex we are in
+    if x0 &gt; y0:
+        i1, j1 = 1, 0  # lower triangle
+    else:
+        i1, j1 = 0, 1  # upper triangle
+
+    x1 = x0 - i1 + G2
+    y1 = y0 - j1 + G2
+    x2 = x0 - 1.0 + 2.0 * G2
+    y2 = y0 - 1.0 + 2.0 * G2
+
+    # work out the hashed gradient indices
+    ii = i &amp; 255
+    jj = j &amp; 255
+    gi0 = perm[ii + perm[jj]] % 12
+    gi1 = perm[ii + i1 + perm[jj + j1]] % 12
+    gi2 = perm[ii + 1 + perm[jj + 1]] % 12
+
+    # calculate the contribution from the three corners
+    t0 = 0.5 - x0 * x0 - y0 * y0
+    if t0 &lt; 0:
+        n0 = 0.0
+    else:
+        t0 *= t0
+        n0 = t0 * t0 * dot(grad3[gi0], x0, y0)
+
+    t1 = 0.5 - x1 * x1 - y1 * y1
+    if t1 &lt; 0:
+        n1 = 0.0
+    else:
+        t1 *= t1
+        n1 = t1 * t1 * dot(grad3[gi1], x1, y1)
+
+    t2 = 0.5 - x2 * x2 - y2 * y2
+    if t2 &lt; 0:
+        n2 = 0.0
+    else:
+        t2 *= t2
+        n2 = t2 * t2 * dot(grad3[gi2], x2, y2)
+
+    # add contributions and scale to [-1,1]
+    return 70.0 * (n0 + n1 + n2)
+</code></pre>
+
+<p>Here are some fractals that I created by stacking up octaves. <a href="https://x.com/wiredguys/status/1952161874956718185">This other one is on X</a>.</p>
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   
     <!-- simplex noise image row (only for the simplex-noise post) -->
   
+  <div style="display: flex; justify-content: center; gap: 2em; margin: 2em 0;">
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg2zyjbwAAj3dN.png" alt="Input Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;"></figcaption>
+    </figure>
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg4eP9awAIyrKT.png" alt="x Perlin noise" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;"></figcaption>
+    </figure>
   </div>
-  <div class="til-date">Posted on 02 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  
+  </div>
+  <div class="til-date">Posted on 04 August 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
 <div id="turnstile-container">
   <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
@@ -108,8 +221,7 @@
   <div class="til-sidebar">
     <h5>Jump to</h5>
     <ul>
-      <li><a href="../tls-handshakes/">Next: Integrating TLS via mbedTLS in web server →</a></li>
-      <li><a href="../hosting-gcp/">← Previous: Hosting website as a subdomain on Google Cloud</a></li>
+      <li><a href="../kawaii/">← Previous: Custom browser picker on macOS with finicky</a></li>
     </ul>
   </div>
   <script>
