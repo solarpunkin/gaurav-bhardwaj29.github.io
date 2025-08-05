@@ -185,7 +185,7 @@ function filterTILs() {
 }
 </script>
         <nav style="margin-top: 2em;">
-            <a href="../">← home</a>
+            <a href="../">&larr; home</a>
         </nav>
 """)
     f.write("</body></html>")
@@ -203,16 +203,15 @@ for i, post in enumerate(posts):
         f_post.write(f"""<!DOCTYPE html>
 <html>
 <head>
-   <meta name=\"fediverse:creator\" content=\"@wiredguy@mastodon.social\">                  
-  <link rel=\"stylesheet\" href=\"../../til-style.css\">
-  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css\">
-  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css\">
-  <script defer src=\"https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js\"></script>
-  <script defer src=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js\"></script>
-  <script defer src=\"https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js\"></script>
-  <script src=\"https://challenges.cloudflare.com/turnstile/v0/api.js\" async defer></script>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener(\"DOMContentLoaded\", function() {{
+    document.addEventListener("DOMContentLoaded", function() {{
       if (window.renderMathInElement) {{
         renderMathInElement(document.body, {{
           delimiters: [
@@ -224,61 +223,11 @@ for i, post in enumerate(posts):
     }});
   </script>
   <title>{post['title']}</title>
-  <style>
-    .upvote-btn {{
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0.2em 0.4em;
-      margin-left: 0.5em;
-      transition: color 0.2s, transform 0.1s;
-      color: #aaa;
-      font-size: 1.5em;
-      outline: none;
-    }}
-    .upvote-btn:active {{
-      transform: scale(1.18);
-    }}
-    .upvote-btn.upvoted {{
-      color: #4b4e50;
-      font-weight: bold;
-      /* transform: scale(1.2); -- handled by JS for pop effect */
-    }}
-    .upvote-arrow {{
-      width: 1.2em;
-      height: 1.2em;
-      display: inline-block;
-      vertical-align: middle;
-      transition: stroke 0.18s, fill 0.18s;
-      fill: #d1d1d1;
-      stroke: #7d8082;
-    }}
-    .upvote-btn.upvoted .upvote-arrow {{
-      stroke: #4b4e50;
-      fill: #4b4e50;
-    }}
-    .upvote-btn.pop {{
-      animation: upvote-pop 0.18s cubic-bezier(.4,1.6,.6,1) 1;
-    }}
-    @keyframes upvote-pop {{
-      0% {{ transform: scale(1); }}
-      60% {{ transform: scale(1.28); }}
-      100% {{ transform: scale(1); }}
-    }}
-    /* ...existing code... */
-  </style>
 </head>
 <body>
 <main>
   <h1>{post['title']}</h1>
   <div class="til-actions">
-    <button class="upvote-btn" id="upvote-btn" title="Upvote this TIL" aria-pressed="false">
-      <svg class="upvote-arrow" viewBox="0 0 24 24" fill="#d1d1d1" stroke="#7d8082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="12,4 19,20 5,20" />
-      </svg>
-    </button>
     <button class="share-btn" id="share-btn" title="Share this TIL">
       <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="18" cy="5" r="3" />
@@ -289,181 +238,72 @@ for i, post in enumerate(posts):
       </svg>
     </button>
   </div>
-  <div class=\"til-body\">{post['body']}
+  <div class="til-body">{post['body']}
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   {'' if post['slug'] != 'perlin-noise' else '''
-  <div style=\"display: flex; justify-content: center; gap: 2em; margin: 2em 0;\">
-    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
-      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/input_image.jpg\" alt=\"Input Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
-      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">Input Image (400x400)</figcaption>
+  <div style="display: flex; justify-content: center; gap: 2em; margin: 2em 0;">
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/input_image.jpg" alt="Input Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">Input Image (400x400)</figcaption>
     </figure>
-    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
-      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/fractal_terrain_400x400.png\" alt=\"x Perlin noise\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
-      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">x Perlin noise</figcaption>
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/fractal_terrain_400x400.png" alt="x Perlin noise" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">x Perlin noise</figcaption>
     </figure>
-    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
-      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/output_distorted_400x400.png\" alt=\"Output Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
-      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\">= Output Image</figcaption>
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/output_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">= Output Image</figcaption>
     </figure>
   </div>
   '''}
     <!-- simplex noise image row (only for the simplex-noise post) -->
   {'' if post['slug'] != 'simplex-noise' else '''
-  <div style=\"display: flex; justify-content: center; gap: 2em; margin: 2em 0;\">
-    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
-      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg2zyjbwAAj3dN.png\" alt=\"Input Image\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
-      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\"></figcaption>
+  <div style="display: flex; justify-content: center; gap: 2em; margin: 2em 0;">
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg2zyjbwAAj3dN.png" alt="Input Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;"></figcaption>
     </figure>
-    <figure style=\"flex: 1; text-align: center; max-width: 200px;\">
-      <img src=\"https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg4eP9awAIyrKT.png\" alt=\"x Perlin noise\" style=\"width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;\">
-      <figcaption style=\"margin-top: 0.7em; font-size: 1em; color: #555;\"></figcaption>
+    <figure style="flex: 1; text-align: center; max-width: 200px;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/simplex-octaves/Gxg4eP9awAIyrKT.png" alt="x Perlin noise" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;"></figcaption>
     </figure>
   </div>
   '''}
   </div>
-  <div class=\"til-date\">Posted on {display_time} · Follow me on <a href=\"https://x.com/wiredguys\">Twitter</a> or <a rel=\"me\" href=\"https://mastodon.social/@wiredguy\">Mastodon</a></div>
+  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
-<div id="turnstile-container">
-  <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABiDRLV2JxUJ_Qv6"></div>
-</div>
-  <ul class=\"til-list\">
-    <li><a href=\"../../index.html\">← TIL</a></li>
+  <ul class="til-list">
+    <li><a href="../../index.html">&laquo; TIL</a></li>
   </ul>
-  <div class=\"til-sidebar\">
+  <div class="til-sidebar">
     <h5>Jump to</h5>
     <ul>
 """)
         if prev_post:
             prev_slug = prev_post['slug']
             prev_url = f"../{prev_slug}/"
-            f_post.write(f'      <li><a href="{prev_url}">Next: {prev_post["title"]} →</a></li>\n')
+            f_post.write(f'      <li><a href="{prev_url}">Next: {prev_post["title"]} &rarr;</a></li>\n')
         if next_post:
             next_slug = next_post['slug']
             next_url = f"../{next_slug}/"
-            f_post.write(f'      <li><a href="{next_url}">← Previous: {next_post["title"]}</a></li>\n')
+            f_post.write(f'      <li><a href="{next_url}">&larr; Previous: {next_post["title"]}</a></li>\n')
         f_post.write("""    </ul>
   </div>
   <script>
-    // --- Upvote logic ---
-    const slug = "{slug}";
-    const upvoteBtn = document.getElementById('upvote-btn');
     const shareBtn = document.getElementById('share-btn');
-    const turnstileContainer = document.getElementById('turnstile-container');
-    const sessionKey = 'cf_upvote_verified';
-    const upvotedKey = 'til_upvoted_' + slug;
-    function isSessionVerified() {{
-      return localStorage.getItem(sessionKey) === '1';
-    }}
-    function setSessionVerified() {{
-      localStorage.setItem(sessionKey, '1');
-    }}
-    function isUpvoted() {{
-      return localStorage.getItem(upvotedKey) === '1';
-    }}
-    function setUpvoted() {{
-      localStorage.setItem(upvotedKey, '1');
-      upvoteBtn.classList.add('upvoted');
-      upvoteBtn.setAttribute('aria-pressed', 'true');
-      // Animate arrow fill and pop
-      const svg = upvoteBtn.querySelector('.upvote-arrow');
-      if (svg) {{
-        svg.setAttribute('fill', '#4b4e50');
-        svg.setAttribute('stroke', '#4b4e50');
-      }}
-      upvoteBtn.classList.add('pop');
-      setTimeout(() => upvoteBtn.classList.remove('pop'), 180);
-    }}
-    function resetUpvoteBtn() {{
-      upvoteBtn.classList.remove('upvoted');
-      upvoteBtn.setAttribute('aria-pressed', 'false');
-      const svg = upvoteBtn.querySelector('.upvote-arrow');
-      if (svg) {{
-        svg.setAttribute('fill', '#d1d1d1');
-        svg.setAttribute('stroke', '#7d8082');
-      }}
-    }}
-    if (isUpvoted()) {{
-      setUpvoted();
-      upvoteBtn.disabled = true;
-    }} else {{
-      resetUpvoteBtn();
-      upvoteBtn.disabled = false;
-    }}
-    upvoteBtn.addEventListener('click', function() {{
-      if (isUpvoted()) return;
-      // Animate pop even before upvote completes
-      upvoteBtn.classList.add('pop');
-      setTimeout(() => upvoteBtn.classList.remove('pop'), 180);
-      if (isSessionVerified()) {{
-        sendUpvote();
-      }} else {{
-        turnstileContainer.style.display = 'block';
-      }}
-    }});
-    shareBtn.addEventListener('click', function() {{
-      if (navigator.share) {{
-        navigator.share({{
+    shareBtn.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({
           title: document.title,
           url: window.location.href
-        }});
-      }} else {{
+        });
+      } else {
         navigator.clipboard.writeText(window.location.href);
         shareBtn.classList.add('shared');
         shareBtn.title = 'Copied!';
-        setTimeout(() => {{ shareBtn.classList.remove('shared'); shareBtn.title = 'Share this TIL'; }}, 1200);
-      }}
-    }});
-    window.turnstileCallback = function(token) {
-      // POST to backend for verification and upvote
-      fetch('/api/upvote', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({slug: slug, token: token})
-      }).then(r => r.json()).then(data => {
-        if (data.success) {
-          setSessionVerified();
-          setUpvoted();
-          upvoteBtn.disabled = true;
-          // Fire Cloudflare Analytics event
-          if (window.cfAnalytics && window.cfAnalytics.trackEvent) {
-            window.cfAnalytics.trackEvent('upvote', {slug: slug, type: 'til'});
-          }
-        } else {
-          alert('Verification failed.');
-        }
-        turnstileContainer.style.display = 'none';
-      });
-    }
-    function sendUpvote() {
-      fetch('/api/upvote', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({slug: slug})
-      }).then r => r.json()).then(data => {
-        if (data.success) {
-          setUpvoted();
-          upvoteBtn.disabled = true;
-          if (window.cfAnalytics && window.cfAnalytics.trackEvent) {
-            window.cfAnalytics.trackEvent('upvote', {slug: slug, type: 'til'});
-          }
-        } else {
-          alert('Upvote failed.');
-        }
-      });
-    }
-    // Cloudflare Turnstile callback
-    window.onloadTurnstile = function() {
-      if (window.turnstile) {
-        window.turnstile.render('#cf-turnstile', {
-          sitekey: '0x4AAAAAABiDRLV2JxUJ_Qv6',
-          callback: window.turnstileCallback
-        });
+        setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this TIL'; }, 1200);
       }
-    }
-    // Listen for Turnstile ready
-    document.addEventListener('DOMContentLoaded', function() {
-      if (window.turnstile) window.onloadTurnstile();
     });
   </script>
 </main>
