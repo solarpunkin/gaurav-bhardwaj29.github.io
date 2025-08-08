@@ -5,24 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>🔥 Socket Programming</title>
-    <link rel="stylesheet" href="../til/til-style.css" />
     <link rel="stylesheet" href="./blog-style.css" />
 </head>
 <body>
     <main>
         <h1>Socket Programming</h1>
         <div class="subtitle">Published May 22, 2025</div>
-        <div class="til-actions">
-    <button class="share-btn" id="share-btn" title="Share this post">
-      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3" />
-        <circle cx="6" cy="12" r="3" />
-        <circle cx="18" cy="19" r="3" />
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-      </svg>
-    </button>
-  </div>
 
         <!-- Blog content starts here -->
         
@@ -186,22 +174,6 @@ client_socket.close()
         <nav style="margin-top: 2em;">
             <a href="index.html">← blog</a>
         </nav>
-    </main>
-    <script>
-    const shareBtn = document.getElementById('share-btn');
-    shareBtn.addEventListener('click', function() {
-      if (navigator.share) {
-        navigator.share({
-          title: document.title,
-          url: window.location.href
-        });
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        shareBtn.classList.add('shared');
-        shareBtn.title = 'Copied!';
-        setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this post'; }, 1200);
-      }
-    });
-  </script>
+      </main>
 </body>
 </html>
