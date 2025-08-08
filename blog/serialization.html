@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>🔥 0x01</title>
+  <link rel="stylesheet" href="../til/til-style.css" />
   <link rel="stylesheet" href="./blog-style.css" />
 </head>
 <body>
@@ -13,6 +14,17 @@
 
 <h1>Serialization</h1>
   <div class="subtitle">Published June 7, 2025</div>
+  <div class="til-actions">
+    <button class="share-btn" id="share-btn" title="Share this post">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </button>
+  </div>
 <p>When two applications talk over a network, they don’t exchange messages, they exchange bytes. But those bytes aren’t random: they follow a strict structure defined by protocols and data formats. In this post, we’ll dive into how structured data is serialized into byte streams, how headers give those streams meaning, and how receivers deserialize them back into usable data.<br>
 Recall how  <code>send()</code>returns the number of bytes sent out. But let me tell you that  <em>it may be less than what you actually wanted it to send.</em> This happens even in normal conditions when there is no error (-1) or end-of-file. The catch here is  <code>send()</code>  might not send all the bytes you asked it to. For example, if you want it to send 512 bytes, but it returns 412; the remaining 100 bytes are still in your little buffer waiting to be sent out. You have to continuously check the length of the string sent and compare with the actual  <em>len</em>  of buffer defined to send out the complete data. Fortunately, it can be easily done by looping over  <code>send()</code>function until we get an error (-1)<br>
 the accompanying code can be found at eop.</p>
@@ -25,46 +37,46 @@ the accompanying code can be found at eop.</p>
 <pre><code>#include &lt;stdint.h&gt;  
   
 uint32_t htonf(float f)  
-{  
-    uint32_t p;  
-    uint32_t sign;  
-  
+{
+    uint32_t p;
+    uint32_t sign;
+
     if (f &lt; 0) { sign = 1; f = -f; }  
-    else { sign = 0; }  
+    else { sign = 0; }
           
     p = ((((uint32_t)f)&amp;0x7fff)&lt;&lt;16) | (sign&lt;&lt;31);     // whole part and sign  
     p |= (uint32_t)(((f - (int)f) * 65536.0f))&amp;0xffff; // fraction  
+
+    return p;
+}
   
-    return p;  
-}  
-  
-float ntohf(uint32_t p)  
-{  
+float ntohf(uint32_t p)
+{
     float f = ((p&gt;&gt;16)&amp;0x7fff);   // whole part  
     f += (p&amp;0xffff) / 65536.0f;   // fraction  
-  
+
     if (((p&gt;&gt;31)&amp;0x1) == 0x1) { f = -f; }   // sign bit set  
-  
-    return f;  
+
+    return f;
 }
 </code></pre>
 <p>The above code is sort of a naive implementation that stores a  <code>float</code>  in a 32-bit number. The high bit (31) is used to store the sign of the number (“1” means negative), and the next seven bits (30-16) are used to store the whole number portion of the  <code>float</code>. Finally, the remaining bits (15-0) are used to store the fractional portion of the number.<br>
 Usage is fairly straightforward:</p>
 <pre><code>#include &lt;stdio.h&gt;  
   
-int main(void)  
-{  
-    float f = 3.1415926, f2;  
-    uint32_t netf;  
-  
+int main(void)
+{
+    float f = 3.1415926, f2;
+    uint32_t netf;
+
     netf = htonf(f);  // convert to "network" form  
     f2 = ntohf(netf); // convert back to test  
-  
+
     printf("Original: %f\n", f);        // 3.141593  
     printf(" Network: 0x%08X\n", netf); // 0x0003243F  
     printf("Unpacked: %f\n", f2);       // 3.141586  
-  
-    return 0;  
+
+    return 0;
 }
 </code></pre>
 <p>The  <a href="https://en.wikipedia.org/wiki/IEEE_754">standard</a>  for storing floating point numbers is used by most  <a href="https://datatracker.ietf.org/doc/html/rfc4506">modern</a>  day computers internally for doing floating point math, so in those cases, strictly speaking, conversion wouldn’t need to be done. There are some  <a href="https://github.com/protobuf-c/protobuf-c">pointers</a>  if you want to implement your  <a href="https://beej.us/guide/bgnet/source/examples/pack2.c">custom</a>  serialization logic. Caution: I haven’t tried them yet but they look respectable. All in all, be aware while unpacking data sent over a network — a malicious user might send badly constructed packets in an effort to attack your system.<br>
@@ -100,27 +112,27 @@ This prevents message mix-ups and enables the client to reconstruct each message
 <pre><code>#include &lt;sys/types.h&gt;  
 #include &lt;sys/socket.h&gt;  
   
-int sendall(int s, char *buf, int *len)  
-{  
+int sendall(int s, char *buf, int *len)
+{
     int total = 0;            // how many bytes are sent  
     int bytesleft = *len;     // how many are left to send  
-    int n;  
-  
-    while(total &lt; *len) {  
-        n = send(s, buf+total, bytesleft, 0);  
-        if (n == -1) { break; }  
-        total += n;  
-        bytesleft -= n;  
-    }  
-  
+    int n;
+
+    while(total &lt; *len) {
+        n = send(s, buf+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
     *len = total;        // return number actually sent here  
-  
-    return n==-1?-1:0;   // return -1 on failure, 0 on success  
-} 
+
+    return n==-1?-1:0;   // return -1 on failure, 0 on success
+}
 </code></pre>
 <h4>More on protocols</h4>
 <blockquote>
-<p>Why  <strong>read_full()</strong>  and  <strong>write_all()</strong>?</p>
+<p>Why  <code>read_full()</code>  and  <code>write_all()</code>?</p>
 </blockquote>
 <p><strong>read_full:</strong><br>
 When reading from a socket, a single read call might return fewer bytes than requested even when more data is coming. This happens because data is pushed by the remote peer and stored in a kernel buffer, so read simply copies whatever is available at the time. To ensure that you receive the full amount of data you expect, you must repeatedly call read until either the desired number of bytes is collected, an error occurs, or the end of the stream is reached. It’s also important to handle cases where read is interrupted by a signal  <em>(EINTR)</em>  by retrying the operation.</p>
@@ -137,5 +149,21 @@ When writing data to a socket, the write call may not write all the bytes in one
             <a href="index.html">← blog</a>
         </nav>
 </main>
+<script>
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({
+          title: document.title,
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        shareBtn.classList.add('shared');
+        shareBtn.title = 'Copied!';
+        setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this post'; }, 1200);
+      }
+    });
+  </script>
 </body>
 </html>

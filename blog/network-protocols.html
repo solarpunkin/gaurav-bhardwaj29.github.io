@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>🔥 Network Protocols</title>
+    <link rel="stylesheet" href="../til/til-style.css" />
     <link rel="stylesheet" href="./blog-style.css" />
 </head>
 <body>
@@ -13,6 +14,17 @@
         <h1>Network Protocols</h1>
       
         <div class="subtitle">Published May 28, 2025</div>
+        <div class="til-actions">
+    <button class="share-btn" id="share-btn" title="Share this post">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </button>
+  </div>
 
         <!-- Blog content starts here -->
 
@@ -42,9 +54,12 @@ The no-promises service offered by IP is not directly useful to many application
 <p>fd = socket()<br>
 bind(fd, address)<br>
 listen(fd)<br>
-while True:<br>
-conn_fd = accept(fd)<br>
-do_something_with(conn_fd)<br>
+while True:
+<br>
+conn_fd = accept(fd)
+<br>
+do_something_with(conn_fd)
+<br>
 close(conn_fd)</p>
 <p>The  <code>socket()</code>syscall takes 3 integer arguments.<br>
 <code>int fd = socket(AF_INET, SOCK_STREAM, 0);</code><br>
@@ -73,8 +88,8 @@ addr.sin_port = htons(1234);      // expose port 1234
 addr.sin_addr.s_addr = htonl(0);  // wildcard IP 0.0.0.0   
 int rv = bind(fd, (const struct sockaddr *)&amp;addr,sizeof(addr));  
 if (rv)   
-{  
-  die("bind()");   
+{
+  die("bind()")
 }
 </code></pre>
 <p><code>struct sockaddr</code>is not used anywhere, so just type cast  <code>struct sockaddr_in</code>  to this  <code>*</code>  pointer type to match the function prototype.</p>
@@ -82,22 +97,24 @@ if (rv)
 <p>Before sending data across the network, TCP establishes a connection with the destination via an exchange of management packets. All the previous steps are just passing parameters. The socket is actually created after  <code>listen()</code>command.</p>
 <pre><code>rv = listen(fd, backlog);  
 if (rv)   
-{   
- die("listen()");   
+{
+   die("listen()")
 }
 </code></pre>
 <p><em>backlog</em>  is the number of connections allowed on the incoming queue. What does that mean? Well, incoming connections are going to wait in this queue until you  <code>accept()</code>them, and this is the limit on how many can queue up.</p>
 <h4 id="accept-connections">Accept connections</h4>
 <p>You call  <code>accept()</code>  which tells the system to get the pending connection. It returns a brand new socket  <em>fd</em>  to use for this single connection. So, you now have two file descriptors. The original one (<em>fd</em>) is still listening for more new connections and the latter is ready to send and receive data. The server now enters a loop that accepts and processes each client connection.</p>
-<pre><code>while (true) {  
+<pre><code>while (true) {
+ 
  // accept  
  struct sockaddr_in client_addr = {};          
  socklen_t addrlen =sizeof(client_addr);          
  int connfd = accept(fd, (struct sockaddr *)&amp;client_addr, &amp;addrlen);  
  if (connfd &lt; 0)   
- {  
+ {
   continue; // error   
- }          
+ }
+         
  do_something(connfd);          
  close(connfd);      
 }
@@ -105,14 +122,17 @@ if (rv)
 <p>This should look familiar by now. We have established the connection and  <code>connfd()</code>is the  <code>listen()</code>ing socket descriptor.</p>
 <h4 id="read--write-—-talk-to-me">Read &amp; Write — Talk to me!</h4>
 <p>Let’s test our connection by doing something — by reading from and writing to the call.</p>
-<pre><code>static void do_something(int connfd) {      
+<pre><code>static void do_something(int connfd) {
+      
  char rbuf[64] = {};      
  ssize_t n = read(connfd, rbuf, sizeof(rbuf) - 1);  
- if (n &lt; 0) {          
+ if (n &lt; 0) {
   msg("read() error");  
   return;     
- }     
- printf("client says: %s\n", rbuf);     
+ }
+     
+ printf("client says: %s\n", rbuf);
+     
  char wbuf[] = "world";      
  write(connfd, wbuf, strlen(wbuf));  
 }
@@ -128,5 +148,21 @@ If you are using wildcard address or letting the OS pick the port, you don’t k
             <a href="index.html">← blog</a>
         </nav>
     </main>
+    <script>
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({
+          title: document.title,
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        shareBtn.classList.add('shared');
+        shareBtn.title = 'Copied!';
+        setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this post'; }, 1200);
+      }
+    });
+  </script>
 </body>
 </html>
