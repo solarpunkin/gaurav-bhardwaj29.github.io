@@ -27,9 +27,12 @@ body {
   background-color: var(--bg);
   color: var(--text);
   padding: 40px;
-  line-height: 1.5;
+  line-height: 2em;
 }
 
+span {
+
+}
 main {
   max-width: 600px;
   margin: 0 auto;
@@ -41,7 +44,8 @@ h1 {
 }
 
 p {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+  word-spacing: 0.10em;
 }
 
 nav a {
