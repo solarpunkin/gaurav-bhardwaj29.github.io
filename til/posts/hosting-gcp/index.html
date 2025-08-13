@@ -25,17 +25,6 @@
 <body>
 <main>
   <h1>Hosting website as a subdomain on Google Cloud</h1>
-  <div class="til-actions">
-    <button class="share-btn" id="share-btn" title="Share this TIL">
-      <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3" />
-        <circle cx="6" cy="12" r="3" />
-        <circle cx="18" cy="19" r="3" />
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-      </svg>
-    </button>
-  </div>
   <div class="til-body"><p>I wanted to create a subdomain <a href="http://emailer.gaurv.me">emailer.gaurv.me</a> for hosting an automated cold email drafting service as a Flask website on Google Cloud Protocol. I get that this is a pretty lame name - I am also not good with naming things. That being said, first I had to log into Cloudflare Dashboard and add a new DNS record with type: CNAME and name: emailer and select the proxy status as <strong>DNS only.</strong></p>
 <p>I figured that the best way to enable HTTPS for Flask app is just to go with DNS (orange cloud OFF). Once the records are set, create a new project (recommended) on Google Cloud and choose an Email API - I am using <a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com">Gmail API</a>. Create an OAuth 2.0 Client ID and add a redirect URI(s) which is your subdomain/callback URL - (<em>https://emailer.gaurv.me/oauth2callback</em> in this case). This creates a secret client JSON file which is visible for download only once.</p>
 <p align="center">
@@ -72,22 +61,6 @@
       <li><a href="../perlin-noise/">&larr; Previous: Create image textures using Perlin Noise</a></li>
     </ul>
   </div>
-  <script>
-    const shareBtn = document.getElementById('share-btn');
-    shareBtn.addEventListener('click', function() {
-      if (navigator.share) {
-        navigator.share({
-          title: document.title,
-          url: window.location.href
-        });
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        shareBtn.classList.add('shared');
-        shareBtn.title = 'Copied!';
-        setTimeout(() => { shareBtn.classList.remove('shared'); shareBtn.title = 'Share this TIL'; }, 1200);
-      }
-    });
-  </script>
 </main>
 </body>
 </html>
