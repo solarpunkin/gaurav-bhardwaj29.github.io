@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
    <link rel="stylesheet" href="./style.css">
+   <link rel="stylesheet" href="assets/dialog.css">
 </head>
 <body>
   <main>
@@ -34,5 +35,20 @@ If not - i had fun anyway ˆˆ</p>
     </svg>
   </a>
 </footer>
+<div id="overlay" class="overlay"></div>
+<div id="dialogBox" class="dialog-box">
+  <div class="title-bar">
+    <span>System message</span>
+    <button id="closeButton" class="close-button">x</button>
+  </div>
+  <div class="dialog-content">
+    <p id="dialogMessage"></p>
+  </div>
+  <div class="dialog-buttons">
+    <button id="okButton">OK</button>
+    <button id="cancelButton">Cancel</button>
+  </div>
+</div>
+<script src="assets/dialog.js"></script>
 </body>
 </html>
