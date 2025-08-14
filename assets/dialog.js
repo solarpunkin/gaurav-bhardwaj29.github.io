@@ -8,18 +8,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const overlay = document.getElementById('overlay');
 
   const messages = [
-    "Is this the real life?",
-    "Is this just fantasy?",
-    "Caught in a landslide,",
-    "No escape from reality.",
-    "Open your eyes,",
-    "Look up to the skies and see."
+    `If you're reading this... 
+    Congratulations, you're alive. 
+    If that's not something to smile about, 
+    then I don't know what is`,
+
+    `Odds are you haven't seen light today. 
+    Take a walk—you could use some color`,
+
+    `Look up. The sky's bigger than the city walls. 
+    Catch it while you can`,
+
+    `Still gooning at this glowing rectangle?`,
+
+    `Maybe music will save you: 
+    <i>Open your eyes, Look up to the skies and see...</i>`,
+
+    `I am officially out of help messages. 
+    <i>Sorry for being a jerk</i>`
   ];
 
   let messageIndex = 0;
 
   function showDialog() {
-    dialogMessage.textContent = messages[messageIndex];
+    dialogMessage.innerHTML = messages[messageIndex];
     dialogBox.style.display = 'block';
     overlay.style.display = 'block';
   }
@@ -32,9 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function nextMessage() {
     messageIndex++;
     if (messageIndex < 5) {
-      dialogMessage.textContent = messages[messageIndex];
+      dialogMessage.innerHTML = messages[messageIndex];
     } else {
-      dialogMessage.textContent = messages[5];
+      dialogMessage.innerHTML = messages[5];
       cancelButton.style.display = 'none';
       okButton.style.margin = '0 auto';
       okButton.style.float = 'none';
