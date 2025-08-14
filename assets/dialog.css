@@ -14,7 +14,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
+  width: 90%;
+  max-width: 500px;
+  min-width: 280px;
   background: #c0c0c0;
   border: 2px solid #fff;
   border-right-color: #000;
@@ -23,6 +25,8 @@
   z-index: 1000;
   font-family: 'MS Sans Serif', sans-serif;
   display: none;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .title-bar {
@@ -52,6 +56,33 @@
 .dialog-content {
   padding: 20px;
   text-align: center;
+  white-space: pre-line;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .dialog-box {
+    width: 95%;
+    max-width: 100%;
+  }
+  
+  .dialog-content {
+    padding: 15px 10px;
+    font-size: 15px;
+  }
+  
+  .dialog-buttons {
+    padding: 8px 5px;
+  }
+  
+  .dialog-buttons button {
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-size: 14px;
+  }
 }
 
 .dialog-buttons {
