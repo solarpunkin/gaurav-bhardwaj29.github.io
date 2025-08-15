@@ -16,7 +16,7 @@
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 500px;
-  min-width: 280px;
+  min-width: 240px;
   background: #c0c0c0;
   border: 2px solid #fff;
   border-right-color: #000;
@@ -58,8 +58,7 @@
   text-align: center;
   white-space: pre-line;
   word-wrap: break-word;
-  line-height: 1.5;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 /* Mobile responsiveness */
