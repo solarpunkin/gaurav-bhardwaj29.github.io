@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let messageIndex = 0;
 
   function showDialog() {
+    const audio = new Audio('assets/error.wav');
+    audio.play();
     dialogMessage.innerHTML = messages[messageIndex];
     dialogBox.style.display = 'block';
     overlay.style.display = 'block';
