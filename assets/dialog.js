@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `Look up. The sky's bigger than the city walls. 
     Catch it while you can`,
 
-    `Still gooning at this glowing rectangle?`,
+    `Still glued to this glowing rectangle?`,
 
     `Maybe music will save you: 
     <i>Open your eyes, Look up to the skies and see...</i>`,
