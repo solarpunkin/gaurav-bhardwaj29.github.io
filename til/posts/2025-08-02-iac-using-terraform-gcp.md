@@ -11,6 +11,8 @@ slug: "iac-using-terraform-gcp"
 
 This is a small project documenting my first real attempt at writing and deploying Infrastructure as Code (IaC). It's a simple static website, but the focus was on the process of defining all the required cloud resources programmatically.
 
+Lots of yapping ahead, if you want to see how I created IAC for my website, this is the [source code](https://github.com/solarpunkin/100xiac.git).
+
 ## How I Got Here
 
 Before this, my deployment strategies were different. For simple projects, I'd often use serverless platforms that handle the infrastructure implicitly. For more complex applications, I relied on CI/CD pipelines using tools like GitHub Actions to build and deploy code, but the underlying infrastructure was usually provisioned manually through the cloud console.
