@@ -95,6 +95,16 @@ So, I was learning about interprocess communications in Unix-like systems by rea
 <category>til</category>
 </item>
 <item>
+<title>I wrote my first Infrastructure as Code</title>
+<link>https://gaurv.me/til/posts/iac-using-terraform-gcp/</link>
+<description>
+
+&lt;figure style="text-align: center;"&gt;
+  &lt;img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/tf-gcp-infra/something-you-play0with.jpeg" style="max-width: 100%; height: au</description>
+<pubDate>Sat, 02 Aug 2025 00:00:00 +0530</pubDate>
+<category>til</category>
+</item>
+<item>
 <title>Custom browser picker on macOS with finicky</title>
 <link>https://gaurv.me/til/posts/kawaii/</link>
 <description>
