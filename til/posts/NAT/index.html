@@ -26,16 +26,21 @@
 <main>
   <h1>192.168.0.1</h1>
   <div class="til-body"><p>With the rapid depletion of IPv4 addresses, Network Address Translation (NAT) has become an essential component of modern networks. NAT allows multiple devices to share a single public IP address, enabling secure and efficient communication between private networks and the internet.</p>
-<h4>In the beginning...</h4>
-<h5>IPv4 came out in the early 1980s</h5>
-<h5>The young Internet lived in a world of mainframes</h5>
+<h2>IPv4 came out in the early 1980s</h2>
+<h2>The young Internet lived in a world of mainframes</h2>
 <ul>
-<li>Many user terminals leashed to one central machine on the Internet</li>
-<li>Personal microcomputers in the first generation, few modems even</li>
-<li>Internet backbone ran only to advanced research facilities</li>
+<li>
+<p>Many user terminals leashed to one central machine on the Internet</p>
+</li>
+<li>
+<p>Personal microcomputers in the first generation, few modems even</p>
+</li>
+<li>
+<p>Internet backbone ran only to advanced research facilities</p>
+</li>
 </ul>
-<h5>Only researchers really cared about Internet resources</h5>
-<h5>IPv4 uses 32-bit addresses: e.g., 134.10.2.45</h5>
+<h2>Only researchers really cared about Internet resources</h2>
+<h2>IPv4 uses 32-bit addresses: e.g., 134.10.2.45</h2>
 <ul>
 <li>Surely 4.2B addresses are enough!</li>
 </ul>
@@ -43,102 +48,164 @@
 <p>"I think there is a world market for maybe five computers." 
 – surely apocryphal remark attributed to Thomas Watson, chairman of IBM</p>
 </blockquote>
-<h5>By the early 1990s, the Internet had grown up</h5>
+<h2>By the early 1990s, the Internet had grown up</h2>
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/nat/rir-ipv4-status.png" style="max-width: 100%; height: auto;" />
   <figcaption>Current status of IPv4 address space. Source: https://ipv4.potaroo.net/</figcaption>
 </figure>
 
-<h4>Conservation is Not Enough</h4>
-<h5>Original assumptions of the Internet, defied</h5>
+<h2>Original assumptions of the Internet, defied</h2>
 <ul>
-<li>Now primarily a consumer tool, not a research tool</li>
-<li>Internet became accessible through modems, then broadband and cellular</li>
-<li>A clear path to billions of devices on the Internet</li>
-<li>Devices are always on, always connected</li>
-<li>No option other than increasing the address space</li>
+<li>
+<p>Now primarily a consumer tool, not a research tool</p>
+</li>
+<li>
+<p>Internet became accessible through modems, then broadband and cellular</p>
+</li>
+<li>
+<p>A clear path to billions of devices on the Internet</p>
+</li>
+<li>
+<p>Devices are always on, always connected</p>
+</li>
+<li>
+<p>No option other than increasing the address space</p>
+</li>
 </ul>
-<h5>The IPng initiative</h5>
+<h2>The IPng initiative</h2>
 <ul>
-<li>Undertaken by the IETF in the early 1990s (see [RFC1550])</li>
-<li>Led to IPv6 [RFC1883] published in December 1995, mature version in [RFC2460] December 1998
-(What happened to IPv5, anyway? See ST-II [RFC1819]) </li>
+<li>
+<p>Undertaken by the IETF in the early 1990s (see <a href="https://www.rfc-editor.org/rfc/rfc1550">RFC1550</a>)</p>
+</li>
+<li>
+<p>Led to IPv6 <a href="https://www.rfc-editor.org/rfc/rfc1883">RFC1883</a> published in December 1995, mature version in <a href="https://www.rfc-editor.org/rfc/rfc2460">RFC2460</a> December 1998
+(What happened to IPv5, anyway? See ST-II <a href="https://www.rfc-editor.org/rfc/rfc1819">RFC1819</a>) </p>
+</li>
 </ul>
-<h4>Virtues of IPv6</h4>
-<h5>Plenty of addresses</h5>
+<h1>Virtues of IPv6</h1>
+<h3>Plenty of addresses</h3>
 <ul>
-<li>340,282,366,920,938,463,463,374,607,431,768,211,456</li>
-<li>That’s 128 bits, 340 undecillion or 3.4×1038</li>
-<li>Grouped into /64s, blocks of 18 quintillion addresses</li>
-<li>IPv6 fixes the network prefix at 64 bits</li>
-<li>Enough addresses in a network that they can be chosen whimsically</li>
+<li>
+<p>340,282,366,920,938,463,463,374,607,431,768,211,456</p>
+</li>
+<li>
+<p>That’s 128 bits, 340 undecillion or 3.4×1038</p>
+</li>
+<li>
+<p>Grouped into /64s, blocks of 18 quintillion addresses</p>
+</li>
+<li>
+<p>IPv6 fixes the network prefix at 64 bits</p>
+</li>
+<li>
+<p>Enough addresses in a network that they can be chosen whimsically</p>
+</li>
 <li>2001:19f0:feee::dead:beef:cafe (freenode)</li>
 <li>2001:420:80:1:c:15c0:d06:f00d (cisco)</li>
 <li>2620::1c18:0:face:b00c:0:1 (facebook)</li>
 </ul>
-<h5>IPsec built-in from the start</h5>
+<h3>IPsec built-in from the start</h3>
 <ul>
 <li>Vint often remarks this was the greatest shortcoming of IPv4</li>
 </ul>
-<h5>However, a new standard can’t be introduced overnight</h5>
+<h3>However, a new standard can’t be introduced overnight</h3>
 <p>What’s the interim strategy?</p>
-<h4>Multiplexing an IP Address</h4>
-<h5>IETF created “private” address space [RFC1918] (1996)</h5>
+<h1>Multiplexing an IP Address</h1>
+<h3>IETF created “private” address space <a href="https://www.rfc-editor.org/rfc/rfc1918">RFC1918</a> (1996)</h3>
 <ul>
-<li>Most famously 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</li>
-<li>Technically, the 172.16 block is 16 contiguous /16s, and the 192.168 block is 256 contiguous /24s</li>
+<li>
+<p>Most famously 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</p>
+</li>
+<li>
+<p>Technically, the 172.16 block is 16 contiguous /16s, and the 192.168 block is 256 contiguous /24s</p>
+</li>
 </ul>
-<h5>ip-masq in 1997</h5>
+<h3>ip-masq in 1997</h3>
 <ul>
-<li>Allowed multiple computers to sit behind one modem’s Internet connection</li>
-<li>Required application-layer gateway (ALG) for sophisticated features like FTP</li>
+<li>
+<p>Allowed multiple computers to sit behind one modem’s Internet connection</p>
+</li>
+<li>
+<p>Required application-layer gateway (ALG) for sophisticated features like FTP</p>
+</li>
 </ul>
-<h5>Today the ubiquitous home “router” is mostly a Network Address Translator (NAT)</h5>
+<h3>Today the ubiquitous home “router” is mostly a Network Address Translator (NAT)</h3>
 <ul>
-<li>Has one public IP address on the WAN side, maps external ports to internal</li>
-<li>Private addresses served via DHCP on the WiFi/Ethernet side</li>
-<li>Your computer’s IP address has a good chance of being <em>192.168.0.1</em></li>
-<li>If you can’t reach DHCP, then link-local autoconfiguration (169.254.0.0/16) [RFC3927]</li>
-<li>Implements various NAT, firewall and forwarding policies, supports many sorts of ALGs </li>
+<li>
+<p>Has one public IP address on the WAN side, maps external ports to internal</p>
+</li>
+<li>
+<p>Private addresses served via DHCP on the WiFi/Ethernet side</p>
+</li>
+<li>
+<p>Your computer’s IP address has a good chance of being <em>192.168.0.1</em></p>
+</li>
+<li>
+<p>If you can’t reach DHCP, then link-local autoconfiguration (169.254.0.0/16) <a href="https://www.rfc-editor.org/rfc/rfc3927">RFC3927</a></p>
+</li>
+<li>
+<p>Implements various NAT, firewall and forwarding policies, supports many sorts of ALGs </p>
+</li>
 </ul>
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/nat/3-tier-world.jpeg" style="max-width: 100%; height: auto;" />
   <figcaption></figcaption>
 </figure>
 
-<h4>The Dark Bargain of NAT</h4>
-<h5>Work by masking the address from which packets are sent</h5>
+<h1>The Dark Bargain of NAT</h1>
+<h3>Work by masking the address from which packets are sent</h3>
 <ul>
-<li>The NAT effectively hides the addresses behind it</li>
-<li>Effectively firewalls the private network</li>
-<li>However, recipients can’t distinguish endpoints behind the NAT</li>
+<li>
+<p>The NAT effectively hides the addresses behind it</p>
+</li>
+<li>
+<p>Effectively firewalls the private network</p>
+</li>
+<li>
+<p>However, recipients can’t distinguish endpoints behind the NAT</p>
+</li>
 </ul>
-<h5>NATs optimize for client-server connections</h5>
+<h3>NATs optimize for client-server connections</h3>
 <ul>
 <li>Surfing, downloading, gaming</li>
 </ul>
-<h5>NATs interfere with asynchronous notifications</h5>
+<h3>NATs interfere with asynchronous notifications</h3>
 <ul>
-<li>A NAT opens “pinholes” only when a client on the inside sends traffic out</li>
-<li>When services on the outside want to send traffic in, you have a problem</li>
+<li>
+<p>A NAT opens “pinholes” only when a client on the inside sends traffic out</p>
+</li>
+<li>
+<p>When services on the outside want to send traffic in, you have a problem</p>
+</li>
 </ul>
-<h5>NATs bungle rendez-vous protocols that require endpoints to know their own IP</h5>
+<h3>NATs bungle rendez-vous protocols that require endpoints to know their own IP</h3>
 <ul>
-<li>A variety of workarounds have been developed to address this</li>
-<li>These create real problems for peer-to-peer applications</li>
+<li>
+<p>A variety of workarounds have been developed to address this</p>
+</li>
+<li>
+<p>These create real problems for peer-to-peer applications</p>
+</li>
 <li>Skype and BitTorrent are triumphs of engineering</li>
 </ul>
-<h4>Judgement Day</h4>
-<h5>Ultimately, strict conservation and NATs merely delayed the inevitable</h5>
-<h5>Final IPv4 IANA assignment rule invoked Feb 3 2011</h5>
+<h2>Ultimately, strict conservation and NATs merely delayed the inevitable</h2>
+<h2>Final IPv4 IANA assignment rule invoked Feb 3 2011</h2>
 <ul>
-<li>At that time, the five remaining /8s held by IANA were allocated, one each, to the RIRs</li>
-<li>As of April 2011, APNIC already ran out</li>
-<li>RIPE ran out on September 14, 2012</li>
-<li>The rest will follow in the next couple years</li>
+<li>
+<p>At that time, the five remaining /8s held by IANA were allocated, one each, to the RIRs</p>
+</li>
+<li>
+<p>As of April 2011, APNIC already ran out</p>
+</li>
+<li>
+<p>RIPE ran out on September 14, 2012</p>
+</li>
+<li>
+<p>The rest will follow in the next couple years</p>
+</li>
 <li>Right now, ARIN &amp; LACNIC have 3 /8s left, AFRINIC has 4</li>
 </ul>
-<h5>Good thing IPv6 is here to pick up the slack! Right?</h5>
+<h2>Good thing IPv6 is here to pick up the slack! Right?</h2>
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   
