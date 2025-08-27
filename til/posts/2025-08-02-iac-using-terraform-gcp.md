@@ -135,4 +135,4 @@ I've watched some tutorials on more advanced topics like Terraform modules, mana
 
 The next challenge is to build something bigger. A full DevOps project, with multiple services, automated workflows, and an IaC structure that can evolve. This project was the perfect foundation for that.
 
-Anyway, I should stop writing and get back to work. Another unfinised PR just hit my inbox.
+Anyway, I should stop writing and get back to work. Another unfinished PR just hit my inbox.
