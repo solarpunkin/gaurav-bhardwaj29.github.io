@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>I wrote my first Infrastructure as Code</title>
+</head>
+<body>
+<main>
+  <h1>I wrote my first Infrastructure as Code</h1>
+  <div class="til-body"><figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/tf-gcp-infra/something-you-play0with.jpeg" style="max-width: 100%; height: auto;" />
+  <figcaption>notpseudo-infra again</figcaption>
+</figure>
+
+<p>This is a small project documenting my first real attempt at writing and deploying Infrastructure as Code (IaC). It's a simple static website, but the focus was on the process of defining all the required cloud resources programmatically.</p>
+<p>Lots of yapping ahead, if you want to see how I created IAC for my website, this is the <a href="https://github.com/solarpunkin/100xiac.git">source code</a>.</p>
+<h2>How I Got Here</h2>
+<p>Before this, my deployment strategies were different. For simple projects, I'd often use serverless platforms that handle the infrastructure implicitly. For more complex applications, I relied on CI/CD pipelines using tools like GitHub Actions to build and deploy code, but the underlying infrastructure was usually provisioned manually through the cloud console.</p>
+<p>I wanted to understand how to manage infrastructure more robustly and repeatably. I started by following the official <a href="https://developer.hashicorp.com/terraform/tutorials/gcp-get-started">Hashiorp Terraform Getting Started Guide</a> for GCP. That was enough to get a basic virtual machine running and understand the core concepts of providers and resources.</p>
+<p>It led to my initial "hello world" code - a single, lonely VM, but one I could summon and dismiss at will.</p>
+<pre class="codehilite"><code class="language-terraform"># From my starter_code/ directory
+provider &quot;google&quot; {
+  project = var.project
+  region  = var.region
+}
+
+resource &quot;google_compute_network&quot; &quot;vpc_network&quot; {
+  name = &quot;terraform-network&quot;
+}
+
+resource &quot;google_compute_instance&quot; &quot;vm_instance&quot; {
+  name         = &quot;terraform-instance&quot;
+  machine_type = &quot;f1-micro&quot;
+
+  boot_disk {
+    initialize_params {
+      image = &quot;cos-cloud/cos-stable&quot;
+    }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {}
+  }
+}
+</code></pre>
+
+<h2>What is this about</h2>
+<p>This was not worth the time I put into it, so I created an IaC pipeline to serve a basic static website. The infrastructure is deployed on Google Cloud Platform (GCP) and consists of:</p>
+<ul>
+<li><strong>Google Cloud Storage:</strong> A storage bucket to hold the website's <code>index.html</code> file.</li>
+<li><strong>Cloud CDN:</strong> To cache the website content and serve it quickly to users globally.</li>
+<li><strong>Global Load Balancer:</strong> To direct traffic to the backend, which in this case is the storage bucket.</li>
+<li><strong>Custom Domain:</strong> DNS records to point a custom domain to the load balancer.</li>
+</ul>
+<p>This setup is defined entirely using Terraform, which allows me to create, modify, and destroy the entire infrastructure with a few commands.</p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/tf-gcp-infra/tf-gcp-iac.jpeg" style="max-width: 100%; height: auto;" />
+  <figcaption>infra overview</figcaption>
+</figure>
+
+<h2>Building the Real (..some)Thing</h2>
+<p>After getting the basics down, I moved on to this project. The goal was to go beyond a single VM and build a more realistic setup for a (yet another) static website. This involved learning about more GCP resources and how they connect.</p>
+<p>Here are a few snippets from the <code>infra/main.tf</code> file that show how the pieces fit together.</p>
+<p>First, I defined a storage bucket and uploaded the <code>index.html</code> file to it:</p>
+<pre class="codehilite"><code class="language-terraform"># Create a bucket to store the website files
+resource &quot;google_storage_bucket&quot; &quot;landing&quot; {
+    name     = var.bucket_name
+    location = var.bucket_location
+}
+
+# Upload the static page to the bucket
+resource &quot;google_storage_bucket_object&quot; &quot;static_page&quot; {
+    name   = &quot;index.html&quot;
+    source = &quot;./website/index.html&quot;
+    bucket = google_storage_bucket.landing.name
+}
+</code></pre>
+
+<p>Next, I set up the CDN and pointed it to the storage bucket. The <code>enable_cdn = true</code> flag is the key part here.</p>
+<pre class="codehilite"><code class="language-terraform"># Add the bucket as a CDN-enabled backend
+resource &quot;google_compute_backend_bucket&quot; &quot;landing-backend&quot; {
+  name        = &quot;landing-backend&quot;
+  description = &quot;Contains files needed by the website&quot;
+  bucket_name = google_storage_bucket.landing.name
+  enable_cdn  = true
+}
+</code></pre>
+
+<p>Finally, I configured the load balancer and DNS to expose the website to the internet on a custom domain. This was the most complex part, involving a URL map, an HTTPS proxy, and a forwarding rule.</p>
+<pre class="codehilite"><code class="language-terraform"># GCP URL MAP to route requests
+resource &quot;google_compute_url_map&quot; &quot;landing&quot; {
+  name            = &quot;landing-url-map&quot;
+  default_service = google_compute_backend_bucket.landing-backend.self_link
+}
+
+# GCP target proxy to terminate SSL
+resource &quot;google_compute_target_https_proxy&quot; &quot;landing&quot; {
+  name             = &quot;landing-target-proxy&quot;
+  url_map          = google_compute_url_map.landing.self_link
+  ssl_certificates = [google_compute_managed_ssl_certificate.landing.self_link]
+}
+
+# GCP forwarding rule to handle incoming traffic
+resource &quot;google_compute_global_forwarding_rule&quot; &quot;default&quot; {
+  name                  = &quot;landing-forwarding-rule&quot;
+  load_balancing_scheme = &quot;EXTERNAL&quot;
+  ip_address            = google_compute_global_address.landing.address
+  port_range            = &quot;443&quot;
+  target                = google_compute_target_https_proxy.landing.self_link
+}
+</code></pre>
+
+<h2>The next Thing</h2>
+<p>This was a great first step. Writing IaC feels powerful; it's like writing code for your infrastructure. The biggest takeaway is the confidence that I can spin up and tear down this entire setup reliably with just <code>terraform apply</code> and <code>terraform destroy</code>.</p>
+<p>I've watched some tutorials on more advanced topics like Terraform modules, managing multiple environments (dev/staging/prod), and automated testing with Terratest. They are still abstractions to me, concepts I haven't yet had to grapple with.</p>
+<p>The next challenge is to build something bigger. A full DevOps project, with multiple services, automated workflows, and an IaC structure that can evolve. This project was the perfect foundation for that.</p>
+<p>Anyway, I should stop writing and get back to work. Another unfinised PR just hit my inbox.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="til-date">Posted on 02 August 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="til-list">
+    <li><a href="../../index.html">&laquo; TIL</a></li>
+  </ul>
+  <div class="til-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../simplex-noise/">Next: finding sweet spots in simplex noise &rarr;</a></li>
+      <li><a href="../kawaii/">&larr; Previous: Custom browser picker on macOS with finicky</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
