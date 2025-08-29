@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
-  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -25,7 +25,7 @@
 <body>
 <main>
   <h1>Integrating TLS via mbedTLS in web server</h1>
-  <div class="til-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
+  <div class="weblog-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
 <p>Initially, I tried wiring in <code>mbedtls_ssl_conf_rng()</code>, as almost all examples suggested. It failed. After digging through the migration guide, I realized that mbedTLS 4.0+ dropped this function entirely in favor of internal PSA crypto. So I dropped the legacy logic and focused on initializing TLS, cleaning deprecated APIs.</p>
 <p>In the actual server setup, this is how I gated TLS setup logic:</p>
 <pre class="codehilite"><code class="language-c">#ifdef USE_TLS
@@ -60,12 +60,12 @@ if (tls) {
     <!-- simplex noise image row (only for the simplex-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 06 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="weblog-date">Posted on 06 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
-  <ul class="til-list">
-    <li><a href="../../index.html">&laquo; TIL</a></li>
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
   </ul>
-  <div class="til-sidebar">
+  <div class="weblog-sidebar">
     <h5>Jump to</h5>
     <ul>
       <li><a href="../rss-feed/">Next: Subscribe via RSS &rarr;</a></li>

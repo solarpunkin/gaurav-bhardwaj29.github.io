@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
-  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -25,7 +25,7 @@
 <body>
 <main>
   <h1>Bypassing macOS code signing for ZIP-appended binaries</h1>
-  <div class="til-body"><p>I wanted to append a zip data to the end of a binary executable in C to create a single executable server that reads its own zip tail on launch. </p>
+  <div class="weblog-body"><p>I wanted to append a zip data to the end of a binary executable in C to create a single executable server that reads its own zip tail on launch. </p>
 <p>Doing this directly on my mac M2 via <code>cat repl site.zip &gt; repl.app</code>  and <code>chmod +x repl.app</code> returned a corrupted file which did not run. </p>
 <p>Apparently macOS kills Mach-O binaries with appended data due to <a href="https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution">some code signing &amp; notarization rules</a>. </p>
 <p>There is a possible <a href="https://stackoverflow.com/questions/1604673/how-do-i-embed-data-into-a-mac-os-x-mach-o-binary-files-text-section/1605237">workaround solution</a> that looks like it should work, instead I tried a simpler approach by creating a ‘polyglot file’ (a techie jargon for header files) which is part shell script and part binary. Claude helped me with this. Now doing <code>cat header.sh repl site.zip &gt; repl.app</code>  works with a little catch: I have to calculate (#bytes in repl - #bytes in site.zip) and update the header.sh dynamically when either of the two files change.</p>
@@ -35,12 +35,12 @@
     <!-- simplex noise image row (only for the simplex-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 02 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="weblog-date">Posted on 02 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
-  <ul class="til-list">
-    <li><a href="../../index.html">&laquo; TIL</a></li>
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
   </ul>
-  <div class="til-sidebar">
+  <div class="weblog-sidebar">
     <h5>Jump to</h5>
     <ul>
       <li><a href="../tls-handshakes/">Next: Integrating TLS via mbedTLS in web server &rarr;</a></li>

@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
-  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -25,7 +25,7 @@
 <body>
 <main>
   <h1>how to find the fastest way to make systems talk</h1>
-  <div class="til-body"><p>So, I was learning about interprocess communications in Unix-like systems by reading and implementing concepts from Beej’s guide to interprocess communication. He explains explains primitives like pipes, FIFOs, sockets, and shared memory with approachable code examples, making it easy for me to understand how our systems work. What struck me was how these different processes that are similar in function were drastically (or mildly) comparable to each other in empirical terms. What I mean by this is for example, stream sockets beat TCP loopback in both latency and throughput, or pipes are very efficient for tiny payloads but throughput declines once messages exceed the default 64KB pipe buffer <a href="https://man7.org/linux/man-pages/man7/pipe.7.html">man7/pipe</a>, or FIFO (named pipes) sometimes show lower latency than anonymous pipes by ~1.5× in practice.</p>
+  <div class="weblog-body"><p>So, I was learning about interprocess communications in Unix-like systems by reading and implementing concepts from Beej’s guide to interprocess communication. He explains explains primitives like pipes, FIFOs, sockets, and shared memory with approachable code examples, making it easy for me to understand how our systems work. What struck me was how these different processes that are similar in function were drastically (or mildly) comparable to each other in empirical terms. What I mean by this is for example, stream sockets beat TCP loopback in both latency and throughput, or pipes are very efficient for tiny payloads but throughput declines once messages exceed the default 64KB pipe buffer <a href="https://man7.org/linux/man-pages/man7/pipe.7.html">man7/pipe</a>, or FIFO (named pipes) sometimes show lower latency than anonymous pipes by ~1.5× in practice.</p>
 <p>It’s true that many of these metrics are OS-specific and don’t generalise across different OS or even versions of the same OS. This is because system-level factors like kernel scheduling, IPC subsystem implementations, CPU frequency scaling, and timer precision vary by OS and version, influencing results despite using identical benchmarking code and configurations. This isn’t a concern if you’re just trying out a software you downloaded from the web or writing application code that abstracts away much of the low-level work these IPC handles, or for a million other reasons. However, if you’re an indie gamer or write low-level code that relies heavily on process dependence, like choosing communication primitives for an app design, then something like the choice of Shared Memory over domain sockets can make or break your app performance. As I mentioned, these scores are heavily platform-biased, and the information available online isn’t a measure for your specific kernel or use case. Benchmarking your computer’s IPC reveals your system bottlenecks and helps you identify the fastest communication mechanism for your workflow.</p>
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/pipes-fifo/pipesfifo.jpg" style="max-width: 100%; height: auto;" />
@@ -54,12 +54,12 @@
     <!-- simplex noise image row (only for the simplex-noise post) -->
   
   </div>
-  <div class="til-date">Posted on 18 August 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="weblog-date">Posted on 18 August 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
-  <ul class="til-list">
-    <li><a href="../../index.html">&laquo; TIL</a></li>
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
   </ul>
-  <div class="til-sidebar">
+  <div class="weblog-sidebar">
     <h5>Jump to</h5>
     <ul>
       <li><a href="../NAT/">Next: 192.168.0.1 &rarr;</a></li>
