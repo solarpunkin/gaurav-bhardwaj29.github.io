@@ -211,7 +211,7 @@ for i, post in enumerate(posts):
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {{
+    document.addEventListener("DOMContentLoaded", function()  {{
       if (window.renderMathInElement) {{
         renderMathInElement(document.body, {{
           delimiters: [
