@@ -1,9 +1,9 @@
-name: Generate TIL Pages
+name: Generate Weblogs
 
 on:
   push:
     paths:
-      - 'til/posts/**'
+      - 'weblog/posts/**'
       - 'scripts/generate_til.py'
 permissions:
   contents: write
@@ -26,6 +26,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add til/index.html til/tags/ rss.xml
-          git commit -m 'Auto-generate TIL index, tag pages, and RSS feed' || echo "No changes to commit"
+          git add weblog/index.html weblog/tags/ rss.xml
+          git commit -m 'Auto-generate log index, tag pages, and RSS feed' || echo "No changes to commit"
           git push
