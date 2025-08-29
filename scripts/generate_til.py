@@ -99,11 +99,11 @@ for tag, tag_posts in tags_dict.items():
       }}
     }});
   </script>
-  <title>TIL: {tag}</title>
+  <title>Weblog: {tag}</title>
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class="til-list"><li><a href="../">← TIL</a></li>
+  <ul class="til-list"><li><a href="../">← LOGS</a></li>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
@@ -134,14 +134,14 @@ with open(INDEX_FILE, 'w', encoding="utf-8") as f:
       }}
     }});
   </script>
-  <title>🧠 TIL</title>
+  <title>gaurav's weblog</title>
 </head>
 <body>
-  <h1>Today I Learned</h1>
+  <h1>Weblog</h1>
   <p>also check out my <a href="https://gaurv.me/blog/">blog</a> page or <a href="https://hypnotic-single-224.notion.site/2176392011f0804caebee47240886285?v=2176392011f08043bbb6000c58ab5167&source=copy_link">reading list</a>.</p>
   <div class="til-search-container">
     <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="til-search" placeholder="Search TILs..." autofocus>
+      <input type="search" id="til-search" placeholder="Filter Logs..." autofocus>
       <button id="til-search-btn" type="submit">Search</button>
     </form>
   </div>
@@ -152,14 +152,14 @@ with open(INDEX_FILE, 'w', encoding="utf-8") as f:
     f.write("</div>\n")
 
     # Recent TILs
-    f.write('<h2>Recent TILs</h2>\n<ul class="til-list" id="til-list">\n')
+    f.write('<h2>Most Recent</h2>\n<ul class="til-list" id="til-list">\n')
     for post in posts_desc[:10]:
         url = f"posts/{post['slug']}/"
         f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # All TILs (hidden, for search)
-    f.write('<h2 style="display:none;">All TILs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
+    f.write('<h2 style="display:none;">All logs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
     for post in posts_desc:
         url = f"posts/{post['slug']}/"
         f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
@@ -193,7 +193,7 @@ function filterTILs() {
 # Generate HTML for each TIL post with slug-based URLs and sidebar with prev/next links
 for i, post in enumerate(posts):
     slug = post['slug']
-    out_dir = f"til/posts/{slug}"
+    out_dir = f"weblog/p/{slug}"
     os.makedirs(out_dir, exist_ok=True)
     prev_post = posts[i+1] if i < len(posts)-1 else None
     next_post = posts[i-1] if i > 0 else None
@@ -263,7 +263,7 @@ for i, post in enumerate(posts):
   <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
   <ul class="til-list">
-    <li><a href="../../index.html">&laquo; TIL</a></li>
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
   </ul>
   <div class="til-sidebar">
     <h5>Jump to</h5>

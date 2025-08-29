@@ -63,13 +63,13 @@ for md_file in sorted(glob.glob("til/posts/*.md")):
     match = re.match(r'^\d{4}-\d{2}-\d{2}-(.+)', name)
     slug = match.group(1) if match else name
     date_obj = parse_date_from_filename(md_file)
-    url = f"{SITE_URL}/til/posts/{slug}/"
+    url = f"{SITE_URL}/weblog/p/{slug}/"
     til_posts.append({
         "title": meta.get("title", slug.replace('-', ' ').title()),
         "link": url,
         "description": escape(body[:180]),
         "pubDate": date_obj.strftime('%a, %d %b %Y %H:%M:%S %z'),
-        "category": "til"
+        "category": "weblog"
     })
 
 # ----------- Code Projects (from HTML listing) -----------
@@ -103,7 +103,7 @@ with open(RSS_FILE, "w", encoding="utf-8") as f:
     f.write('<rss version="2.0">\n<channel>\n')
     f.write('<title>Gaurav - updates</title>\n')
     f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<description>RSS feed for blog, TILs, and code updates.</description>\n')
+    f.write('<description>RSS feed for blog, weblogs, and code updates.</description>\n')
 
     for item in all_items[:30]:
         f.write('<item>\n')
