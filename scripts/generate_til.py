@@ -6,10 +6,10 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 import re
 
-POSTS_DIR = 'til/posts'
-TAGS_DIR = 'til/tags'
-INDEX_FILE = 'til/index.html'
-STYLE_FILE = 'til/til-style.css'
+POSTS_DIR = 'weblog/posts'
+TAGS_DIR = 'weblog/tags'
+INDEX_FILE = 'weblog/index.html'
+STYLE_FILE = 'weblog/weblog-style.css'
 
 os.makedirs(TAGS_DIR, exist_ok=True)
 
@@ -42,7 +42,7 @@ def parse_date_from_filename(filename):
     else:
         return datetime.now(IST)
 
-# Parse all TIL markdown files
+# Parse all weblog markdown files
 for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
     with open(md_file, encoding="utf-8") as f:
         content = f.read()
@@ -81,7 +81,7 @@ for tag, tag_posts in tags_dict.items():
         f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="../til-style.css">
+  <link rel="stylesheet" href="../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -103,20 +103,20 @@ for tag, tag_posts in tags_dict.items():
 </head>
 <body>
   <h1>#{tag}</h1>
-  <ul class="til-list"><li><a href="../">← LOGS</a></li>
+  <ul class="weblog-list"><li><a href="../">← LOGS</a></li>
 """)
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
-            f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+            f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="weblog-date">{post["date_str"]}</span></li>\n')
         f.write("</ul>\n</body></html>")
 
-# Generate main index.html (recent TILs: newest first)
+# Generate main index.html (recent weblogs: newest first)
 posts_desc = sorted(posts, key=lambda p: p['date'], reverse=True)
 with open(INDEX_FILE, 'w', encoding="utf-8") as f:
     f.write(f"""<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="til-style.css">
+  <link rel="stylesheet" href="weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -139,41 +139,41 @@ with open(INDEX_FILE, 'w', encoding="utf-8") as f:
 <body>
   <h1>Weblog</h1>
   <p>also check out my <a href="https://gaurv.me/blog/">blog</a> page or <a href="https://hypnotic-single-224.notion.site/2176392011f0804caebee47240886285?v=2176392011f08043bbb6000c58ab5167&source=copy_link">reading list</a>.</p>
-  <div class="til-search-container">
-    <form onsubmit="filterTILs(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="til-search" placeholder="Filter Logs..." autofocus>
-      <button id="til-search-btn" type="submit">Search</button>
+  <div class="weblog-search-container">
+    <form onsubmit="filterweblogs(); return false;" style="display: flex; width: 100%;">
+      <input type="search" id="weblog-search" placeholder="Filter Logs..." autofocus>
+      <button id="weblog-search-btn" type="submit">Search</button>
     </form>
   </div>
-  <div class="til-tags">\n""")
+  <div class="weblog-tags">\n""")
     # Tags bar
     for tag, tag_posts in sorted(tags_dict.items()):
-        f.write(f'<a class="til-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)})</a><span class="til-tag-sep">• </span>')
+        f.write(f'<a class="weblog-tag" href="tags/{tag}.html">{tag} ({len(tag_posts)})</a><span class="weblog-tag-sep">• </span>')
     f.write("</div>\n")
 
-    # Recent TILs
-    f.write('<h2>Most Recent</h2>\n<ul class="til-list" id="til-list">\n')
+    # Recent weblogs
+    f.write('<h2>Most Recent</h2>\n<ul class="weblog-list" id="weblog-list">\n')
     for post in posts_desc[:10]:
         url = f"posts/{post['slug']}/"
-        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="weblog-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
-    # All TILs (hidden, for search)
-    f.write('<h2 style="display:none;">All logs</h2>\n<ul class="til-list" id="all-tils" style="display:none;">\n')
+    # All weblogs (hidden, for search)
+    f.write('<h2 style="display:none;">All logs</h2>\n<ul class="weblog-list" id="all-weblogs" style="display:none;">\n')
     for post in posts_desc:
         url = f"posts/{post['slug']}/"
-        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="til-date">{post["date_str"]}</span></li>\n')
+        f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="weblog-date">{post["date_str"]}</span></li>\n')
     f.write("</ul>\n")
 
     # Minimal JS for search (optional, can be removed for pure HTML)
     f.write("""
 <script>
-function filterTILs() {
-  var input = document.getElementById('til-search');
+function filterweblogs() {
+  var input = document.getElementById('weblog-search');
   var filter = input.value.toLowerCase();
-  var ul = document.getElementById('til-list');
+  var ul = document.getElementById('weblog-list');
   ul.innerHTML = '';
-  var allLis = document.getElementById('all-tils').getElementsByTagName('li');
+  var allLis = document.getElementById('all-weblogs').getElementsByTagName('li');
   var count = 0;
   for (var i = 0; i < allLis.length; i++) {
     var txt = allLis[i].textContent || allLis[i].innerText;
@@ -190,10 +190,10 @@ function filterTILs() {
 """)
     f.write("</body></html>")
 
-# Generate HTML for each TIL post with slug-based URLs and sidebar with prev/next links
+# Generate HTML for each weblog post with slug-based URLs and sidebar with prev/next links
 for i, post in enumerate(posts):
     slug = post['slug']
-    out_dir = f"weblog/p/{slug}"
+    out_dir = f"weblog/posts/{slug}"
     os.makedirs(out_dir, exist_ok=True)
     prev_post = posts[i+1] if i < len(posts)-1 else None
     next_post = posts[i-1] if i > 0 else None
@@ -204,7 +204,7 @@ for i, post in enumerate(posts):
 <html>
 <head>
    <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
-  <link rel="stylesheet" href="../../til-style.css">
+  <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -227,7 +227,7 @@ for i, post in enumerate(posts):
 <body>
 <main>
   <h1>{post['title']}</h1>
-  <div class="til-body">{post['body']}
+  <div class="weblog-body">{post['body']}
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
   {'' if post['slug'] != 'perlin-noise' else '''
@@ -260,12 +260,12 @@ for i, post in enumerate(posts):
   </div>
   '''}
   </div>
-  <div class="til-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+  <div class="weblog-date">Posted on {display_time} · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
 
-  <ul class="til-list">
+  <ul class="weblog-list">
     <li><a href="../../index.html">&laquo; LOGS</a></li>
   </ul>
-  <div class="til-sidebar">
+  <div class="weblog-sidebar">
     <h5>Jump to</h5>
     <ul>
 """)

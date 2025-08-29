@@ -52,9 +52,9 @@ for html_file in sorted(glob.glob("blog/*.html")):
             "category": "blog"
         })
 
-# ----------- TIL posts (Markdown) -----------
-til_posts = []
-for md_file in sorted(glob.glob("til/posts/*.md")):
+# ----------- weblog posts (Markdown) -----------
+weblog_posts = []
+for md_file in sorted(glob.glob("weblog/posts/*.md")):
     meta, body = parse_frontmatter(md_file)
     if not meta:
         continue
@@ -64,7 +64,7 @@ for md_file in sorted(glob.glob("til/posts/*.md")):
     slug = match.group(1) if match else name
     date_obj = parse_date_from_filename(md_file)
     url = f"{SITE_URL}/weblog/p/{slug}/"
-    til_posts.append({
+    weblog_posts.append({
         "title": meta.get("title", slug.replace('-', ' ').title()),
         "link": url,
         "description": escape(body[:180]),
@@ -94,7 +94,7 @@ if os.path.exists(code_html):
                 })
 
 # ----------- Combine All -----------
-all_items = blog_posts + til_posts + code_projects
+all_items = blog_posts + weblog_posts + code_projects
 all_items.sort(key=lambda x: x.get("pubDate_obj") or datetime.strptime(x["pubDate"], '%a, %d %b %Y %H:%M:%S %z'), reverse=True)
 
 # ----------- Generate RSS XML -----------
