@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>promptbait</title>
+</head>
+<body>
+<main>
+  <h1>promptbait</h1>
+  <div class="weblog-body"><p>Following the recent Perplexity’s AI agentic browser Comet prompt injection attack reported by teams at <a href="https://brave.com/blog/comet-prompt-injection/">Brave</a> and <a href="https://guard.io/labs/scamlexity-we-put-agentic-ai-browsers-to-the-test-they-clicked-they-paid-they-failed">Guardio</a>, a similar kind of attack <a href="https://malwr-analysis.com/2025/08/24/phishing-emails-are-now-aimed-at-users-and-ai-defenses/">has been identified</a> but this time it’s Gmail.</p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/prompt-phishing-email/Screenshot%202025-09-02%20at%202.22.45%E2%80%AFAM.png" style="max-width: 100%; height: auto;" />
+  <figcaption>Password Expiry notice</figcaption>
+</figure>
+
+<p>The sender combined <strong>two</strong> same old book tricks:</p>
+<ol>
+<li>
+<p>Social engineering to lure the user into updating their password, and </p>
+</li>
+<li>
+<p>A hidden prompt for the AI agent to evade automated defences and spiral into long reasoning steps instead of labelling it as phishing.</p>
+</li>
+</ol>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/prompt-phishing-email/Screenshot%202025-09-02%20at%202.22.27%E2%80%AFAM.png" style="max-width: 100%; height: auto;" />
+  <figcaption>Hidden in the plain-text MIME section was this block of text</figcaption>
+</figure>
+
+<p>This campaign therefore runs on two tracks simultaneously</p>
+<ul>
+<li>
+<p>One for users</p>
+</li>
+<li>
+<p>One for AI</p>
+</li>
+</ul>
+<p>Defending against phishing now means securing three targets at once:</p>
+<ul>
+<li>
+<p>Users (against social engineering)</p>
+</li>
+<li>
+<p>AI tools (against prompt injection)</p>
+</li>
+<li>
+<p>Infrastructure (against beaconing and redirect abuse)</p>
+</li>
+</ul>
+<p>As AI-powered email filtering and assistance become the norm, phishing campaigns are already adapting. What looks like an old scam in a new inbox may in fact be a carefully designed <strong>AI-aware attack</strong>, with both human and machine targets in mind.  </p>
+<p>The article by Guardio shows one of the ways in which scammers <a href="https://guard.io/labs/scamlexity-we-put-agentic-ai-browsers-to-the-test-they-clicked-they-paid-they-failed">can train automated systems using GANs</a> (Generative Adversarial Networks) where one AI generates phishing variants and another AI plays the role of the filter trying to block them. The generator doesn’t stop until it wins.</p>
+<p>“The only real answer is to stay several steps ahead of scammers by thinking like one. Instead of training the generator to scam, we must focus on training the discriminator to anticipate, detect, and neutralize these attacks.” – Guardio</p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/prompt-phishing-email/gan-for-ai-threat-model.webp" style="max-width: 100%; height: auto;" />
+  <figcaption>The diagram above is only a simplified schematic of how automated scam training might look, but it is just the beginning</figcaption>
+</figure>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 02 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../NAT/">&larr; Previous: 192.168.0.1</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
