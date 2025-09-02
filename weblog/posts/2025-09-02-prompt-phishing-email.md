@@ -29,15 +29,15 @@ This campaign therefore runs on two tracks simultaneously
 
 - One for AI
 
+As AI-powered email filtering and assistance become the norm, phishing campaigns are already adapting. What looks like an old scam in a new inbox may in fact be a carefully designed **AI-aware attack**, with both human and machine targets in mind.
+
 Defending against phishing now means securing three targets at once:
 
 - Users (against social engineering)
 
 - AI tools (against prompt injection)
 
-- Infrastructure (against beaconing and redirect abuse)
-
-As AI-powered email filtering and assistance become the norm, phishing campaigns are already adapting. What looks like an old scam in a new inbox may in fact be a carefully designed **AI-aware attack**, with both human and machine targets in mind.  
+- Infrastructure (against beaconing and redirect abuse)  
 
 The article by Guardio shows one of the ways in which scammers [can train automated systems using GANs](https://guard.io/labs/scamlexity-we-put-agentic-ai-browsers-to-the-test-they-clicked-they-paid-they-failed) (Generative Adversarial Networks) where one AI generates phishing variants and another AI plays the role of the filter trying to block them. The generator doesn’t stop until it wins.
 
