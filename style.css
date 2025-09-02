@@ -94,6 +94,15 @@ nav a:hover {
   font-size: 14px;
 }
 
+p:has(ø) {
+  text-align: center;
+  margin: 20px 0;
+}
+
+figure {
+  margin-top: 30px;
+}
+
 .ai-bypass-btn {
   display: inline-block;
   margin: 0 20px 0 0;
@@ -105,6 +114,7 @@ nav a:hover {
   border: none;
   cursor: pointer;
   font: inherit;
+  font-weight: 700;
 }
 
 .ai-bypass-btn:hover {
