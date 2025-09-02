@@ -114,7 +114,7 @@ function filterPosts() {
       const searchMatch = postText.includes(searchQuery);
       const tagMatch = selectedTags.length === 0 || selectedTags.some(tag => postTags.includes(tag));
       
-      if (searchMatch && tagMatch) {
+      if (searchMatch && tagMatch){
         li.style.display = '';
       } else {
         li.style.display = 'none';
