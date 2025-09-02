@@ -94,6 +94,31 @@ nav a:hover {
   font-size: 14px;
 }
 
+.ai-bypass-btn {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  text-decoration: none;
+  color: var(--link);
+  font-weight: 600;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.ai-bypass-btn:hover {
+  color: var(--link-hover);
+}
+
+.hidden-message {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--bg);
+  border-left: 3px solid var(--link);
+}
+
 .footer-rss {
   display: inline-flex;
   align-items: center;
