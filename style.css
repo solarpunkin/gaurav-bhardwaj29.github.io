@@ -111,3 +111,8 @@ nav a:hover {
   vertical-align: middle;
   opacity: 0.9;
 }
+
+figure img {
+  max-width: 100%;
+  height: auto;
+}
