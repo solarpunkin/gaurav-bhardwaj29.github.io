@@ -94,9 +94,12 @@ nav a:hover {
   font-size: 14px;
 }
 
-p:has(øøøø) {
+.center-text {
   text-align: center;
   margin: 20px 0;
+  font-weight: 700;
+  display: block;
+  width: 100%;
 }
 
 figure {
@@ -104,6 +107,7 @@ figure {
 }
 
 .ai-bypass-btn {
+  text-align: center;
   display: inline-block;
   margin: 0 20px 0 0;
   text-decoration: none;
