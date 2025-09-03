@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const CLIENT_ID = 'b1f10cffb95d45ada07f921e7322310d'; // IMPORTANT: Replace with your Spotify Client ID
-    const REDIRECT_URI = window.location.origin + window.location.pathname;
+    const REDIRECT_URI = window.location.origin + '/lambda/';
 
     const overlayContainer = document.getElementById('spotify-overlay-container');
     let accessToken = localStorage.getItem('spotify_access_token');
@@ -14,19 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main function to initialize the overlay
     async function init() {
+        console.log('Initializing Spotify Overlay');
         const params = new URLSearchParams(window.location.search);
         if (params.has('code')) {
+            console.log('Found authorization code. Handling redirect.');
             await handleRedirect();
         }
 
         if (isTokenExpired()) {
+            console.log('Access token expired. Refreshing...');
             await refreshAccessToken();
         }
 
         if (accessToken) {
+            console.log('Access token found. Updating overlay.');
             updateOverlay();
             setInterval(updateOverlay, 5000); // Refresh every 5 seconds
         } else {
+            console.log('No access token. Rendering login.');
             renderLogin();
         }
     }
@@ -36,21 +41,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const code = new URLSearchParams(window.location.search).get('code');
         const codeVerifier = localStorage.getItem('spotify_code_verifier');
 
-        const response = await fetch(`${api.auth}/api/token`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                client_id: CLIENT_ID,
-                grant_type: 'authorization_code',
-                code,
-                redirect_uri: REDIRECT_URI,
-                code_verifier: codeVerifier,
-            }),
-        });
+        try {
+            const response = await fetch(`${api.auth}/api/token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    client_id: CLIENT_ID,
+                    grant_type: 'authorization_code',
+                    code,
+                    redirect_uri: REDIRECT_URI,
+                    code_verifier: codeVerifier,
+                }),
+            });
 
-        const data = await response.json();
-        storeTokens(data);
-        window.history.pushState({}, '', REDIRECT_URI); // Clean up URL
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            storeTokens(data);
+            window.history.pushState({}, '', REDIRECT_URI); // Clean up URL
+        } catch (error) {
+            console.error('Error fetching access token:', error);
+            renderLogin();
+        }
     }
 
     // Redirect user to Spotify to log in
@@ -74,11 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch currently playing data from Spotify API
     async function getPlaybackState() {
         if (!accessToken) return null;
-        const response = await fetch(`${api.base}/me/player/currently-playing`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        if (response.status === 204) return null; // No content
-        return response.json();
+        try {
+            const response = await fetch(`${api.base}/me/player/currently-playing`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (response.status === 401) {
+                await refreshAccessToken();
+                return getPlaybackState();
+            }
+            if (response.status === 204) return null; // No content
+            return response.json();
+        } catch (error) {
+            console.error('Error fetching playback state:', error);
+            return null;
+        }
     }
 
     // Fetch user's queue
@@ -138,22 +161,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper functions for OAuth
     function isTokenExpired() {
-        return Date.now() >= tokenExpiresAt;
+        return Date.now() >= (tokenExpiresAt || 0);
     }
 
     async function refreshAccessToken() {
         if (!refreshToken) return;
-        const response = await fetch(`${api.auth}/api/token`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken,
-                client_id: CLIENT_ID,
-            }),
-        });
-        const data = await response.json();
-        storeTokens(data);
+        try {
+            const response = await fetch(`${api.auth}/api/token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    grant_type: 'refresh_token',
+                    refresh_token: refreshToken,
+                    client_id: CLIENT_ID,
+                }),
+            });
+            const data = await response.json();
+            storeTokens(data);
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            accessToken = null;
+        }
     }
 
     function storeTokens(data) {
