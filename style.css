@@ -85,7 +85,7 @@ nav a:hover {
 }
 
 .footer {
-  position: fixed;
+
   bottom: 0;
   width: 100%;
   text-align: center;
@@ -118,7 +118,6 @@ figure {
   border: none;
   cursor: pointer;
   font: inherit;
-  font-weight: 600;
 }
 
 .ai-bypass-btn:hover {
