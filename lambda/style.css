@@ -1,0 +1,111 @@
+:root {
+    --spotify-bg: #121212;
+    --spotify-text: #f1f1f1;
+    --spotify-accent: #1db954;
+    --spotify-subtle: #b3b3b3;
+    --spotify-border: #282828;
+}
+
+#spotify-overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--spotify-bg);
+    color: var(--spotify-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    z-index: 1000;
+    border-bottom: 1px solid var(--spotify-border);
+}
+
+.spotify-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    height: 60px;
+}
+
+.spotify-login-btn {
+    background-color: var(--spotify-accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.spotify-playback-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.spotify-album-art {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.spotify-track-details {
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.spotify-track-title {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.marquee {
+    display: inline-block;
+    animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+.spotify-track-artist {
+    color: var(--spotify-subtle);
+}
+
+.spotify-progress-container {
+    width: 100%;
+    height: 4px;
+    background-color: var(--spotify-border);
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.spotify-progress-bar {
+    height: 100%;
+    background-color: var(--spotify-accent);
+    border-radius: 2px;
+}
+
+.spotify-queue {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.spotify-queue-item {
+    color: var(--spotify-subtle);
+    white-space: nowrap;
+}
+
+a {
+    color: var(--spotify-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
