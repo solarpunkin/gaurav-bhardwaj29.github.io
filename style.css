@@ -112,12 +112,12 @@ figure {
   margin: 20px 0;
   text-decoration: none;
   color: var(--link);
-  font-weight: 600;
   padding: 0;
   background: none;
   border: none;
   cursor: pointer;
   font: inherit;
+  font-weight: 600;
 }
 
 .ai-bypass-btn:hover {
