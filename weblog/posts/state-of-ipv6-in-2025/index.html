@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>virtually infinte addresses</title>
+</head>
+<body>
+<main>
+  <h1>virtually infinte addresses</h1>
+  <div class="weblog-body"><h3>25 Years later, how is IPv6 doing?</h3>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/ipv6-status-2025/ipv6-adoption.png" style="max-width: 100%; height: auto;" />
+</figure>
+
+<p>Despite IPv6’s virtually unlimited address space, IPv4 remains critical due to compatibility with legacy systems, ease of implementation, and slow IPv6 adoption (global adoption is ~45% as of mid-2025).</p>
+<h3>IPv6 has been widely implemented</h3>
+<ul>
+<li>
+<p>All your laptops support it, as do web servers, etc.</p>
+</li>
+<li>
+<p>Core routing infrastructure supports it as well</p>
+</li>
+<li>
+<p>Implementation, however, is not deployment </p>
+</li>
+</ul>
+<p>However, most access it through tunneling (IPv6 over IPv4) to the IPv6 backbone. Worse still, many places that do use IPv6 NAT it to IPv4 to reach the internet. We can’t simply turn off IPv4 as there is far too much deployment, and no central authority. </p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/ipv6-status-2025/india-ipv6.png" style="max-width: 100%; height: auto;" />
+  <figcaption>India has among the highest ipv6 traffic, a major reason being mid-2010s internet growth (4G era, Jio launch in 2016)</figcaption>
+</figure>
+
+<h3>Most transition strategies thus depend on dual stack</h3>
+<ul>
+<li>
+<p>Implement both IPv4 and IPv6, let hosts acquire one of each address</p>
+</li>
+<li>
+<p>Try IPv6 first, and only if it fails fall back to IPv4 <a href="https://www.rfc-editor.org/rfc/rfc3484.html">RFC3484</a></p>
+</li>
+<li>
+<p>However, dual stack turns out not to be so simple</p>
+</li>
+</ul>
+<p>How do you know if you have a “good” IPv6 address? For that matter, the same goes for IPv4. We know 169.254.0.1 is usually “bad,” but what about <a href="https://gaurv.me/weblog/posts/NAT/">192.168.0.1</a>? </p>
+<p>But the bigger problem isn't technical. <strong>It's the domain name business.</strong></p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/ipv6-status-2025/thumbnail.png" style="max-width: 100%; height: auto;" />
+</figure>
+
+<p>Supply and demand, scarcity drives cost. Once something has a value, the entities that own it will protect that value. Cost of transitioning to IPv6 thus includes writing off the value of IPv4 resources.</p>
+<h3>Why the narrative shift?</h3>
+<p>I have noticed less mention of IPv4 exhaustion recently because I suspect focus has shifted from “running out” to “managing scarcity.” The secondary market, address recycling, and technologies like Network Address Translation (yes the good ol' NAT) have extended IPv4’s lifespan, reducing alarmist rhetoric. NAT allows multiple devices to share a single IPv4 address, supporting over 30 billion devices on just 3 billion advertised IPv4 addresses. Meanwhile, the market’s maturity (e.g., auctions, brokers) has normalized trading, making /24 blocks readily available from hosting providers. However, this doesn’t mean supply is infinite—scarcity persists, driving prices and market activity.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 04 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../prompt-phishing-email/">&larr; Previous: promptbait</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
