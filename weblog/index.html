@@ -19,68 +19,157 @@
       }
     });
   </script>
+  <style>
+    .weblog-tag.selected {
+      background-color: #007bff;
+      color: white;
+    }
+    .weblog-tag {
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 2px 5px;
+        border-radius: 5px;
+        font-family: inherit;
+        font-size: inherit;
+    }
+  </style>
   <title>gaurav's weblog</title>
 </head>
 <body>
   <h1>Weblog</h1>
   <p>also check out my <a href="https://gaurv.me/blog/">blog</a> page or <a href="https://hypnotic-single-224.notion.site/2176392011f0804caebee47240886285?v=2176392011f08043bbb6000c58ab5167&source=copy_link">reading list</a>.</p>
   <div class="weblog-search-container">
-    <form onsubmit="filterweblogs(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="weblog-search" placeholder="Filter Logs..." autofocus>
+    <form onsubmit="filterPosts(); return false;" style="display: flex; width: 100%;">
+      <input type="search" id="weblog-search" placeholder="Filter Logs..." autofocus oninput="handleSearchInput(this)">
       <button id="weblog-search-btn" type="submit">Search</button>
     </form>
   </div>
   <div class="weblog-tags">
-<a class="weblog-tag" href="tags/C.html">C (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/C++.html">C++ (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/TLS.html">TLS (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/ai.html">ai (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/cgi.html">cgi (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/claude.html">claude (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/cloud.html">cloud (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/gcp.html">gcp (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/github.html">github (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/gpu.html">gpu (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/ipc.html">ipc (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/mac.html">mac (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/markdown.html">markdown (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/msl.html">msl (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/networks.html">networks (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/prompt-injection.html">prompt-injection (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/python.html">python (4)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/terraform.html">terraform (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/textures.html">textures (2)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/xml.html">xml (1)</a><span class="weblog-tag-sep">• </span><a class="weblog-tag" href="tags/zip.html">zip (1)</a><span class="weblog-tag-sep">• </span></div>
-<h2>Most Recent</h2>
+<button class="weblog-tag" data-tag="C" onclick="toggleTag(this)">C (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="C++" onclick="toggleTag(this)">C++ (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="TLS" onclick="toggleTag(this)">TLS (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="ai" onclick="toggleTag(this)">ai (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="cgi" onclick="toggleTag(this)">cgi (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="claude" onclick="toggleTag(this)">claude (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="cloud" onclick="toggleTag(this)">cloud (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="gcp" onclick="toggleTag(this)">gcp (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="github" onclick="toggleTag(this)">github (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="gpu" onclick="toggleTag(this)">gpu (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="ipc" onclick="toggleTag(this)">ipc (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="mac" onclick="toggleTag(this)">mac (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="markdown" onclick="toggleTag(this)">markdown (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="msl" onclick="toggleTag(this)">msl (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="networks" onclick="toggleTag(this)">networks (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="prompt-injection" onclick="toggleTag(this)">prompt-injection (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="python" onclick="toggleTag(this)">python (4)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="terraform" onclick="toggleTag(this)">terraform (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="textures" onclick="toggleTag(this)">textures (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="xml" onclick="toggleTag(this)">xml (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="zip" onclick="toggleTag(this)">zip (1)</button><span class="weblog-tag-sep">• </span></div>
+<h2 id="most-recent-heading">Most Recent</h2>
 <ul class="weblog-list" id="weblog-list">
-<li><a href="posts/rope-1/">rope</a> <span class="weblog-date">2025-09-05</span></li>
-<li><a href="posts/state-of-ipv6-in-2025/">virtually infinte addresses</a> <span class="weblog-date">2025-09-04</span></li>
-<li><a href="posts/prompt-phishing-email/">promptbait</a> <span class="weblog-date">2025-09-02</span></li>
-<li><a href="posts/NAT/">192.168.0.1</a> <span class="weblog-date">2025-08-28</span></li>
-<li><a href="posts/ipc-stress-test/">how to find the fastest way to make systems talk</a> <span class="weblog-date">2025-08-18</span></li>
-<li><a href="posts/simplex-noise/">finding sweet spots in simplex noise</a> <span class="weblog-date">2025-08-04</span></li>
-<li><a href="posts/iac-using-terraform-gcp/">I wrote my first Infrastructure as Code</a> <span class="weblog-date">2025-08-02</span></li>
-<li><a href="posts/kawaii/">Custom browser picker on macOS with finicky</a> <span class="weblog-date">2025-07-29</span></li>
-<li><a href="posts/rss-feed/">Subscribe via RSS</a> <span class="weblog-date">2025-07-13</span></li>
-<li><a href="posts/tls-handshakes/">Integrating TLS via mbedTLS in web server</a> <span class="weblog-date">2025-07-06</span></li>
+<li data-tags="C++,gpu,msl,python"><a href="posts/rope-1/">rope</a> <span class="weblog-date">2025-09-05</span></li>
+<li data-tags="networks"><a href="posts/state-of-ipv6-in-2025/">virtually infinte addresses</a> <span class="weblog-date">2025-09-04</span></li>
+<li data-tags="ai,prompt-injection"><a href="posts/prompt-phishing-email/">promptbait</a> <span class="weblog-date">2025-09-02</span></li>
+<li data-tags="networks"><a href="posts/NAT/">192.168.0.1</a> <span class="weblog-date">2025-08-28</span></li>
+<li data-tags="C,github,ipc"><a href="posts/ipc-stress-test/">how to find the fastest way to make systems talk</a> <span class="weblog-date">2025-08-18</span></li>
+<li data-tags="cgi,python,textures"><a href="posts/simplex-noise/">finding sweet spots in simplex noise</a> <span class="weblog-date">2025-08-04</span></li>
+<li data-tags="gcp,terraform"><a href="posts/iac-using-terraform-gcp/">I wrote my first Infrastructure as Code</a> <span class="weblog-date">2025-08-02</span></li>
+<li data-tags="mac,markdown"><a href="posts/kawaii/">Custom browser picker on macOS with finicky</a> <span class="weblog-date">2025-07-29</span></li>
+<li data-tags="python,xml"><a href="posts/rss-feed/">Subscribe via RSS</a> <span class="weblog-date">2025-07-13</span></li>
+<li data-tags="C,TLS"><a href="posts/tls-handshakes/">Integrating TLS via mbedTLS in web server</a> <span class="weblog-date">2025-07-06</span></li>
 </ul>
-<h2 style="display:none;">All logs</h2>
+<h2 id="all-logs-heading" style="display:none;">All logs</h2>
 <ul class="weblog-list" id="all-weblogs" style="display:none;">
-<li><a href="posts/rope-1/">rope</a> <span class="weblog-date">2025-09-05</span></li>
-<li><a href="posts/state-of-ipv6-in-2025/">virtually infinte addresses</a> <span class="weblog-date">2025-09-04</span></li>
-<li><a href="posts/prompt-phishing-email/">promptbait</a> <span class="weblog-date">2025-09-02</span></li>
-<li><a href="posts/NAT/">192.168.0.1</a> <span class="weblog-date">2025-08-28</span></li>
-<li><a href="posts/ipc-stress-test/">how to find the fastest way to make systems talk</a> <span class="weblog-date">2025-08-18</span></li>
-<li><a href="posts/simplex-noise/">finding sweet spots in simplex noise</a> <span class="weblog-date">2025-08-04</span></li>
-<li><a href="posts/iac-using-terraform-gcp/">I wrote my first Infrastructure as Code</a> <span class="weblog-date">2025-08-02</span></li>
-<li><a href="posts/kawaii/">Custom browser picker on macOS with finicky</a> <span class="weblog-date">2025-07-29</span></li>
-<li><a href="posts/rss-feed/">Subscribe via RSS</a> <span class="weblog-date">2025-07-13</span></li>
-<li><a href="posts/tls-handshakes/">Integrating TLS via mbedTLS in web server</a> <span class="weblog-date">2025-07-06</span></li>
-<li><a href="posts/bypassing-code-signing-mac-zip-binaries/">Bypassing macOS code signing for ZIP-appended binaries</a> <span class="weblog-date">2025-07-02</span></li>
-<li><a href="posts/hosting-gcp/">Hosting website as a subdomain on Google Cloud</a> <span class="weblog-date">2025-06-24</span></li>
-<li><a href="posts/perlin-noise/">Create image textures using Perlin Noise</a> <span class="weblog-date">2025-06-16</span></li>
-<li><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="weblog-date">2025-06-14</span></li>
+<li data-tags="C++,gpu,msl,python"><a href="posts/rope-1/">rope</a> <span class="weblog-date">2025-09-05</span></li>
+<li data-tags="networks"><a href="posts/state-of-ipv6-in-2025/">virtually infinte addresses</a> <span class="weblog-date">2025-09-04</span></li>
+<li data-tags="ai,prompt-injection"><a href="posts/prompt-phishing-email/">promptbait</a> <span class="weblog-date">2025-09-02</span></li>
+<li data-tags="networks"><a href="posts/NAT/">192.168.0.1</a> <span class="weblog-date">2025-08-28</span></li>
+<li data-tags="C,github,ipc"><a href="posts/ipc-stress-test/">how to find the fastest way to make systems talk</a> <span class="weblog-date">2025-08-18</span></li>
+<li data-tags="cgi,python,textures"><a href="posts/simplex-noise/">finding sweet spots in simplex noise</a> <span class="weblog-date">2025-08-04</span></li>
+<li data-tags="gcp,terraform"><a href="posts/iac-using-terraform-gcp/">I wrote my first Infrastructure as Code</a> <span class="weblog-date">2025-08-02</span></li>
+<li data-tags="mac,markdown"><a href="posts/kawaii/">Custom browser picker on macOS with finicky</a> <span class="weblog-date">2025-07-29</span></li>
+<li data-tags="python,xml"><a href="posts/rss-feed/">Subscribe via RSS</a> <span class="weblog-date">2025-07-13</span></li>
+<li data-tags="C,TLS"><a href="posts/tls-handshakes/">Integrating TLS via mbedTLS in web server</a> <span class="weblog-date">2025-07-06</span></li>
+<li data-tags="claude,mac,zip"><a href="posts/bypassing-code-signing-mac-zip-binaries/">Bypassing macOS code signing for ZIP-appended binaries</a> <span class="weblog-date">2025-07-02</span></li>
+<li data-tags="cloud"><a href="posts/hosting-gcp/">Hosting website as a subdomain on Google Cloud</a> <span class="weblog-date">2025-06-24</span></li>
+<li data-tags="cgi,python,textures"><a href="posts/perlin-noise/">Create image textures using Perlin Noise</a> <span class="weblog-date">2025-06-16</span></li>
+<li data-tags="github,markdown"><a href="posts/github-actions-til/">GitHub Actions for Automating My TIL</a> <span class="weblog-date">2025-06-14</span></li>
 </ul>
 
 <script>
-function filterweblogs() {
-  var input = document.getElementById('weblog-search');
-  var filter = input.value.toLowerCase();
-  var ul = document.getElementById('weblog-list');
-  ul.innerHTML = '';
-  var allLis = document.getElementById('all-weblogs').getElementsByTagName('li');
-  var count = 0;
-  for (var i = 0; i < allLis.length; i++) {
-    var txt = allLis[i].textContent || allLis[i].innerText;
-    if (txt.toLowerCase().indexOf(filter) > -1 && count < 10) {
-      ul.appendChild(allLis[i].cloneNode(true));
-      count++;
+let selectedTags = [];
+
+function toggleTag(tagEl) {
+  const tagName = tagEl.dataset.tag;
+  const index = selectedTags.indexOf(tagName);
+  if (index > -1) {
+    selectedTags.splice(index, 1);
+    tagEl.classList.remove('selected');
+  } else {
+    selectedTags.push(tagName);
+    tagEl.classList.add('selected');
+  }
+  filterPosts();
+}
+
+function filterPosts() {
+  const searchQuery = document.getElementById('weblog-search').value.toLowerCase();
+  const allLis = document.getElementById('all-weblogs').getElementsByTagName('li');
+  
+  let anyFilterActive = searchQuery !== '' || selectedTags.length > 0;
+
+  if (anyFilterActive) {
+    document.getElementById('most-recent-heading').style.display = 'none';
+    document.getElementById('weblog-list').style.display = 'none';
+    document.getElementById('all-logs-heading').style.display = 'block';
+    document.getElementById('all-weblogs').style.display = 'block';
+    document.getElementById('all-weblogs').style.maxHeight = '400px';
+    document.getElementById('all-weblogs').style.overflowY = 'auto';
+
+    for (let i = 0; i < allLis.length; i++) {
+      const li = allLis[i];
+      const postText = (li.textContent || li.innerText).toLowerCase();
+      const postTags = (li.dataset.tags || '').split(',');
+
+      const searchMatch = postText.includes(searchQuery);
+      const tagMatch = selectedTags.length === 0 || selectedTags.every(tag => postTags.includes(tag));
+      
+      if (searchMatch && tagMatch) {
+        li.style.display = '';
+      } else {
+        li.style.display = 'none';
+      }
     }
+  } else {
+    showDefaultView();
   }
 }
+
+function showDefaultView() {
+    document.getElementById('most-recent-heading').innerText = "Most Recent";
+    document.getElementById('most-recent-heading').style.display = 'block';
+    document.getElementById('weblog-list').style.display = 'block';
+    document.getElementById('weblog-list').style.maxHeight = '';
+    document.getElementById('weblog-list').style.overflowY = '';
+    document.getElementById('all-logs-heading').style.display = 'none';
+    document.getElementById('all-weblogs').style.display = 'none';
+
+    const allLis = document.getElementById('all-weblogs').getElementsByTagName('li');
+    for (let i = 0; i < allLis.length; i++) {
+        allLis[i].style.display = "";
+    }
+
+    const ul = document.getElementById('weblog-list');
+    ul.innerHTML = '';
+    for (let i = 0; i < 10 && i < allLis.length; i++) {
+      ul.appendChild(allLis[i].cloneNode(true));
+    }
+}
+
+function handleSearchInput(input) {
+  filterPosts();
+}
+
+function showAllLogs() {
+  document.getElementById('most-recent-heading').style.display = 'none';
+  document.getElementById('weblog-list').style.display = 'none';
+  document.getElementById('all-logs-heading').style.display = 'block';
+  document.getElementById('all-weblogs').style.display = 'block';
+  const weblogList = document.getElementById('all-weblogs');
+  weblogList.style.maxHeight = '400px';
+  weblogList.style.overflowY = 'auto';
+}
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+    showDefaultView();
+});
+
 </script>
-        <nav style="margin-top: 2em;">
+        <nav style="margin-top: 2em; display: flex; justify-content: space-between; align-items: center;">
             <a href="../">&larr; home</a>
+            <a href="#" onclick="showAllLogs(); return false;">All</a>
         </nav>
 </body></html>
