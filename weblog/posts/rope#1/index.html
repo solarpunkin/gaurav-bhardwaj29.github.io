@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>rope</title>
+</head>
+<body>
+<main>
+  <h1>rope</h1>
+  <div class="weblog-body"><aside>
+💡
+
+This is an implementation of the Rotary Positional embedding (RoPE) 
+as discussed in [*Rotary Embeddings: A Relative Revolution*](https://blog.eleuther.ai/rotary-embeddings/) by Biderman et al. (2021).
+
+</aside>
+
+<figure style="text-align: center; margin: 2rem 0;">
+  <iframe 
+    src="https://blog.eleuther.ai/images/blog/rotary-embeddings/waveplate.html" 
+    style="width: 100%; height: 500px; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+    title="Interactive Waveplate Demo">
+  </iframe>
+  <figcaption style="margin-top: 0.8rem; font-size: 0.9em; color: var(--muted);">
+    Interactive waveplate visualization. Try dragging the cube to rotate the view!
+  </figcaption>
+</figure>
+
+<pre class="codehilite"><code class="language-python">def rope(x, theta):
+    # theta: (1, seq_len, 1) — angle per position
+    batch, seq_len, dim = x.shape. # (batch, seq_len, dim) per attn head H
+    assert dim % 2 == 0
+    x1 = x[..., ::2]  # even dims
+    x2 = x[..., 1::2]  # odd dims
+
+    sin = torch.sin(theta)
+    cos = torch.cos(theta)
+
+    x_rotated = torch.stack([
+        x1 * cos - x2 * sin,
+        x1 * sin + x2 * cos
+    ], dim=-1)
+    return x_rotated.flatten(-2)  # (batch, seq_len, dim)
+</code></pre>
+
+<ul>
+<li>Equivalent pytorch code (if you prefer summation and q, m are known). Note that equivalence here is referred to simplicity and flexibility and does not guarantee efficiency, especially when training large deep neural nets from scratch.</li>
+</ul>
+<pre class="codehilite"><code class="language-python">import torch
+def apply_rope(q, thetas, m):
+    # q: (d,), thetas: (d//2,), m: scalar
+    q = q.view(-1, 2)  # (d/2, 2)
+    angles = m * thetas
+    cos = torch.cos(angles)
+    sin = torch.sin(angles)
+
+    rot = torch.stack([
+        torch.stack([cos, -sin], dim=1),
+        torch.stack([sin,  cos], dim=1)
+    ], dim=1)  # (d/2, 2, 2)
+
+    q_rotated = torch.einsum('bij,bj-&gt;bi', rot, q)  # (d/2, 2)
+    return q_rotated.flatten()
+</code></pre>
+
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/rope_rotation_demo.gif" style="max-width: 100%; height: auto;" />
+  <figcaption></figcaption>
+</figure>
+
+<h2>Fused RoPE kernel in metal</h2>
+<p>The implementation uses a fused kernel approach where each thread processes one rotation pair (even/odd elements), achieving optimal GPU utilization and memory coalescing. </p>
+<pre class="codehilite"><code class="language-cpp">kernel void fused_rope(
+    device const float* input     [[ buffer(0) ]],
+    device const float* cos_table [[ buffer(1) ]],
+    device const float* sin_table [[ buffer(2) ]],
+    device float*       output    [[ buffer(3) ]],
+    constant uint&amp;      S         [[ buffer(4) ]],
+    constant uint&amp;      B         [[ buffer(5) ]],
+    constant uint&amp;      H         [[ buffer(6) ]],
+    constant uint&amp;      D         [[ buffer(7) ]],
+    uint3 gid                   [[ thread_position_in_grid ]])
+{
+    uint idx = gid.x;
+    uint total_elements = S * B * H * (D / 2);
+
+    if (idx &gt;= total_elements) return;
+
+    uint half_d = D / 2;
+    uint d_pair = idx % half_d;
+    uint remaining = idx / half_d;
+    uint h = remaining % H;
+    remaining = remaining / H;
+    uint b = remaining % B;
+    uint s = remaining / B;
+
+    uint base_idx = ((s * B + b) * H + h) * D;
+
+    uint even_idx = base_idx + 2 * d_pair;
+    uint odd_idx = base_idx + 2 * d_pair + 1;
+
+    float x_even = input[even_idx];
+    float x_odd = input[odd_idx];
+
+    float cos_val = cos_table[s * half_d + d_pair];
+    float sin_val = sin_table[s * half_d + d_pair];
+
+    output[even_idx] = x_even * cos_val - x_odd * sin_val;
+    output[odd_idx] = x_even * sin_val + x_odd * cos_val;
+}
+</code></pre>
+
+<p>When dispatching threads , dispatch with (S * B * H * D/2) threads in the x-dimension
+MTLSize threadsPerGrid = MTLSizeMake(S * B * H * (D/2), 1, 1);</p>
+<aside>
+🚧
+
+Ongoing Work is focussed in benchmarking the kernel against rope implementations from huggingface transformers, xFormers, and flash attention 2 CUDA on Latency, Memory usage, FLOPs, numerical accuracy etc. 
+
+</aside>
+
+<p>Until then… heavy caffeine ☕️ and peace ☮️</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 05 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../state-of-ipv6-in-2025/">&larr; Previous: virtually infinte addresses</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>

@@ -59,6 +59,7 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
     html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
     post = {
         'title': meta['title'],
+        'weblog_title': meta.get('weblog_title', meta['title']),  # Use weblog_title if exists, else fallback to title
         'date': date_obj,
         'date_str': date_obj.strftime('%Y-%m-%d'),
         'tags': meta.get('tags', []),
@@ -226,7 +227,7 @@ for i, post in enumerate(posts):
 </head>
 <body>
 <main>
-  <h1>{post['title']}</h1>
+  <h1>{post['weblog_title']}</h1>
   <div class="weblog-body">{post['body']}
 
   <!-- Perlin noise image row (only for the perlin-noise post) -->
