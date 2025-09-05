@@ -190,6 +190,56 @@ pre, code {
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', monospace;
   font-size: 1em;
 }
+
+/* Styling for aside elements */
+aside {
+  background: var(--code-bg);
+  border-left: 4px solid var(--link);
+  border-radius: 0 8px 8px 0;
+  padding: 1.2rem 1.5rem;
+  margin: 1.8rem 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+aside::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 119, 0, 0.05) 0%, rgba(0, 119, 0, 0) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+aside > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Style for the emoji in aside */
+aside :first-child {
+  margin-top: 0;
+  font-size: 1.5em;
+  line-height: 1;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  aside {
+    border-left-color: var(--link);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  aside::before {
+    background: linear-gradient(90deg, rgba(0, 255, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+}
 pre {
   background: var(--pre-bg);
   border-radius: 8px;
