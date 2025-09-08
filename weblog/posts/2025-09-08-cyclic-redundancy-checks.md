@@ -5,7 +5,7 @@ slug: "crc32"
 weblog_title: "Table-Driven CRC32 for a minimal TCP File Sender"
 ---
 
-Wish I had the intuition to just summon god-tier generator polynomials for cyclic redundancy checks. But nah, shoutout to [Philip Koopman]((https://users.ece.cmu.edu/~koopman/crc/)) for actually coming up with best polynomials. They are excellent for detecting single-bit, two-bit and burst errors. Especially the CRC32 polynomial is used in virtually every stack to detect bit manipulation errors where file transfers take place. 
+Wish I had the intuition to just summon god-tier generator polynomials for cyclic redundancy checks. But nah, shoutout to [Philip Koopman](https://users.ece.cmu.edu/~koopman/crc/) for actually coming up with best polynomials. They are excellent for detecting single-bit, two-bit and burst errors. Especially the CRC32 polynomial is used in virtually every stack to detect bit manipulation errors where file transfers take place. 
 
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/crc32/rotated_horizontal.png" style="max-width: 100%; height: auto;" />
