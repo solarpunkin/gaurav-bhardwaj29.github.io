@@ -30,6 +30,6 @@ You can safely use this modified CRC32 to check correctness for:
 - Any text file
 - Arbitrary in-memory messages (structs, packets, frames)
 
-Basically: “if you can serialize it to bytes, you can protect it with this CRC.”
+Basically, *“if you can serialize it to bytes, you can protect it with this CRC.”*
 
 This youtube video demonstrates how the algorithm works in [theory](https://www.youtube.com/watch?v=izG7qT0EpBw) and in [hardware](https://www.youtube.com/watch?v=sNkERQlK8j8). Highly recommend!
