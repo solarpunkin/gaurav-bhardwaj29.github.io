@@ -17,7 +17,7 @@ I was experimenting with different polynomials to hack the pattern (if there is)
 What I modified:
 
 - CRC seed = The `xcrc32()` implementation from GNU libiberty isn’t the “standard Ethernet CRC-32” with reflection and XOR. I changed the initial value = **0xFFFFFFFF**.
-- I set the file size to 8-byte `uint64_t`, and added proper `htonll_u64()` conversion for network order.
+- I set the file size to **8-byte** `uint64_t`, and added proper `htonll_u64()` conversion for network order.
 
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/crc32/endian.png" style="max-width: 100%; height: auto;" />
