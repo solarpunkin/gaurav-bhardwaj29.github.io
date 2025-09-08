@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>cyclic redundancy checks</title>
+</head>
+<body>
+<main>
+  <h1>Table-Driven CRC32 for a minimal TCP File Sender</h1>
+  <div class="weblog-body"><p>Wish I had the intuition to just summon god-tier generator polynomials for cyclic redundancy checks. But nah, shoutout to <a href="(https://users.ece.cmu.edu/~koopman/crc/)">Philip Koopman</a> for actually coming up with best polynomials. They are excellent for detecting single-bit, two-bit and burst errors. Especially the CRC32 polynomial is used in virtually every stack to detect where file transfers take place. </p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/crc32/rotated_horizontal.png" style="max-width: 100%; height: auto;" />
+  <figcaption>had to do it, sorry:p</figcaption>
+</figure>
+
+<p>I was experimenting with different polynomials to hack the pattern (if there is) to find the relationship between error and the actual bytes that got flipped. I ported the GNU libiberty xcrc32 <a href="https://gcc.gnu.org/onlinedocs/libiberty/Memory-Allocation.html">here ‘x’ is wrapper around the standard function</a> <a href="https://raw.githubusercontent.com/gcc-mirror/gcc/refs/heads/master/libiberty/crc32.c">source code</a> with some modifications into my client-server program to send a PNG file internally. </p>
+<p>What I modified:</p>
+<ul>
+<li>CRC seed = The <code>xcrc32()</code> implementation from GNU libiberty isn’t the “standard Ethernet CRC-32” with reflection and XOR. I changed the initial value = <strong>0xFFFFFFFF</strong>.</li>
+<li>I set the file size to <strong>8-byte</strong> <code>uint64_t</code>, and added proper <code>htonll_u64()</code> conversion for network order.</li>
+</ul>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/crc32/endian.png" style="max-width: 100%; height: auto;" />
+  <figcaption>host to network byte order</figcaption>
+</figure>
+
+<p>You can safely use this modified CRC32 to check correctness for:</p>
+<ul>
+<li>Any binary file (images, executables, archives)</li>
+<li>Any text file</li>
+<li>Arbitrary in-memory messages (structs, packets, frames)</li>
+</ul>
+<p>Basically, <em>“if you can serialize it to bytes, you can protect it with this CRC.”</em></p>
+<p>This youtube video demonstrates how the algorithm works in <a href="https://www.youtube.com/watch?v=izG7qT0EpBw">theory</a> and in <a href="https://www.youtube.com/watch?v=sNkERQlK8j8">hardware</a>. Highly recommend!</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 08 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../rope-1/">&larr; Previous: rope</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
