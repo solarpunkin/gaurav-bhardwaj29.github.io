@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>select exceptfds</title>
+</head>
+<body>
+<main>
+  <h1>I tried to actually make select()’s exceptfds trigger</h1>
+  <div class="weblog-body"><p>And here's what happened:</p>
+<p>I saw this line in the man page:</p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/select-exceptfds-man.png" style="max-width: 100%; height: auto;" />
+  <figcaption></figcaption>
+</figure>
+
+<p>But I never saw it actually trigger. So I decided to write a tiny TCP client/server, and try to make <code>select()</code> wake up on the <code>exceptfds</code> set.</p>
+<p>TCP’s “out-of-band” data isn’t a second stream or a priority lane. It’s just one single byte flagged as urgent. The sender sets the urgent pointer in the TCP header.</p>
+<p>On the receiving end, two options exist:</p>
+<ul>
+<li>Default: urgent byte is only visible if you call <code>recv(MSG_OOB)</code>.</li>
+<li>With <code>SO_OOBINLINE</code>: urgent byte is delivered inline with the regular stream, but <code>select()</code> still signals it as “exceptional.”</li>
+</ul>
+<p>That’s it. One byte, not a side channel.</p>
+<h3>pseudocode:</h3>
+<h5>server:</h5>
+<pre class="codehilite"><code class="language-c">socket()
+bind()
+listen()
+
+fd_set rfds, efds;
+while (true) {
+    FD_ZERO(&amp;rfds); FD_ZERO(&amp;efds);
+    FD_SET(c, &amp;rfds); FD_SET(c, &amp;efds);
+
+    select(c+1, &amp;rfds, NULL, &amp;efds, NULL);
+
+    if (FD_ISSET(c, &amp;efds)) {
+        char b;
+        int n = recv(c, &amp;b, 1, MSG_OOB);
+        printf(&quot;OOB: got '%c'\n&quot;, b);
+    }
+    if (FD_ISSET(c, &amp;rfds)) {
+        char buf[64];
+        int n = recv(c, buf, sizeof buf, 0);
+        if (n &lt;= 0) break;
+        printf(&quot;INBAND: %.*s\n&quot;, n, buf);
+    }
+}
+</code></pre>
+
+<h5>client:</h5>
+<pre class="codehilite"><code class="language-c">int s = socket(AF_INET, SOCK_STREAM, 0);
+connect(s, ...);
+
+send(s, &quot;hello&quot;, 5, 0);
+send(s, &quot;!&quot;, 1, MSG_OOB);   // the urgent byte
+send(s, &quot;world&quot;, 5, 0);
+</code></pre>
+
+<p>Run the server, connect the client, and watch the logs:</p>
+<pre class="codehilite"><code class="language-bash">INBAND: hello
+OOB: got '!'
+INBAND: world
+</code></pre>
+
+<p>Here's the thing: </p>
+<ul>
+<li>the exceptfds set was marked only when the OOB byte arrived,</li>
+<li>a call to <code>recv(MSG_OOB)</code> returned it cleanly, and</li>
+<li>if I had enabled <code>SO_OOBINLINE</code>, then <code>recv(MSG_OOB)</code> stopped working and the ! showed up inside the normal stream—but exceptfds still got flagged.</li>
+</ul>
+<p>So the man page was right: exceptfds is just “would recv(MSG_OOB) not block.”</p>
+<p>I ran tcpdump -vv while sending. The OOB send set the TCP URG flag and advanced the urgent pointer. You can see it in the packet dump:</p>
+<pre class="codehilite"><code class="language-bash">Flags [P.], urg 1, seq 6:7, urgptr=1
+</code></pre>
+
+<h3>BSD vs Linux</h3>
+<p>There’s an old historical quirk: BSD stacks interpret the urgent pointer differently. On FreeBSD/macOS, the “urgent byte” is actually delivered as the last byte of the stream, not a separate one.</p>
+<h3>why it matters (or doesn’t)</h3>
+<p>In the old days, telnet used OOB for control signals. Today, hardly anything does. It’s deprecated in RFC 6093.</p>
+<p>But as an experiment:</p>
+<ul>
+<li>i confirmed <code>select()</code>’s exceptfds really does fire.</li>
+<li>it only wakes up when there’s urgent data waiting to be <code>recv(MSG_OOB)</code>’d.</li>
+<li>it clears once consumed.</li>
+<li>and it’s just one byte — no queue, no stream.</li>
+</ul>
+<p>and if you ever see it in production? Chances are you’re debugging legacy telnet, or something’s gone wrong.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 10 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../cyclic-redundancy-checks/">&larr; Previous: cyclic redundancy checks</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
