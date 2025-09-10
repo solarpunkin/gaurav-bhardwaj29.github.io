@@ -5,7 +5,7 @@ slug: "select-exceptfds"
 weblog_title: "I tried to actually make select()’s exceptfds trigger"
 ---
 
-And here's what happened:
+**And here's what happened**
 
 I saw this line in the man page:
 
