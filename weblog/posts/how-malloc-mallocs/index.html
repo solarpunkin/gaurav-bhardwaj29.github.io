@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>how malloc mallocs</title>
+</head>
+<body>
+<main>
+  <h1>How malloc allocates memory dynamically</h1>
+  <div class="weblog-body"><p><code>malloc()</code> is the go-to tool for requesting memory from the disk. When you write a program that uses dynamic memory allocations or create any data structre with the intent of changing its size at runtime, you use <code>malloc()</code> to define the size of the memory block you want to allocate. When the program gets executed, the kernel <em>magically</em> allocates this block of memory in the heap and returns a pointer to it. This memory can grow or shrink during execution, as per the needs of the program. But how does malloc allocate this "memory block" in the heap? This is the topic of this post. The kernel does this using a memory allocator. The <strong>memory allocator</strong> is a program in iteslf in the sense that it is responsible for managing the memory in the system. It is responsible for allocating and deallocating memory, and for ensuring that the memory is used efficiently.</p>
+<p>You might be wondering why we need dynamic memory allocation in the first place. Why not just use arrays? Well you are not alone. I used to think the same. I saw <code>malloc()</code> as a goofy black box. This was probably the same time when I had a stockholm syndrome thing for using languages with manual garbage collectors. Before jumping into the details of how malloc works, it's helpful to look at the memory architecture in a C program to understand why <strong>heap</strong> in the first place. When your C program runs, the operating system allocates memory for it, divided into several segments: We will call it hierarchy of memory. Understanding the architecture will help us understand why dynamic allocation exists, and more importantly, when to use dynamic allocation. For starters, I recommend reading <a href="https://thelinuxcode.com/dynamic-memory-allocation-in-c-using-malloc-calloc-free-and-realloc/">this</a> to get a better understanding of the memory architecture in a C program. You just need to know what <code>void* malloc(size_t size)</code> does at the application level.</p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/malloc-malloc/memarcC.png" style="max-width: 100%; height: auto;" />
+  <figcaption>Memory architecture of a C program</figcaption>
+</figure>
+
+<p>Once, the reason for using heap is clear, we can move on to the details of how memory allocators work. Different OSes have their implementation of memory allocators and functions like <code>malloc()</code> use APIs to request dynamic memory from the OS. You can loosely think of <code>malloc()</code> as a wrapper around the OS's memory allocator. I will talk about <code>libmalloc</code>–the memory allocator in macOS (15.6, used as of writing this post). </p>
+<p>Memory allocators use system calls to request memory from the OS. The most common system call used is <code>mmap()</code>, legacy MAC systems use <code>brk()</code>. <code>libmalloc</code> almost always use <strong>mmap</strong> syscall. Under the hood, <code>malloc()</code> is layered over the Mach VM subsystem (which uses mmap-like calls via vm_allocate, mach_vm_map). The allocations are almost always from VM mappings, not classic <code>sbrk()</code>. </p>
+<p>To observe those calls live we can: (A) use DTrace/dtruss (but macOS SIP/entitlements often block it), (B) use vmmap + malloc_history + malloc env vars and libgmalloc – (what we will see), or (C) use Instruments.</p>
+<p>So, when you call <code>malloc()</code>, the function checks the heap for a free block of memory of the requested size. If it finds one, it returns a pointer to it. If not, it extends the heap using <code>mmap()</code>. The heap allocations are divided into zones. macOS uses the zone system: nano / tiny / small / large zones. The nano allocator is a very low-overhead fast path for tiny objects; other zones are used for progressively larger objects. </p>
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/malloc-malloc/SVG.svg" style="max-width: 100%; height: auto;" />
+  <figcaption>How malloc decides which zone to use</figcaption>
+</figure>
+
+<h3>Inspection of <code>mach_vm_map</code> / <code>vm_allocate</code> calls</h3>
+<p>Besides zones, <code>malloc</code> also has a number of facilites for debugging allocation errors in applications. These facilities are primarily controlled via environment variables. Once such facility is <code>MallocStackLogging</code> that records all allocations and deallocations in a log file, along with stack traces. We set it to <code>vm</code> to record VM allocations (mach_vm/mmap). Another useful one is <code>MallocNanoZone</code> which is set to <code>0</code> to disable the nano allocator. It makes behavior easy to trace in our case (we will see why).</p>
+<p>We will write a program that allocates dynamic memory using <code>void* malloc(size_t size)</code> and inspect the calls to <code>mach_vm_map</code> and <code>vm_allocate</code> using <code>malloc_history</code> and <code>vmmap</code>.</p>
+<pre class="codehilite"><code class="language-c">// trace.c
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void) {
+    void *small[1000];
+    for (int i = 0; i &lt; 1000; ++i) {
+        small[i] = malloc(64);
+        if (!small[i]) { perror(&quot;malloc small&quot;); return 1; }
+    }
+
+    void *big = malloc(10 * 1024 * 1024);
+    if (!big) { perror(&quot;malloc big&quot;); return 1; }
+    memset(big, 0, 10 * 1024 * 1024);
+
+    // print PID and a representative address
+    printf(&quot;PID: %d  big=%p\n&quot;, getpid(), big);
+    fflush(stdout);
+
+    // keep process alive (120s)
+    sleep(120);
+
+    for (int i = 0; i &lt; 1000; ++i) free(small[i]);
+    free(big);
+    return 0;
+}
+</code></pre>
+
+<p>The sleep function is used to keep the process alive so that we can attach tools (vmmap, malloc_history). Before adding sleep, the program returned empty, possibly due to optimizer remobving calls or the program exited too quickly. If the program allocates and immediately exits, you won’t see the mapping calls unless you pause (<code>sleep</code>) the process so you can attach/observe.</p>
+<p>Compile and run inspection commands:</p>
+<pre class="codehilite"><code class="language-bash">clang -g -O0 trace.c -o trace
+MallocNanoZone=0 MallocStackLogging=vm MallocStackLoggingNoCompact=1 ./trace
+</code></pre>
+
+<p>This will return PID and a pointor to the start of the virtual memory block address allocated by <code>malloc()</code>. </p>
+<pre class="codehilite"><code class="language-bash">PID: 22022  big=0x12b000000
+</code></pre>
+
+<p>If you deference <code>big</code>, you get the actual value stored there. <strong>Note</strong> that this is a virtual address, not a physical address. This is the address malloc allocated on the heap structure. The actual physical address is not visible to the user. Getting the physical address on MAC is out of scope for this post. One important distinction I would like to make at this point is between virtual and physical addresses. Virtual addresses are the addresses that are used by the program to access memory. Physical addresses are the actual addresses of the memory in the system. Infact, we can compare the virtual memory and physical footprint of our program using <code>vmmap</code>.</p>
+<p>Run <code>vmmap -w &lt;PID&gt;</code> from second terminal. This prints a hell lot of information. We will just foucs on a few of them – Virtual Size, Resident Size, Dirty Size, Swapped Size and Physical Footprint. Running <code>vmmap -w 22022</code> returns a Physical footprint of <strong>11.3M</strong>. The Malloc Zone has a virtual size of <strong>19.0MB</strong> (<strong>1.7x the physical memory</strong>). 11 MB is the real RAM being consumed by the process. This includes everything: stacks, libraries, heap, etc. </p>
+<p>To inspect heap allocations, we can use <code>malloc_history</code>.</p>
+<pre class="codehilite"><code class="language-bash">malloc_history &lt;PID&gt; 0x12b000000
+</code></pre>
+
+<p>You'll see stack trace, which malloc zone, and the size of the allocation and whether the address was freed or not. 
+We saw how <code>malloc</code> is a layer on top of Mach VM. It may request larger VM regions from the kernel managed by <code>libmalloc</code> and subdivide them into zones. Finally, debugging tools (vmmap, malloc_history, stack logging) let us peek inside the allocator’s bookkeeping, but the physical memory is opague.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 14 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../select-exceptfds/">&larr; Previous: select exceptfds</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
