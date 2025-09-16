@@ -129,7 +129,7 @@ def generate_noise(w, h, grid_width=10, grid_height=10, scale=10.0):
       <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">x Perlin noise</figcaption>
     </figure>
     <figure style="flex: 1; text-align: center; max-width: 200px;">
-      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/output_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%2_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
       <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">= Output Image</figcaption>
     </figure>
   </div>
@@ -150,5 +150,35 @@ def generate_noise(w, h, grid_width=10, grid_height=10, scale=10.0):
     </ul>
   </div>
 </main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
 </body>
 </html>

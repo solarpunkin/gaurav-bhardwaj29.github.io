@@ -5,6 +5,89 @@ import yaml
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 import re
+import uuid
+
+# --- Start of code block features ---
+
+SCRIPT_ADDITIONS = '''
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+'''
+
+def add_code_block_features(html_content):
+    processed_html = ""
+    last_end = 0
+    pattern = re.compile(r'<div class="codehilite[^"]*">')
+    
+    for match in pattern.finditer(html_content):
+        start = match.start()
+        processed_html += html_content[last_end:start]
+        
+        end_div_pos = html_content.find('</div>', start)
+        if end_div_pos == -1:
+            processed_html += html_content[start:]
+            last_end = len(html_content)
+            break
+
+        end = end_div_pos + len('</div>')
+        code_block_html = html_content[start:end]
+        
+        lang_match = re.search(r'language-([^\s"]+)', code_block_html)
+        lang = lang_match.group(1) if lang_match else ''
+        
+        block_id = f"code-block-{uuid.uuid4().hex[:6]}"
+        
+        clipboard_svg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>'
+
+        toolbar_html = f'''<div class="code-toolbar">
+    <span class="language-name">{lang}</span>
+    <button class="copy-btn" onclick="copyCode(this, \'{block_id}\')" aria-label="Copy code to clipboard">
+        {clipboard_svg}
+    </button>
+    <a class="anchor-link" href="#{block_id}" aria-label="Link to this code block">🔗</a>
+</div>'''
+        
+        modified_block = code_block_html.replace('class="codehilite', 'class="codehilite-container codehilite', 1)
+        
+        pre_pos = modified_block.find('<pre')
+        if pre_pos != -1:
+            modified_block = modified_block[:pre_pos] + toolbar_html + modified_block[pre_pos:]
+            new_pre_pos = modified_block.find('<pre', pre_pos + len(toolbar_html))
+            modified_block = modified_block[:new_pre_pos+4] + f' id="{block_id}"' + modified_block[new_pre_pos+4:]
+
+        processed_html += modified_block
+        last_end = end
+        
+    processed_html += html_content[last_end:]
+    return processed_html
+
+# --- End of code block features ---
 
 POSTS_DIR = 'weblog/posts'
 TAGS_DIR = 'weblog/tags'
@@ -57,6 +140,7 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
     # Get date from filename if present, else use now
     date_obj = parse_date_from_filename(md_file)
     html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
+    html_body = add_code_block_features(html_body)
     post = {
         'title': meta['title'],
         'weblog_title': meta.get('weblog_title', meta['title']),  # Use weblog_title if exists, else fallback to title
@@ -109,7 +193,7 @@ for tag, tag_posts in tags_dict.items():
         for post in tag_posts_sorted:
             url = f"../posts/{post['slug']}/"
             f.write(f'<li><a href="{url}">{post["title"]}</a> <span class="weblog-date">{post["date_str"]}</span></li>\n')
-        f.write("</ul>\n</body></html>")
+        f.write(f"</ul>\n{SCRIPT_ADDITIONS}</body></html>")
 
 # Generate main index.html (recent weblogs: newest first)
 posts_desc = sorted(posts, key=lambda p: p['date'], reverse=True)
@@ -280,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {{
             <a href="#" onclick="showAllLogs(); return false;">All</a>
         </nav>
 """)
-    f.write("</body></html>")
+    f.write(f"</body>{SCRIPT_ADDITIONS}</html>")
 
 # Generate HTML for each weblog post with slug-based URLs and sidebar with prev/next links
 for i, post in enumerate(posts):
@@ -333,7 +417,7 @@ for i, post in enumerate(posts):
       <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">x Perlin noise</figcaption>
     </figure>
     <figure style="flex: 1; text-align: center; max-width: 200px;">
-      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/output_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
+      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%2_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
       <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">= Output Image</figcaption>
     </figure>
   </div>
@@ -369,9 +453,10 @@ for i, post in enumerate(posts):
             next_slug = next_post['slug']
             next_url = f"../{next_slug}/"
             f_post.write(f'      <li><a href="{next_url}">&larr; Previous: {next_post["title"]}</a></li>\n')
-        f_post.write("""    </ul>
+        f_post.write(f"""    </ul>
   </div>
 </main>
+{SCRIPT_ADDITIONS}
 </body>
 </html>
 """)

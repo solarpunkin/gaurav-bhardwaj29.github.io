@@ -405,3 +405,57 @@ code, .code {
   background: var(--code-bg);
   color: var(--code-text);
 }
+
+/* Code block toolbar styles */
+div.codehilite.codehilite-container {
+    position: relative;
+}
+
+.code-toolbar {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    display: flex;
+    gap: 0.8em;
+    align-items: center;
+    background-color: var(--code-bg);
+    border: 1px solid var(--muted);
+    padding: 4px 8px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.codehilite-container:hover .code-toolbar {
+    opacity: 1;
+}
+
+.code-toolbar .language-name {
+    font-size: 0.8em;
+    color: var(--muted);
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', monospace;
+}
+
+.code-toolbar .copy-btn, .code-toolbar .anchor-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.code-toolbar .copy-btn:hover, .code-toolbar .anchor-link:hover {
+    color: var(--text);
+}
+
+.code-toolbar .anchor-link {
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.code-toolbar svg {
+    pointer-events: none;
+}
