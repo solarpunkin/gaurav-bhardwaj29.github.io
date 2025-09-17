@@ -12,7 +12,7 @@ Wish I had the intuition to just summon god-tier generator polynomials for cycli
   <figcaption>had to do it, sorry:p</figcaption>
 </figure>
 
-I was experimenting with different polynomials to hack the pattern (if there is) to find the relationship between error and the actual bytes that got flipped. I ported the GNU libiberty xcrc32 [(here ‘x’ is wrapper around the standard function)](https://gcc.gnu.org/onlinedocs/libiberty/Memory-Allocation.html) [source code](https://raw.githubusercontent.com/gcc-mirror/gcc/refs/heads/master/libiberty/crc32.c) with some modifications into my client-server program to send a PNG file internally. 
+I was experimenting with different polynomials to hack the pattern (if there is) to find the relationship between error and the actual bytes that got flipped. I ported the GNU libiberty xcrc32 [(here ‘x’ is wrapper around the standard function)](https://gcc.gnu.org/onlinedocs/libiberty/Memory-Allocation.html) [source code](https://raw.githubusercontent.com/gcc-mirror/gcc/refs/heads/master/libiberty/crc32.c) with some modifications into my client-server [program](https://github.com/solarpunkin/telnet/tree/main/crc-32) to send a 20MB png file internally. 
 
 What I modified:
 
