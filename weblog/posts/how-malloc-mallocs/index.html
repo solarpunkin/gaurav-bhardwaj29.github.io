@@ -77,7 +77,7 @@ int main(void) {
 </code></pre>
 
 <p>The sleep function is used to keep the process alive so that we can attach tools (vmmap, malloc_history). Before adding sleep, the program returned empty, possibly due to optimizer remobving calls or the program exited too quickly. If the program allocates and immediately exits, you won’t see the mapping calls unless you pause (<code>sleep</code>) the process so you can attach/observe.</p>
-<p>Compile and run inspection commands:</p>
+<p>Compile and run the inspection commands:</p>
 <pre class="codehilite"><code class="language-bash">clang -g -O0 trace.c -o trace
 MallocNanoZone=0 MallocStackLogging=vm MallocStackLoggingNoCompact=1 ./trace
 </code></pre>
