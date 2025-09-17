@@ -4,7 +4,9 @@ import yaml
 from datetime import datetime, timedelta, timezone
 import re
 from xml.sax.saxutils import escape
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, BeautifulStoneSoup
+from typing import Dict, List, Optional
+from urllib.parse import urlparse
 
 SITE_URL = "https://gaurv.me"
 RSS_FILE = "rss.xml"
@@ -97,21 +99,95 @@ if os.path.exists(code_html):
 all_items = blog_posts + weblog_posts + code_projects
 all_items.sort(key=lambda x: x.get("pubDate_obj") or datetime.strptime(x["pubDate"], '%a, %d %b %Y %H:%M:%S %z'), reverse=True)
 
-# ----------- Generate RSS XML -----------
-with open(RSS_FILE, "w", encoding="utf-8") as f:
-    f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    f.write('<rss version="2.0">\n<channel>\n')
-    f.write('<title>Gaurav - updates</title>\n')
-    f.write(f'<link>{SITE_URL}/</link>\n')
-    f.write('<description>RSS feed for blog, weblogs, and code updates.</description>\n')
+def get_existing_feed_items() -> Dict[str, dict]:
+    """Read existing RSS feed and return a dictionary of items keyed by link."""
+    if not os.path.exists(RSS_FILE):
+        return {}
+    
+    with open(RSS_FILE, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    soup = BeautifulStoneSoup(content, 'xml')
+    items = {}
+    
+    for item in soup.find_all('item'):
+        link = item.find('link')
+        if link and link.text:
+            items[link.text] = {
+                'title': item.find('title').text if item.find('title') else '',
+                'description': item.find('description').text if item.find('description') else '',
+                'pubDate': item.find('pubDate').text if item.find('pubDate') else '',
+                'category': item.find('category').text if item.find('category') else ''
+            }
+    return items
 
-    for item in all_items[:30]:
-        f.write('<item>\n')
-        f.write(f'<title>{escape(item["title"])}</title>\n')
-        f.write(f'<link>{item["link"]}</link>\n')
-        f.write(f'<description>{item["description"]}</description>\n')
-        f.write(f'<pubDate>{item["pubDate"]}</pubDate>\n')
-        f.write(f'<category>{item["category"]}</category>\n')
-        f.write('</item>\n')
+def generate_rss():
+    # Get existing feed items
+    existing_items = get_existing_feed_items()
+    
+    # Combine and sort all items
+    combined_items = blog_posts + weblog_posts + code_projects
+    
+    # Create a dictionary of new items, preserving existing ones
+    all_items = {}
+    
+    # First add existing items to preserve their order and dates
+    for link, item in existing_items.items():
+        all_items[link] = item
+    
+    # Then add/update with new items
+    for item in combined_items:
+        link = item['link']
+        if link not in all_items:  # Only add if it's a new item
+            all_items[link] = {
+                'title': item['title'],
+                'description': item['description'],
+                'pubDate': item.get('pubDate', datetime.now(IST).strftime('%a, %d %b %Y %H:%M:%S %z')),
+                'category': item['category']
+            }
+    
+    # Convert to list and sort by date
+    sorted_items = []
+    for link, item in all_items.items():
+        pub_date = item.get('pubDate', '')
+        pub_date_obj = None
+        try:
+            pub_date_obj = datetime.strptime(pub_date, '%a, %d %b %Y %H:%M:%S %z')
+        except (ValueError, TypeError):
+            pub_date_obj = datetime.now(IST)
+            pub_date = pub_date_obj.strftime('%a, %d %b %Y %H:%M:%S %z')
+        
+        sorted_items.append({
+            'title': item['title'],
+            'link': link,
+            'description': item['description'],
+            'pubDate': pub_date,
+            'category': item['category'],
+            'pubDate_obj': pub_date_obj
+        })
+    
+    # Sort by date, newest first
+    sorted_items.sort(key=lambda x: x['pubDate_obj'], reverse=True)
+    
+    # Write the RSS feed
+    with open(RSS_FILE, 'w', encoding='utf-8') as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        f.write('<rss version="2.0">\n<channel>\n')
+        f.write('<title>Gaurav - updates</title>\n')
+        f.write(f'<link>{SITE_URL}/</link>\n')
+        f.write('<description>RSS feed for blog, weblogs, and code updates.</description>\n')
+        f.write(f'<lastBuildDate>{datetime.now(IST).strftime("%a, %d %b %Y %H:%M:%S %z")}</lastBuildDate>\n')
+        
+        for item in sorted_items[:30]:  # Limit to 30 most recent items
+            f.write('<item>\n')
+            f.write(f'<title>{escape(item["title"])}</title>\n')
+            f.write(f'<link>{item["link"]}</link>\n')
+            f.write(f'<description>{item["description"]}</description>\n')
+            f.write(f'<pubDate>{item["pubDate"]}</pubDate>\n')
+            f.write(f'<category>{item["category"]}</category>\n')
+            f.write('</item>\n')
+        
+        f.write('</channel>\n</rss>\n')
 
-    f.write('</channel>\n</rss>\n')
+# Generate the RSS feed
+generate_rss()
