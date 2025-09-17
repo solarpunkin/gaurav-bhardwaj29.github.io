@@ -31,7 +31,7 @@
   <figcaption>had to do it, sorry:p</figcaption>
 </figure>
 
-<p>I was experimenting with different polynomials to hack the pattern (if there is) to find the relationship between error and the actual bytes that got flipped. I ported the GNU libiberty xcrc32 <a href="https://gcc.gnu.org/onlinedocs/libiberty/Memory-Allocation.html">(here ‘x’ is wrapper around the standard function)</a> <a href="https://raw.githubusercontent.com/gcc-mirror/gcc/refs/heads/master/libiberty/crc32.c">source code</a> with some modifications into my client-server program to send a PNG file internally. </p>
+<p>I was experimenting with different polynomials to hack the pattern (if there is) to find the relationship between error and the actual bytes that got flipped. I ported the GNU libiberty xcrc32 <a href="https://gcc.gnu.org/onlinedocs/libiberty/Memory-Allocation.html">(here ‘x’ is wrapper around the standard function)</a> <a href="https://raw.githubusercontent.com/gcc-mirror/gcc/refs/heads/master/libiberty/crc32.c">source code</a> with some modifications into my client-server <a href="https://github.com/solarpunkin/telnet/tree/main/crc-32">program</a> to send a 20MB png file internally. </p>
 <p>What I modified:</p>
 <ul>
 <li>CRC seed = The <code>xcrc32()</code> implementation from GNU libiberty isn’t the “standard Ethernet CRC-32” with reflection and XOR. I changed the initial value = <strong>0xFFFFFFFF</strong>.</li>
