@@ -5,9 +5,14 @@ slug: "cascade-ai"
 weblog_title: "Economics of AI in 2025"
 ---
 
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/facts/download.jpeg" style="max-width: 100%; height: auto;" />
+  <figcaption>did you just take both pills? what the hell is wrong with you?</figcaption>
+</figure>
+
 I don't particularly like writing about cliche̐s. infact, i rank cliche̐s at the same level alongside context rot and slop. "ai is going to take all your jobs". you bozos can't do anything about it. there will be no place for junior engineers. I know, it sucks to be a junior engineer. it sucks to enter the job market in 2025. but it's not all bad. at least we now have the data to measure the damage that has been made since the first real get-shit-done chatgpt drop in 2023. this time the data is from ADP, the largest payroll software provider in the US.
 
-the recent paper published by researchers at Stanford University, titled "[Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of Artificial Intelligence](https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/)", highlights an early warning sign of potential danger of incorporating ai into the job market. this paper lists six trend-based facts that provide large-scale evidence supporting the hypothesis that the ai revolution is beginning to have a significant and disproportionate impact on **entry-level** workers in the US labor market, which I've summarized here.
+the recent paper published by researchers at Stanford University, titled [Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of Artificial Intelligence](https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/), highlights an early warning sign of potential danger of incorporating ai into the job market. this paper lists six trend-based facts that provide large-scale evidence supporting the hypothesis that the ai revolution is beginning to have a significant and disproportionate impact on **entry-level** workers in the US labor market, which I've summarized here.
 
 <aside>
 employment rates of software developers aged 22-25 has declined by nearly 20% compared to peak 2022. 
