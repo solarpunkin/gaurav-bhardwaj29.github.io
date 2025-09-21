@@ -6,7 +6,7 @@ weblog_title: "best places to be on the internet"
 ---
 
 <div class="interactive-container" style="position: relative; width: 100%; height: 600px; margin: 2rem 0;">
-  <iframe src="../static/internet-timeline.html" style="width: 100%; height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;"></iframe>
+  <iframe src="../../static/internet-timeline.html" style="width: 100%; height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;"></iframe>
 </div>
 
 
