@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Internet subcultures</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .timeline-container {
+      display: flex;
+      overflow-x: auto;
+      padding: 2rem 0;
+      position: relative;
+    }
+    .timeline-event {
+      flex: 0 0 auto;
+      margin: 0 1rem;
+      text-align: center;
+      cursor: pointer;
+    }
+    .timeline-event img {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 0.5rem;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <header class="text-center py-6 bg-indigo-600 text-white shadow-md">
+    <h1 class="text-3xl font-bold">Evolution of internet communities</h1>
+    <p class="mt-2">From IRC to TikTok & decentralized networks (1980s–2025)</p>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <section class="timeline-container border-t-4 border-indigo-400">
+      <!-- Timeline Events -->
+      <div class="timeline-event" data-era="bbs">
+        <img src="https://img.icons8.com/ios-filled/50/000000/console.png" alt="BBS/IRC">
+        <p>BBS/IRC<br><span class="text-xs">1980s–2000</span></p>
+      </div>
+      <div class="timeline-event" data-era="2ch">
+        <img src="https://img.icons8.com/ios-filled/50/000000/chat.png" alt="2channel">
+        <p>2channel<br><span class="text-xs">1999–2010</span></p>
+      </div>
+      <div class="timeline-event" data-era="4chan">
+        <img src="https://img.icons8.com/ios-filled/50/000000/meme.png" alt="4chan">
+        <p>4chan<br><span class="text-xs">2003–2020</span></p>
+      </div>
+      <div class="timeline-event" data-era="myspace">
+        <img src="https://img.icons8.com/ios-filled/50/000000/music.png" alt="MySpace">
+        <p>MySpace<br><span class="text-xs">2003–2009</span></p>
+      </div>
+      <div class="timeline-event" data-era="reddit">
+        <img src="https://img.icons8.com/ios-filled/50/000000/reddit.png" alt="Reddit">
+        <p>Reddit<br><span class="text-xs">2005–2025</span></p>
+      </div>
+      <div class="timeline-event" data-era="twitter">
+        <img src="https://img.icons8.com/ios-filled/50/000000/twitter.png" alt="Twitter">
+        <p>Twitter/X<br><span class="text-xs">2006–2025</span></p>
+      </div>
+      <div class="timeline-event" data-era="tiktok">
+        <img src="https://img.icons8.com/ios-filled/50/000000/musical-notes.png" alt="TikTok">
+        <p>TikTok<br><span class="text-xs">2017–2025</span></p>
+      </div>
+      <div class="timeline-event" data-era="mastodon">
+        <img src="https://img.icons8.com/ios-filled/50/000000/elephant.png" alt="Mastodon">
+        <p>Mastodon<br><span class="text-xs">2016–2025</span></p>
+      </div>
+      <div class="timeline-event" data-era="bluesky">
+        <img src="https://img.icons8.com/ios-filled/50/000000/cloud.png" alt="Bluesky">
+        <p>Bluesky<br><span class="text-xs">2023–2025</span></p>
+      </div>
+      <div class="timeline-event" data-era="threads">
+        <img src="https://img.icons8.com/ios-filled/50/000000/instagram-new.png" alt="Threads">
+        <p>Threads<br><span class="text-xs">2023–2025</span></p>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <canvas id="trendChart" height="120"></canvas>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title" class="text-xl font-bold mb-4"></h2>
+      <p id="modal-body" class="text-gray-700"></p>
+      <p id="modal-footnote" class="mt-4 text-xs text-gray-500"></p>
+      <button id="closeModal" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const events = {
+      bbs: {
+        title: "BBS & IRC (1980s–2000)",
+        body: "The 'Big Bang' of the internet community era. Bulletin Board Systems and IRC channels fostered the first digital subcultures—hackers, gamers, and niche discussion groups—long before mainstream adoption.",
+        footnote: "Source: Hafner, K. (1998). Where Wizards Stay Up Late."
+      },
+      "2ch": {
+        title: "2channel (1999–2010)",
+        body: "Anonymous textboard from Japan that pioneered meme culture, radical free-speech zones, and gave birth to derivative communities like 4chan.",
+        footnote: "Source: Wired Japan (2008)"
+      },
+      "4chan": {
+        title: "4chan (2003–2020)",
+        body: "Spawned modern meme culture, /b/ board chaos, and collective identities like Anonymous. It became the hub of internet irreverence and underground activism.",
+        footnote: "Source: Coleman, G. (2014). Hacker, Hoaxer, Whistleblower, Spy."
+      },
+      myspace: {
+        title: "MySpace (2003–2009)",
+        body: "The first major social network that gave bands, subcultures, and teens their own stage. Migrated users to Facebook and beyond as the design became cluttered.",
+        footnote: "Pew Research, 2009."
+      },
+      reddit: {
+        title: "Reddit (2005–2025)",
+        body: "The 'front page of the internet'. Subreddits became micro-communities, fostering meme economies, political discourse, and niche subcultures.",
+        footnote: "Reddit Transparency Reports."
+      },
+      twitter: {
+        title: "Twitter/X (2006–2025)",
+        body: "The most viral platform for personalities and discourse. Created real-time culture, hashtags, cancel culture, and global political influence.",
+        footnote: "Statista: Twitter MAUs."
+      },
+      tiktok: {
+        title: "TikTok (2017–2025)",
+        body: "Short-form video shifted culture to algorithm-driven virality. TikTok creators became the cultural leaders of Gen Z.",
+        footnote: "SensorTower Data, 2020."
+      },
+      mastodon: {
+        title: "Mastodon (2016–2025)",
+        body: "Decentralized alternative that spiked during Twitter controversies. Represents the ethos of anti-corporate online communities.",
+        footnote: "NYTimes Tech, 2022."
+      },
+      bluesky: {
+        title: "Bluesky (2023–2025)",
+        body: "Emerging decentralized platform backed by Jack Dorsey. Attracts tech-literate communities rebelling against centralized control.",
+        footnote: "The Verge, 2023."
+      },
+      threads: {
+        title: "Threads (2023–2025)",
+        body: "Meta’s answer to Twitter migration. Quickly surged but struggles with identity; represents corporate response to decentralization.",
+        footnote: "Meta Q2 Report, 2023."
+      }
+    };
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const modalFootnote = document.getElementById('modal-footnote');
+    const closeModal = document.getElementById('closeModal');
+
+    document.querySelectorAll('.timeline-event').forEach(el => {
+      el.addEventListener('click', () => {
+        const era = el.getAttribute('data-era');
+        const info = events[era];
+        modalTitle.textContent = info.title;
+        modalBody.textContent = info.body;
+        modalFootnote.textContent = info.footnote;
+        modal.style.display = 'flex';
+      });
+    });
+
+    closeModal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Chart.js for trend line
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["1980","1990","2000","2010","2020","2025"],
+        datasets: [{
+          label: 'Community Popularity Index',
+          data: [1,2,4,8,10,9],
+          borderColor: 'rgba(79,70,229,1)',
+          backgroundColor: 'rgba(79,70,229,0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
+        scales: {
+          y: { beginAtZero: true, max: 10 }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
