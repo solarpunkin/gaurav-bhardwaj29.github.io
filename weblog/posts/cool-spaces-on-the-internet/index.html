@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>internet subculture shift</title>
+</head>
+<body>
+<main>
+  <h1>best places to be on the internet</h1>
+  <div class="weblog-body"><div class="interactive-container" style="position: relative; width: 100%; height: 600px; margin: 2rem 0;">
+  <iframe src="../static/internet-timeline.html" style="width: 100%; height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;"></iframe>
+</div>
+
+<p>Throughout internet history, we’ve witnessed numerous instances where social media gurus, the vocal leaders of mainstream and side-stream gossip, have flocked from one platform to another in search of fresh spaces. They needed new environments to either construct narratives and build new subcultures or rebel against existing ones. Consequently, communities migrated from one part of the internet to another, carrying with them the woke, cultured, punk, and shitposters of the past.</p>
+<p>For instance, once anonymous imageboards like 2ch/2chan were the best way to connect, Myspace followed, then IRCs and 4chan. Some believe there was a brief period of flickr, followed by the rise of Reddit and the “cool” people who moved there to build their communities (either left/right or liberal wings, not just political but also meta-cultures).</p>
+<p>Today, Twitter/X is arguably the most viral platform for online personalities, followed by emerging decentralised social media platforms like Bluesky, Mastodon, and Matrix.</p>
+<p>If a jannie who has lived through the last 20-25 years and actively participated in various internet subcultures and subgenres, hanging out with cool people from different generations, could effectively create a timeline of the most enjoyable, viral, and better parts of the internet backed by data, what would that timeline look like? I don't know anyone who has stuck with the subcultures of the internet for the past 20-25 years, and this sperglord obviously ain't one of them. So I asked chatgpt to create one big bang timeline of the internet subculture shifts. </p>
+<p><a href="https://chatgpt.com/s/dr_68d0537e5ed48191a6e3467f88341305">Chatgpt's Answer</a></p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 21 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../cascade-sigmoid-ai/">&larr; Previous: ai economics</a></li>
+    </ul>
+  </div>
+</main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
+</body>
+</html>
