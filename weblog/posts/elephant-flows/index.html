@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>handling network congestion</title>
+</head>
+<body>
+<main>
+  <h1>problem of finding the top-k heavy hitters</h1>
+  <div class="weblog-body"><p>Imagine you are running a company that provides access to the internet. There is going to be a network of connected devices with millions of users sending billions of packets per second. Person A wants to download a movie and Person B is sending an email. Likewise there will be flows requiring higher bandwidth (movie download) than others. A flow is a collection of packets of the same kind. Skype sends flows of video packets that is different from spotify sending flows of audio packets.</p>
+<p>Your job as an internet service provider is to ensure the network is running smoothly while serving millions of users. You would want to know which users or flows are eating the most bandwidth for capacity planning so that light users are not jeopardized by network congestion. </p>
+<p>Now at the network layer all the packets are just frames of 1s and 0s. They are also unreliably transmitted from the source device to the destination device. The flows are not streamlined, i.e. a video packet may be followed by a message packet. Keeping exact counters for each flow would require massive memory – impossible at line speed. We are always bounded by the memory and speed of the network. But we would want to keep a track of the most heavy flows. We need a very efficient data structure and a fast update algorithm to keep pace with the sheer amount of network surge.</p>
+<p>We are going to make a tradeoff here. We are not counting each flow, instead we keep an approximate record of the top K most recurring flows in a network. This approximation is proved to be in our favour of getting high accuracy, working at line speed and using only a small fixed amount of memory.</p>
+<p>The problem of finding heavy hitters can be mapped to many other areas beyond networking and distributed systems. For example, we can answer questions like:</p>
+<ol>
+<li>What are the K hashtags people have mentioned the most in the last X hours?</li>
+<li>What are the K most trending spotify songs in the last X hours?</li>
+<li>What are the K news with highest read/view count today?</li>
+</ol>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 28 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../cool-spaces-on-the-internet/">&larr; Previous: internet subculture shift</a></li>
+    </ul>
+  </div>
+</main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
+</body>
+</html>
