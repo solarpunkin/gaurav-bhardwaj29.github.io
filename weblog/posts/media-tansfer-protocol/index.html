@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>MTP over USB</title>
+</head>
+<body>
+<main>
+  <h1>the case for slow start in USB file transfer</h1>
+  <div class="weblog-body"><p><strong>Media Transfer Protocol</strong>, or MTP, is the default way of sharing media files, such as photos and other files, via USB from an Android phone to a host machine, which can be your laptop or desktop.
+You might wonder if this is the same as copying files from one place to another on the same machine or moving files between drives. It is actually a very different approach for how we send files through link layers from one device to another when they are physically connected by a USB cable.</p>
+<p>When you connect your Android phone via USB to a host machine and start sending files, you'll notice on your Mac that the progress bar sweeps for some time, saying it's "loading" or "copying" a file. It says this for quite some time, and you don't see the progress bar move from 0% to 100%. We call this the "staging" or "preparation" stage because the progress bar sweeps indefinitely, and it can feel like the system has hung up before the real transfer has even started.</p>
+<p>What actually happens in this phase is a communication process between two parties: the initiator and the responder. MTP communicates using commands and responses between these two parties. Typically, the PC is the initiator, and your phone is the responder, though it can be the other way around. A device can never assume both roles at the same time.
+The initiator starts the communication by sending a command, and the responder replies, acknowledging the connection. It's important to know that MTP transfers are unidirectional, and the direction of data flow must be known and accepted by both the initiator and the responder beforehand.</p>
+<p>For example, let's say the initiator (your PC) asks for a file from the responder (your phone). The phone will first share the file's metadata, acknowledging the request by responding with the file's name, size, format code, and modification time. These handshakes happen before the actual file transfer takes place. The handshakes are serialized, not pipelined, and these round trips of sharing metadata and initial header files require multiple back-and-forth communications between the host and the phone's MTP responder. The PC might even request small snippets of data blocks to verify headers and expected sizes. All of this happens synchronously.</p>
+<p>After the PC has received the metadata and knows the size of the file, it stages the physical memory, allocating the specific amount of space on the device to initiate the file transfer. You see the sweeping UI progress bar during this entire allocation process. This step is not visible in userland but is expensive. It may involve page faults, wired memory pinning, DMA descriptor setup, and many other kernel and driver-level buffer allocations and file system operations. This ensures the receiving device has allocated the necessary memory and is ready for the transfer.</p>
+<p>Once staging is complete, the second phase starts, which is responsible for actually transferring the file from the sender to the receiver. This stage happens very fast, almost instantly, with transfer speeds around <strong>1 to 2 GB per second</strong> on modern devices, and it incurs low overhead cost.</p>
+<p>Because the staging delays are front-loaded, the copy process appears instantaneous once it begins. The progress bar is tied directly to the number of bytes delivered and seems to jump from 0% to 100% almost instantly. It appears fast relative to the staging phase because it fully utilizes the USB endpoint's bandwidth, and all the small, serialized, latency-heavy exchanges have already been completed.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 30 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../elephant-flows/">&larr; Previous: handling network congestion</a></li>
+    </ul>
+  </div>
+</main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
+</body>
+</html>
