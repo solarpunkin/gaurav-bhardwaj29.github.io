@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>open standards</title>
+</head>
+<body>
+<main>
+  <h1>open standards</h1>
+  <div class="weblog-body"><p>This is going to be one of those posts where I am OUTRAGED. Partly because I haven't thought it through, and partly because my views are not constructive as they don't provide a solution to the problem (beacuse again, I haven't thought it through well), but this is what I have experienced after spending quite a time on both sides.</p>
+<p>I believe all the social media apps which are controlled by a central authority are not the best place to be spending time networking or building an online personality–for reasons I will leave up to your imagination. </p>
+<p>This is how they (mostly) work:</p>
+<p>1) Get celebrities
+2) Get normal people to throw rotten tomatoes at them
+3) Show ads to the normal people.</p>
+<p>That's it. That's their whole business model.</p>
+<p>A pretty cool thing about the Fediverse:</p>
+<p>It will still be around in a decade. Even two decades.</p>
+<p>Usenet still exists. IRC still exists. Email still exists. When you build platforms on <strong>open protocols</strong> and <strong>open standards</strong>, it doesn't actually matter what corporations try and do to enshittify it. So long as there are people who are still willing to run instances, and users who still want to talk to one another without going through some corporation's platform, it'll still be here. We can just talk to one another.</p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 04 October 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../media-tansfer-protocol/">&larr; Previous: MTP over USB</a></li>
+    </ul>
+  </div>
+</main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
+</body>
+</html>
