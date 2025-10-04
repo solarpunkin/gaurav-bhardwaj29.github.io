@@ -11,9 +11,11 @@ I believe all the social media apps which are controlled by a central authority 
 
 This is how they (mostly) work:
 
-1) Get celebrities
-2) Get normal people to throw rotten tomatoes at them
-3) Show ads to the normal people.
+1. Get celebrities
+
+2. Get normal people to throw rotten tomatoes at them
+
+3. Show ads to the normal people.
 
 That's it. That's their whole business model.
 
