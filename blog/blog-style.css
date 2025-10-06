@@ -10,7 +10,7 @@
 
 body {
     font-family: 'Newsreader', 'Times New Roman', Times, serif;
-    font-size: 24pt;
+    font-size: 1.1em;
     background-color: var(--bg);
     color: var(--text);
     padding: 20px; /* Less padding than main page */
