@@ -376,7 +376,7 @@ a:hover {
 
 body {
   font-family: 'Newsreader', 'Times New Roman', Times, serif;
-  font-size: 24pt;
+  /* font-size: 24pt; */
   background: var(--bg);
   color: var(--text);
 }
