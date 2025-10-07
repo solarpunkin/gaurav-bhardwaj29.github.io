@@ -114,6 +114,12 @@ a, a:visited {
 a:hover {
     color: var(--link-hover);
 }
+u {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--link);
+}
 .subtitle {
     color: var(--subtitle);
 }

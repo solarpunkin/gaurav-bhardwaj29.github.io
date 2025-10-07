@@ -264,6 +264,14 @@ pre code {
   background: none;
   color: inherit;
 }
+
+/* Underline style for weblog markdown */
+.underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--link);
+}
 .katex, .math.inline-math {
   background: var(--inline-math-bg);
   color: var(--inline-math-text);
