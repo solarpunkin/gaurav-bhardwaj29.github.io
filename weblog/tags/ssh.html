@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>Weblog: ssh</title>
+</head>
+<body>
+  <h1>#ssh</h1>
+  <ul class="weblog-list"><li><a href="../">← LOGS</a></li>
+<li><a href="../posts/termux/">SSH with Termux</a> <span class="weblog-date">2025-10-14</span></li>
+</ul>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+</body></html>

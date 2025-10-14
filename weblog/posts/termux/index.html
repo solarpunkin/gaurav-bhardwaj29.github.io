@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function()  {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    });
+  </script>
+  <title>SSH with Termux</title>
+</head>
+<body>
+<main>
+  <h1>SSH can't get easier than this</h1>
+  <div class="weblog-body"><p>I found the easiest way to access my Macbook from an Android phone. Recently, I was searching for ways to look at my training logs when I was away from my laptop. However, I cannot carry the laptop everywhere, especially in crowded areas like temples &amp; metro. I discovered a useful app called Termux for Android, which allows me to SSH into my Mac. </p>
+<p>When both the devices are on the same network, you can use the IP address of the LAN and what is called <span class="underline">port forwarding</span>. But when they aren't on the same network (as in my case), there are several methods to SSH into a remote machine. I found the easiest way using the <strong>Cloudflared tunnel</strong>. </p>
+<h3>Step 1 : Install termux and create a ssh key pair</h3>
+<pre class="codehilite"><code class="language-bash"># 1. update &amp; install OpenSSH
+pkg update &amp;&amp; pkg upgrade -y
+pkg install openssh -y
+</code></pre>
+
+<pre class="codehilite"><code class="language-bash"># 2. generate a ssh key pair
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub
+</code></pre>
+
+<figure style="text-align: center;">
+  <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/termux/imagedssh.jpeg" style="max-width: 100%; height: auto;" />
+  <figcaption>brace yourself; the ssh key and environment issues are coming</figcaption>
+</figure>
+
+<p>Enable SSH (remote login) and paste the ssh string in the mac terminal.</p>
+<pre class="codehilite"><code class="language-bash">mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+# open config file and paste the pub key 
+nano ~/.ssh/config  
+
+# secure the file
+chmod 600 ~/.ssh/config
+</code></pre>
+
+<p>Confirm macOS firewall allows SSH: System Settings → Network → Firewall (or <code>pf</code>), or just test from another device on LAN.</p>
+<h3>Step 2 : Install cloudflared and create a tunnel</h3>
+<p>I installed Cloudflare Tunnel on both devices and connected them using an SSH key that we created. This enables me to utilise the Cloudflare Tunnel service, which is entirely free. This is what reverse tunneling is.</p>
+<pre class="codehilite"><code class="language-bash">brew install cloudflared  # for Mac
+cloudflared tunnel login  # select any domain (doesn't matter, just required for authentication)
+cloudflared tunnel create &lt;name&gt; # create a tunnel with a &lt;name&gt;
+</code></pre>
+
+<p>On Mac, create the config file <code>nano ~/.cloudflared/config.yml</code> and paste:</p>
+<pre class="codehilite"><code class="language-bash">tunnel: &lt;name&gt;
+credentials-file: /Users/&lt;macbook_username&gt;/.cloudflared/&lt;name&gt;.json
+
+ingress:
+  - hostname: ssh.&lt;name&gt;
+    service: ssh://localhost:22
+  - service: http_status:404
+</code></pre>
+
+<p>Then create a DNS record with <code>cloudflared tunnel route dns &lt;name&gt; &lt;name&gt;</code>. Next, run the tunnel with <code>cloudflared tunnel run &lt;name&gt;</code>. This gives you a hostname like <code>&lt;name&gt;-xxxxx.cfargotunnel.com</code> – your persistant secure hostname for SSH access to your Macbook.</p>
+<p>I also configured termux for easy login. On android, <code>nano ~/.ssh/config</code>, then modify as desired:</p>
+<pre class="codehilite"><code class="language-bash">Host &lt;name&gt;
+    HostName &lt;name&gt;-xxxxx.cfargotunnel.com
+    User &lt;macbook_username&gt;
+    IdentityFile ~/.ssh/id_ed25519
+    ProxyCommand cloudflared access ssh --hostname %h
+</code></pre>
+
+<p>This is all one time setup. From the next time, just run <code>ssh &lt;name&gt;</code> in termux. Before that, make sure tunnel is running on the mac. 
+You can use <code>tmux</code> to log into the same shell and take control of the mac. Now, I can easily view my training map and don’t have to carry my laptop everywhere I go. </p>
+<p>PS: I used my domain name instead of the default one provided by cloudflare. </p>
+
+  <!-- Perlin noise image row (only for the perlin-noise post) -->
+  
+    <!-- simplex noise image row (only for the simplex-noise post) -->
+  
+  </div>
+  <div class="weblog-date">Posted on 14 October 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
+
+  <ul class="weblog-list">
+    <li><a href="../../index.html">&laquo; LOGS</a></li>
+  </ul>
+  <div class="weblog-sidebar">
+    <h5>Jump to</h5>
+    <ul>
+      <li><a href="../be-encoding/">&larr; Previous: bencoding</a></li>
+    </ul>
+  </div>
+</main>
+
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
+
+</body>
+</html>
