@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -20,35 +22,71 @@
     });
   </script>
   <style>
+    /* Inline styles for critical UI elements */
     .weblog-tag.selected {
-      background-color: #007bff;
+      background-color: var(--search-btn-bg);
       color: white;
-    }
-    .weblog-tag {
-        border: none;
-        background: none;
-        cursor: pointer;
-        padding: 2px 5px;
-        border-radius: 5px;
-        font-family: inherit;
-        font-size: inherit;
     }
   </style>
   <title>gaurav's weblog</title>
 </head>
 <body>
-  <h1>Weblog</h1>
-  <p>also check out my <a href="https://gaurv.me/blog/">blog</a> page or <a href="https://hypnotic-single-224.notion.site/2176392011f0804caebee47240886285?v=2176392011f08043bbb6000c58ab5167&source=copy_link">reading list</a>.</p>
-  <div class="weblog-search-container">
-    <form onsubmit="filterPosts(); return false;" style="display: flex; width: 100%;">
-      <input type="search" id="weblog-search" placeholder="Filter Logs..." autofocus oninput="handleSearchInput(this)">
-      <button id="weblog-search-btn" type="submit">Search</button>
-    </form>
-  </div>
-  <div class="weblog-tags">
-<button class="weblog-tag" data-tag="C" onclick="toggleTag(this)">C (6)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="C++" onclick="toggleTag(this)">C++ (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="TLS" onclick="toggleTag(this)">TLS (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="UNIX" onclick="toggleTag(this)">UNIX (3)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="ai" onclick="toggleTag(this)">ai (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="cgi" onclick="toggleTag(this)">cgi (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="claude" onclick="toggleTag(this)">claude (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="cloud" onclick="toggleTag(this)">cloud (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="cloudflare" onclick="toggleTag(this)">cloudflare (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="gcp" onclick="toggleTag(this)">gcp (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="github" onclick="toggleTag(this)">github (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="gpu" onclick="toggleTag(this)">gpu (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="internet" onclick="toggleTag(this)">internet (3)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="ipc" onclick="toggleTag(this)">ipc (3)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="mac" onclick="toggleTag(this)">mac (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="markdown" onclick="toggleTag(this)">markdown (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="msl" onclick="toggleTag(this)">msl (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="networks" onclick="toggleTag(this)">networks (5)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="prompt-injection" onclick="toggleTag(this)">prompt-injection (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="python" onclick="toggleTag(this)">python (4)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="ssh" onclick="toggleTag(this)">ssh (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="termux" onclick="toggleTag(this)">termux (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="terraform" onclick="toggleTag(this)">terraform (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="textures" onclick="toggleTag(this)">textures (2)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="xml" onclick="toggleTag(this)">xml (1)</button><span class="weblog-tag-sep">• </span><button class="weblog-tag" data-tag="zip" onclick="toggleTag(this)">zip (1)</button><span class="weblog-tag-sep">• </span></div>
-<h2 id="most-recent-heading">Most Recent</h2>
-<ul class="weblog-list" id="weblog-list">
+  <header>
+    <h1>Weblog</h1>
+    <p class="subtitle">Also check out my <a href="https://gaurv.me/blog/">blog</a> or <a href="https://hypnotic-single-224.notion.site/2176392011f0804caebee47240886285?v=2176392011f08043bbb6000c58ab5167&source=copy_link">reading list</a>.</p>
+    
+    <div class="weblog-search-container">
+      <form onsubmit="filterPosts(); return false;">
+        <input type="search" 
+               id="weblog-search" 
+               placeholder="Search posts..." 
+               aria-label="Search posts"
+               autofocus 
+               oninput="handleSearchInput(this)">
+        <button id="weblog-search-btn" type="submit" aria-label="Search">
+          Search
+        </button>
+      </form>
+    </div>
+    
+    <div class="weblog-tags" role="region" aria-label="Post tags">
+<button class="weblog-tag" data-tag="C" onclick="toggleTag(this)">C (6)</button>
+<button class="weblog-tag" data-tag="C++" onclick="toggleTag(this)">C++ (1)</button>
+<button class="weblog-tag" data-tag="TLS" onclick="toggleTag(this)">TLS (1)</button>
+<button class="weblog-tag" data-tag="UNIX" onclick="toggleTag(this)">UNIX (3)</button>
+<button class="weblog-tag" data-tag="ai" onclick="toggleTag(this)">ai (2)</button>
+<button class="weblog-tag" data-tag="cgi" onclick="toggleTag(this)">cgi (2)</button>
+<button class="weblog-tag" data-tag="claude" onclick="toggleTag(this)">claude (1)</button>
+<button class="weblog-tag" data-tag="cloud" onclick="toggleTag(this)">cloud (1)</button>
+<button class="weblog-tag" data-tag="cloudflare" onclick="toggleTag(this)">cloudflare (1)</button>
+<button class="weblog-tag" data-tag="gcp" onclick="toggleTag(this)">gcp (1)</button>
+<button class="weblog-tag" data-tag="github" onclick="toggleTag(this)">github (2)</button>
+<button class="weblog-tag" data-tag="gpu" onclick="toggleTag(this)">gpu (1)</button>
+<button class="weblog-tag" data-tag="internet" onclick="toggleTag(this)">internet (3)</button>
+<button class="weblog-tag" data-tag="ipc" onclick="toggleTag(this)">ipc (3)</button>
+<button class="weblog-tag" data-tag="mac" onclick="toggleTag(this)">mac (2)</button>
+<button class="weblog-tag" data-tag="markdown" onclick="toggleTag(this)">markdown (2)</button>
+<button class="weblog-tag" data-tag="msl" onclick="toggleTag(this)">msl (1)</button>
+<button class="weblog-tag" data-tag="networks" onclick="toggleTag(this)">networks (5)</button>
+<button class="weblog-tag" data-tag="prompt-injection" onclick="toggleTag(this)">prompt-injection (1)</button>
+<button class="weblog-tag" data-tag="python" onclick="toggleTag(this)">python (4)</button>
+<button class="weblog-tag" data-tag="ssh" onclick="toggleTag(this)">ssh (1)</button>
+<button class="weblog-tag" data-tag="termux" onclick="toggleTag(this)">termux (1)</button>
+<button class="weblog-tag" data-tag="terraform" onclick="toggleTag(this)">terraform (1)</button>
+<button class="weblog-tag" data-tag="textures" onclick="toggleTag(this)">textures (2)</button>
+<button class="weblog-tag" data-tag="xml" onclick="toggleTag(this)">xml (1)</button>
+<button class="weblog-tag" data-tag="zip" onclick="toggleTag(this)">zip (1)</button>
+</div>
+
+
+
+
+    </div>
+  </header>
+  
+  <main>
+    <h2 id="most-recent-heading">Most Recent</h2>
+    <ul class="weblog-list" id="weblog-list">
 <li data-tags="termux,ssh,cloudflare"><a href="posts/termux/">SSH with Termux</a> <span class="weblog-date">2025-10-14</span></li>
 <li data-tags="networks,C"><a href="posts/be-encoding/">bencoding</a> <span class="weblog-date">2025-10-09</span></li>
 <li data-tags="internet"><a href="posts/open-standards/">open standards</a> <span class="weblog-date">2025-10-04</span></li>
@@ -210,4 +248,5 @@ function copyCode(button, preId) {
     }
 }
 </script>
+</body>
 </html>

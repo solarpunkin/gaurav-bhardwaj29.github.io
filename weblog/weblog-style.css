@@ -4,49 +4,107 @@
     box-sizing: border-box;
 }
 
+/* Base container */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bg);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Responsive container */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 1rem;
+    }
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin: 1.5em 0 0.8em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
 /* Theme variables: Light mode (default) */
 :root {
-  --bg: #fafafa;
-  --text: #222;
+  --bg: #ffffff;
+  --text: #333333;
   --link: #007700;
   --link-hover: #1741a6;
-  --muted: #888;
-  --code-bg: #f3f3f7;
+  --muted: #666;
+  --code-bg: #f8f9fa;
   --code-text: #c7254e;
-  --pre-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  --pre-bg: #f8f9fa;
   --pre-shadow: 0 2px 8px 0 rgba(60,60,60,0.04);
-  --inline-math-bg: #f3f3f7;
+  --inline-math-bg: #f8f9fa;
   --inline-math-text: #2d3a4a;
-  --block-math-bg: linear-gradient(90deg, #f5f7fa 60%, #e3e8ee 100%);
+  --block-math-bg: #f8f9fa;
   --block-math-text: #2d3a4a;
-  --weblog-tag: #333;
-  --weblog-tag-hover: #111;
+  --weblog-tag: #555;
+  --weblog-tag-hover: #333;
+  --weblog-tag-bg: #f0f0f0;
+  --weblog-tag-hover-bg: #e0e0e0;
   --upvote-arrow: #d1d1d1;
   --upvote-arrow-active: #4b4e50;
   --share: #555;
   --share-hover: #2563eb;
+  --search-bg: #f8f9fa;
+  --search-border: #ddd;
   --search-btn-bg: #007700;
-  --search-btn-bg-hover: #1741a6;
+  --search-btn-hover: #006600;
+  --search-btn-text: white;
+  --post-bg: #ffffff;
+  --post-border: #eaeaea;
 }
 
 /* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1e1e1e;
-    --text: #f1f1f1;
-    --link: #00ff00;
-    --link-hover: #00ff88;
+    --bg: #121212;
+    --text: #e0e0e0;
+    --link: #00cc00;
+    --link-hover: #00ff00;
     --muted: #aaaaaa;
-    --code-bg: #232323;
-    --code-text: #00ff00;
-    --pre-bg: linear-gradient(90deg, #232323 60%, #222822 100%);
-    --pre-shadow: 0 2px 8px 0 rgba(0,255,0,0.04);
-    --inline-math-bg: #232323;
-    --inline-math-text: #00ff88;
-    --block-math-bg: linear-gradient(90deg, #232323 60%, #222822 100%);
-    --block-math-text: #00ff88;
-    --weblog-tag: #00ff00;
-    --weblog-tag-hover: #00ff88;
+    --code-bg: #1e1e1e;
+    --code-text: #00cc00;
+    --pre-bg: #1e1e1e;
+    --pre-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+    --inline-math-bg: #1e1e1e;
+    --inline-math-text: #00cc00;
+    --block-math-bg: #1e1e1e;
+    --block-math-text: #00cc00;
+    --weblog-tag: #00cc00;
+    --weblog-tag-hover: #00ff00;
+    --weblog-tag-bg: #1e1e1e;
+    --weblog-tag-hover-bg: #2a2a2a;
+    --search-bg: #1e1e1e;
+    --search-border: #444;
+    --search-btn-bg: #008800;
+    --search-btn-hover: #00aa00;
+    --search-btn-text: #fff;
+    --post-bg: #1e1e1e;
+    --post-border: #333;
     --upvote-arrow: #444;
     --upvote-arrow-active: #00ff00;
     --share: #00ff00;
@@ -57,19 +115,29 @@
 }
 
 body {
-  font-family: 'Newsreader', 'Times New Roman', Times, serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   font-size: 1.1em;
   background: var(--bg);
   color: var(--text);
-  margin: 0;
-  padding: 20px;
-  line-height: 1.8;
-  letter-spacing: 0.01em;
-  word-spacing: 0.05em;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  line-height: 1.6;
+  max-width: 800px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Responsive container */
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+    font-size: 1em;
+  }
+}
+
 main {
-    max-width: 750px; 
-    margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 h1 {
   font-size: 2.2rem;
@@ -124,44 +192,195 @@ figcaption {
   color: var(--muted);
   font-style: italic;
 }
-.weblog-tags {
-  margin: 1rem 0;
+/* Search bar */
+.weblog-search-container {
+  margin: 1.5rem 0;
 }
+
+.weblog-search-container form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.weblog-search-container input[type="search"] {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--search-border);
+  border-radius: 6px;
+  background-color: var(--search-bg);
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.weblog-search-container input[type="search"]:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 0 2px rgba(0, 119, 0, 0.2);
+}
+
+.weblog-search-container button[type="submit"] {
+  padding: 0.6rem 1.5rem;
+  background-color: var(--search-btn-bg);
+  color: var(--search-btn-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.weblog-search-container button[type="submit"]:hover {
+  background-color: var(--search-btn-hover);
+}
+
+/* Tags */
+.weblog-tags {
+  margin: 1.5rem 0;
+  line-height: 2;
+  font-size: 0.95rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
 .weblog-tag {
-  display: inline;
-  background: none;
+  display: inline-block;
+  background: var(--weblog-tag-bg);
   color: var(--weblog-tag);
-  border-radius: 0;
-  padding: 0;
-  margin: 0 0.5em 0 0;
-  font-size: 0.9em;
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  margin: 0;
+  font-size: 0.85em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.weblog-tag:hover, .weblog-tag.selected {
+  background: var(--weblog-tag-hover-bg);
+  color: var(--weblog-tag-hover);
   text-decoration: none;
 }
-.weblog-tag:hover {
-  background: none;
-  color: var(--weblog-tag-hover);
+
+.weblog-tag-sep {
+  display: none; /* Hide separators since we're using gap */
+}
+
+/* Post list */
+.weblog-posts {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.weblog-posts li {
+  margin: 1.2rem 0;
+  padding: 1.2rem;
+  border-radius: 8px;
+  background-color: var(--post-bg);
+  border: 1px solid var(--post-border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.weblog-posts li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.weblog-posts li a {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--link);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.weblog-posts li a:hover {
   text-decoration: underline;
 }
+
+.weblog-date {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .weblog-search-container input[type="search"] {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .weblog-search-container button[type="submit"] {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .weblog-tags {
+    font-size: 0.9rem;
+  }
+  
+  .weblog-posts li {
+    padding: 1rem;
+  }
+  
+  .weblog-posts li a {
+    font-size: 1.05rem;
+  }
+  
+  .weblog-list li {
+    padding: 0.8rem;
+  }
+}
+
 .weblog-list {
   list-style: none;
   padding: 0;
+  margin: 1.5rem 0;
 }
+
 .weblog-list li {
-  margin: 0.5em 0;
-  font-weight: bold;
-  font-size: 1.1em;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--post-bg);
+  border: 1px solid var(--post-border);
+  border-radius: 6px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.weblog-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.weblog-list li a {
+  font-weight: 500;
+  color: var(--link);
+  text-decoration: none;
+  display: block;
+}
+
+.weblog-list li a:hover {
+  text-decoration: underline;
+}
+
 .weblog-date {
+  display: block;
+  font-size: 0.85rem;
   color: var(--muted);
-  font-size: 0.9em;
-  margin-left: 0.5em;
-  font-weight: normal;
+  margin-top: 0.3rem;
 }
+
 .weblog-search-container {
-  display: flex;
-  align-items: center;
+  margin: 1.5rem 0;
   gap: 0.5em;
-  margin-bottom: 1em;
 }
 #weblog-search {
   width: 50%;
@@ -240,11 +459,14 @@ aside :first-child {
     background: linear-gradient(90deg, rgba(0, 255, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
   }
 }
+/* Code blocks */
 pre {
   background: var(--pre-bg);
-  border-radius: 8px;
-  padding: 1.2em 1.4em;
+  border-radius: 6px;
+  padding: 1.2em;
   margin: 1.5rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--post-border);
   overflow-x: auto;
   box-shadow: var(--pre-shadow);
   line-height: 1.6;
