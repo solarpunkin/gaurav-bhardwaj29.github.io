@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>SSH with Termux</title>
 </head>
 <body>
-<main>
-  <h1>SSH can't get easier than this</h1>
-  <div class="weblog-body"><p>I found the easiest way to access my Macbook from an Android phone. Recently, I was searching for ways to look at my training logs when I was away from my laptop. However, I cannot carry the laptop everywhere, especially in crowded areas like temples &amp; metro. I discovered a useful app called Termux for Android, which allows me to SSH into my Mac. </p>
+  <div class="weblog-post">
+    <h1>SSH with Termux</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-10-14</span>
+      <span class="weblog-tags">
+        <a href="../../tags/termux.html" class="weblog-tag">termux</a><a href="../../tags/ssh.html" class="weblog-tag">ssh</a><a href="../../tags/cloudflare.html" class="weblog-tag">cloudflare</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>I found the easiest way to access my Macbook from an Android phone. Recently, I was searching for ways to look at my training logs when I was away from my laptop. However, I cannot carry the laptop everywhere, especially in crowded areas like temples &amp; metro. I discovered a useful app called Termux for Android, which allows me to SSH into my Mac. </p>
 <p>When both the devices are on the same network, you can use the IP address of the LAN and what is called <span class="underline">port forwarding</span>. But when they aren't on the same network (as in my case), there are several methods to SSH into a remote machine. I found the easiest way using the <span class="underline">Cloudflared tunnel</span>. </p>
 <h3>Step 1 : Install termux and create a ssh key pair</h3>
 <pre class="codehilite"><code class="language-bash"># 1. update &amp; install OpenSSH
@@ -83,25 +89,6 @@ ingress:
 <p>This is all one time setup. From the next time, just run <code>ssh &lt;name&gt;</code> in termux. Before that, make sure tunnel is running on the mac. 
 You can use <code>tmux</code> to log into the same shell and take control of the mac. Now, I can easily view my training map and don’t have to carry my laptop everywhere I go. </p>
 <p>PS: I used my domain name instead of the default one provided by cloudflare. </p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 14 October 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../be-encoding/">&larr; Previous: bencoding</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -130,6 +117,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

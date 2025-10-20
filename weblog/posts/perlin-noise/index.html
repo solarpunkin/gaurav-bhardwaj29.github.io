@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>Create image textures using Perlin Noise</title>
 </head>
 <body>
-<main>
-  <h1>Create image textures using Perlin Noise</h1>
-  <div class="weblog-body"><p>This other day, I was looking up ways to create synthetic data to capture foggy patterns in endoscopic videos as a side project for my mid-term. I found out that perlin noise can be used to create realistic textures at low computational overhead and provide temporal consistency across frames due to its pseudo-random changes to variables. Perlin noise is a type of gradient noise and can be created in three simple <a href="https://en.wikipedia.org/wiki/Perlin_noise#Algorithm_detail">steps</a>.</p>
+  <div class="weblog-post">
+    <h1>Create image textures using Perlin Noise</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-06-16</span>
+      <span class="weblog-tags">
+        <a href="../../tags/cgi.html" class="weblog-tag">cgi</a><a href="../../tags/textures.html" class="weblog-tag">textures</a><a href="../../tags/python.html" class="weblog-tag">python</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>This other day, I was looking up ways to create synthetic data to capture foggy patterns in endoscopic videos as a side project for my mid-term. I found out that perlin noise can be used to create realistic textures at low computational overhead and provide temporal consistency across frames due to its pseudo-random changes to variables. Perlin noise is a type of gradient noise and can be created in three simple <a href="https://en.wikipedia.org/wiki/Perlin_noise#Algorithm_detail">steps</a>.</p>
 <h2>Setup</h2>
 <p>Input Point: Let the input point be $(x,y)$, located inside a grid cell.</p>
 <p>Grid Cell: The cell is defined by its four corner points (candidate points) at integer coordinates:</p>
@@ -116,41 +122,6 @@ def generate_noise(w, h, grid_width=10, grid_height=10, scale=10.0):
 </code></pre>
 
 <p>Turns out that you can create many kind of textures by changing the parameters. I created a distorted image applying a fractal texture to an image.</p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-  <div style="display: flex; justify-content: center; gap: 2em; margin: 2em 0;">
-    <figure style="flex: 1; text-align: center; max-width: 200px;">
-      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/input_image.jpg" alt="Input Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
-      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">Input Image (400x400)</figcaption>
-    </figure>
-    <figure style="flex: 1; text-align: center; max-width: 200px;">
-      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%20noise/fractal_terrain_400x400.png" alt="x Perlin noise" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
-      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">x Perlin noise</figcaption>
-    </figure>
-    <figure style="flex: 1; text-align: center; max-width: 200px;">
-      <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/perlin%2_distorted_400x400.png" alt="Output Image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px #0001;">
-      <figcaption style="margin-top: 0.7em; font-size: 1em; color: #555;">= Output Image</figcaption>
-    </figure>
-  </div>
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 16 June 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../hosting-gcp/">Next: Hosting website as a subdomain on Google Cloud &rarr;</a></li>
-      <li><a href="../github-actions-til/">&larr; Previous: GitHub Actions for Automating My TIL</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -179,6 +150,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

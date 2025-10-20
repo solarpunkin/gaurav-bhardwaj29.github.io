@@ -52,75 +52,51 @@
 <h3>Inspection of <code>mach_vm_map</code> / <code>vm_allocate</code> calls</h3>
 <p>Besides zones, <code>malloc</code> also has a number of facilites for debugging allocation errors in applications. These facilities are primarily controlled via environment variables. Once such facility is <code>MallocStackLogging</code> that records all allocations and deallocations in a log file, along with stack traces. We set it to <code>vm</code> to record VM allocations (mach_vm/mmap). Another useful one is <code>MallocNanoZone</code> which is set to <code>0</code> to disable the nano allocator. It makes behavior easy to trace in our case (we will see why).</p>
 <p>We will write a program that allocates dynamic memory using <code>void* malloc(size_t size)</code> and inspect the calls to <code>mach_vm_map</code> and <code>vm_allocate</code> using <code>malloc_history</code> and <code>vmmap</code>.</p>
-<div class="codehilite-container codehilite"><div class="code-toolbar">
-    <span class="language-name"></span>
-    <button class="copy-btn" onclick="copyCode(this, 'code-block-a3c625')" aria-label="Copy code to clipboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-    </button>
-    <a class="anchor-link" href="#code-block-a3c625" aria-label="Link to this code block">🔗</a>
-</div><pre id="code-block-a3c625"><span></span><code><span class="c1">// trace.c</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+<pre class="codehilite"><code class="language-c">// trace.c
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">small</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">small</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">small</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">perror</span><span class="p">(</span><span class="s">&quot;malloc small&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+int main(void) {
+    void *small[1000];
+    for (int i = 0; i &lt; 1000; ++i) {
+        small[i] = malloc(64);
+        if (!small[i]) { perror(&quot;malloc small&quot;); return 1; }
+    }
 
-<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">big</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">big</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">perror</span><span class="p">(</span><span class="s">&quot;malloc big&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="w">    </span><span class="n">memset</span><span class="p">(</span><span class="n">big</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
+    void *big = malloc(10 * 1024 * 1024);
+    if (!big) { perror(&quot;malloc big&quot;); return 1; }
+    memset(big, 0, 10 * 1024 * 1024);
 
-<span class="w">    </span><span class="c1">// print PID and a representative address</span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;PID: %d  big=%p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">getpid</span><span class="p">(),</span><span class="w"> </span><span class="n">big</span><span class="p">);</span>
-<span class="w">    </span><span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+    // print PID and a representative address
+    printf(&quot;PID: %d  big=%p\n&quot;, getpid(), big);
+    fflush(stdout);
 
-<span class="w">    </span><span class="c1">// keep process alive (120s)</span>
-<span class="w">    </span><span class="n">sleep</span><span class="p">(</span><span class="mi">120</span><span class="p">);</span>
+    // keep process alive (120s)
+    sleep(120);
 
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">free</span><span class="p">(</span><span class="n">small</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">big</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div>
+    for (int i = 0; i &lt; 1000; ++i) free(small[i]);
+    free(big);
+    return 0;
+}
+</code></pre>
 
 <p>The sleep function is used to keep the process alive so that we can attach tools (vmmap, malloc_history). Before adding sleep, the program returned empty, possibly due to optimizer remobving calls or the program exited too quickly. If the program allocates and immediately exits, you won’t see the mapping calls unless you pause (<code>sleep</code>) the process so you can attach/observe.</p>
 <p>Compile and run the inspection commands:</p>
-<div class="codehilite-container codehilite"><div class="code-toolbar">
-    <span class="language-name"></span>
-    <button class="copy-btn" onclick="copyCode(this, 'code-block-9693ab')" aria-label="Copy code to clipboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-    </button>
-    <a class="anchor-link" href="#code-block-9693ab" aria-label="Link to this code block">🔗</a>
-</div><pre id="code-block-9693ab"><span></span><code>clang<span class="w"> </span>-g<span class="w"> </span>-O0<span class="w"> </span>trace.c<span class="w"> </span>-o<span class="w"> </span>trace
-<span class="nv">MallocNanoZone</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">MallocStackLogging</span><span class="o">=</span>vm<span class="w"> </span><span class="nv">MallocStackLoggingNoCompact</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>./trace
-</code></pre></div>
+<pre class="codehilite"><code class="language-bash">clang -g -O0 trace.c -o trace
+MallocNanoZone=0 MallocStackLogging=vm MallocStackLoggingNoCompact=1 ./trace
+</code></pre>
 
 <p>This will return PID and a pointor to the start of the virtual memory block address allocated by <code>malloc()</code>. </p>
-<div class="codehilite-container codehilite"><div class="code-toolbar">
-    <span class="language-name"></span>
-    <button class="copy-btn" onclick="copyCode(this, 'code-block-904b5b')" aria-label="Copy code to clipboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-    </button>
-    <a class="anchor-link" href="#code-block-904b5b" aria-label="Link to this code block">🔗</a>
-</div><pre id="code-block-904b5b"><span></span><code>PID:<span class="w"> </span><span class="m">22022</span><span class="w">  </span><span class="nv">big</span><span class="o">=</span>0x12b000000
-</code></pre></div>
+<pre class="codehilite"><code class="language-bash">PID: 22022  big=0x12b000000
+</code></pre>
 
 <p>If you deference <code>big</code>, you get the actual value stored there. <strong>Note</strong> that this is a virtual address, not a physical address. This is the address malloc allocated on the heap structure. The actual physical address is not visible to the user. Getting the physical address on MAC is out of scope for this post. One important distinction I would like to make at this point is between virtual and physical addresses. Virtual addresses are the addresses that are used by the program to access memory. Physical addresses are the actual addresses of the memory in the system. Infact, we can compare the virtual memory and physical footprint of our program using <code>vmmap</code>.</p>
 <p>Run <code>vmmap -w &lt;PID&gt;</code> from second terminal. This prints a hell lot of information. We will just foucs on a few of them – Virtual Size, Resident Size, Dirty Size, Swapped Size and Physical Footprint. Running <code>vmmap -w 22022</code> returns a Physical footprint of <strong>11.3M</strong>. The Malloc Zone has a virtual size of <strong>19.0MB</strong> (<strong>1.7x the physical memory</strong>). 11 MB is the real RAM being consumed by the process. This includes everything: stacks, libraries, heap, etc. </p>
 <p>To inspect heap allocations, we can use <code>malloc_history</code>.</p>
-<div class="codehilite-container codehilite"><div class="code-toolbar">
-    <span class="language-name"></span>
-    <button class="copy-btn" onclick="copyCode(this, 'code-block-63d479')" aria-label="Copy code to clipboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-    </button>
-    <a class="anchor-link" href="#code-block-63d479" aria-label="Link to this code block">🔗</a>
-</div><pre id="code-block-63d479"><span></span><code>malloc_history<span class="w"> </span>&lt;PID&gt;<span class="w"> </span>0x12b000000
-</code></pre></div>
+<pre class="codehilite"><code class="language-bash">malloc_history &lt;PID&gt; 0x12b000000
+</code></pre>
 
 <p>You'll see stack trace, which malloc zone, and the size of the allocation and whether the address was freed or not. 
 We saw how <code>malloc</code> is a layer on top of Mach VM. It may request larger VM regions from the kernel managed by <code>libmalloc</code> and subdivide them into zones. Finally, debugging tools (vmmap, malloc_history, stack logging) let us peek inside the allocator’s bookkeeping, but the physical memory is opague.</p>

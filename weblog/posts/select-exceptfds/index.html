@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>select exceptfds</title>
 </head>
 <body>
-<main>
-  <h1>I tried to actually make select()’s exceptfds trigger</h1>
-  <div class="weblog-body"><p><strong>And here's what happened</strong></p>
+  <div class="weblog-post">
+    <h1>select exceptfds</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-09-10</span>
+      <span class="weblog-tags">
+        <a href="../../tags/C.html" class="weblog-tag">C</a><a href="../../tags/UNIX.html" class="weblog-tag">UNIX</a><a href="../../tags/ipc.html" class="weblog-tag">ipc</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p><strong>And here's what happened</strong></p>
 <p>I saw this line in the man page:</p>
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/select-exceptfds-man.png" style="max-width: 100%; height: auto;" />
@@ -105,26 +111,6 @@ INBAND: world
 <li>and it’s just one byte — no queue, no stream.</li>
 </ul>
 <p>and if you ever see it in production? Chances are you’re debugging legacy telnet, or something’s gone wrong.</p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 10 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../how-malloc-mallocs/">Next: how malloc mallocs &rarr;</a></li>
-      <li><a href="../cyclic-redundancy-checks/">&larr; Previous: cyclic redundancy checks</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -153,6 +139,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

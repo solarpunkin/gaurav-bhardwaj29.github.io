@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,31 +22,18 @@
   <title>Subscribe via RSS</title>
 </head>
 <body>
-<main>
-  <h1>Subscribe via RSS</h1>
-  <div class="weblog-body"><p>Really simple syndication–commonly known as RSS is a cool (old) way that allows users to get updates for new content posted on the website. Readers subscribe to the feed to get updates on their favourite authors, content creators, influencers. The reason I say this is an old way is partly due to the automation of webpages (mailing list, push notifications etc.) and partly because most people shifted to centralised and curated platforms for content creation and consumption. For example, chrome dropped native feed support in 2013. Algorithmic feeds now dominate i.e., they “surface” content instead of manual subscriptions, though manual subscriptions are still alive via newsletters. </p>
+  <div class="weblog-post">
+    <h1>Subscribe via RSS</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-07-13</span>
+      <span class="weblog-tags">
+        <a href="../../tags/python.html" class="weblog-tag">python</a><a href="../../tags/xml.html" class="weblog-tag">xml</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>Really simple syndication–commonly known as RSS is a cool (old) way that allows users to get updates for new content posted on the website. Readers subscribe to the feed to get updates on their favourite authors, content creators, influencers. The reason I say this is an old way is partly due to the automation of webpages (mailing list, push notifications etc.) and partly because most people shifted to centralised and curated platforms for content creation and consumption. For example, chrome dropped native feed support in 2013. Algorithmic feeds now dominate i.e., they “surface” content instead of manual subscriptions, though manual subscriptions are still alive via newsletters. </p>
 <p>Lots of yapping ahead, if you want to see how I created RSS builder for my website, <a href="https://gist.github.com/gaurav-bhardwaj29/d917f1d076385498032cfa9aeeaa2d72">click here</a>.</p>
 <p>RSS was decentralized and did not generate ad revenue. Developers and power users moved to modern tools like Feedly and Inoreader. As content moved behind walled gardens, the “mainstream” herd was drawn to relentless scrolling and absorbing “For You” feeds flavoured with cheap dopamin hits to boost the “psyche” as pretentious woke people call it. Look, I am in no way against the use of algorithm by the social media apps wanting to push algorithmic content discovery–organising feed by who, not what. I think that recommendation systems are good way to share important news, conduct social experiments and aggregate data for marketing purpose and/or organising the feed better. But this must be regulated in favour of the larger population by not forcing what needs to be displayed rather what the user wants to see. But this is not always easy and downplaying this lead to people eventually getting frustrated with doomscrolling and manipulative algorithms (especially on X, instagram). Algorithm fatigue (and a couple other factors) just compounds to the point of it being unbearable, and has been a major reason why apps like facebook witnessed their major chunk of power users (between ages 16 - 25) shift to other platforms. This is particularly the reason I decided to go with the legacy, indie web way. RSS solves this by showing exactly what you subscribed to–simple, ad free, open, and private. I am vocal about the use of decentralized blogging platforms(like bear blog, micro.blog, smol.pub) partly because it fits well with the “own your content” philosophy of the Indieweb, and partly because I believe that a better algorithm is out there which will denoise and cut through the bullshit of having two extremes–the algorithm and the anti-algorithm communities. But for the time being, having no control seems like the best control.</p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 13 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../kawaii/">Next: Custom browser picker on macOS with finicky &rarr;</a></li>
-      <li><a href="../tls-handshakes/">&larr; Previous: Integrating TLS via mbedTLS in web server</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -76,6 +62,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

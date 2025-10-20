@@ -140,8 +140,8 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
         print(f"Skipping {md_file}: invalid frontmatter")
         continue
     meta = yaml.safe_load(fm)
-    # Get slug from filename
-    slug = parse_slug_from_filename(md_file)
+    # Get slug from frontmatter or generate from filename
+    slug = meta.get('slug', parse_slug_from_filename(md_file))
     # Get date from filename if present, else use now
     date_obj = parse_date_from_filename(md_file)
     html_body = markdown.markdown(body, extensions=['fenced_code', 'codehilite'])
@@ -163,6 +163,56 @@ for md_file in sorted(glob.glob(f"{POSTS_DIR}/*.md")):
 
 # Sort posts by date ascending for navigation (oldest to newest)
 posts.sort(key=lambda p: p['date'])
+
+# Generate individual post pages
+for post in posts:
+    post_dir = os.path.join('weblog', 'posts', post['slug'])
+    os.makedirs(post_dir, exist_ok=True)
+    
+    with open(os.path.join(post_dir, 'index.html'), 'w', encoding="utf-8") as f:
+        f.write(f"""<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="../../weblog-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {{
+      if (window.renderMathInElement) {{
+        renderMathInElement(document.body, {{
+          delimiters: [
+            {{left: '$$', right: '$$', display: true}},
+            {{left: '$', right: '$', display: false}}
+          ]
+        }});
+      }}
+    }});
+  </script>
+  <title>{post['title']}</title>
+</head>
+<body>
+  <div class="weblog-post">
+    <h1>{post['title']}</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">{post['date_str']}</span>
+      <span class="weblog-tags">
+        {''.join(f'<a href="../../tags/{tag}.html" class="weblog-tag">{tag}</a>' for tag in post['tags'])}
+      </span>
+    </div>
+    <div class="weblog-content">
+      {post['body']}
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  {SCRIPT_ADDITIONS}
+</body>
+</html>""")
+
 
 # Generate tag pages
 for tag, tag_posts in tags_dict.items():

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>rope</title>
 </head>
 <body>
-<main>
-  <h1>rotary positional embeddings</h1>
-  <div class="weblog-body"><p>RoPE (Rotary Positional Embeddings) introduces an innovative concept of applying rotation to word vectors, rather than adding position vectors. For example, in order to encode the position of this vector in a sentence with a two-dimensional vector of the word "dog", RoPE rotates this vector. The rotation angle (theta) is proportional to the position of the word in the sentence. As an example, rotate the vector at the theta in the first position, at 2 theta in the second position, and so on. This provides a more natural way to represent sequential information. </p>
+  <div class="weblog-post">
+    <h1>rope</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-09-05</span>
+      <span class="weblog-tags">
+        <a href="../../tags/msl.html" class="weblog-tag">msl</a><a href="../../tags/C++.html" class="weblog-tag">C++</a><a href="../../tags/python.html" class="weblog-tag">python</a><a href="../../tags/gpu.html" class="weblog-tag">gpu</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>RoPE (Rotary Positional Embeddings) introduces an innovative concept of applying rotation to word vectors, rather than adding position vectors. For example, in order to encode the position of this vector in a sentence with a two-dimensional vector of the word "dog", RoPE rotates this vector. The rotation angle (theta) is proportional to the position of the word in the sentence. As an example, rotate the vector at the theta in the first position, at 2 theta in the second position, and so on. This provides a more natural way to represent sequential information. </p>
 <aside>
 💡
 This is an implementation of RoPE as discussed in EleutherAI's blog post titled Rotary Embeddings: A Relative Revolution by Biderman et al. (2021).
@@ -43,42 +49,54 @@ This is an implementation of RoPE as discussed in EleutherAI's blog post titled 
   </figcaption>
 </figure>
 
-<pre class="codehilite"><code class="language-python">def rope(x, theta):
-    # theta: (1, seq_len, 1) — angle per position
-    batch, seq_len, dim = x.shape. # (batch, seq_len, dim) per attn head H
-    assert dim % 2 == 0
-    x1 = x[..., ::2]  # even dims
-    x2 = x[..., 1::2]  # odd dims
+<div class="codehilite-container codehilite"><div class="code-toolbar">
+    <span class="language-name"></span>
+    <button class="copy-btn" onclick="copyCode(this, 'code-block-443019')" aria-label="Copy code to clipboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    </button>
+    <a class="anchor-link" href="#code-block-443019" aria-label="Link to this code block">🔗</a>
+</div><pre id="code-block-443019"><span></span><code><span class="k">def</span> <span class="nf">rope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+    <span class="c1"># theta: (1, seq_len, 1) — angle per position</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span> <span class="c1"># (batch, seq_len, dim) per attn head H</span>
+    <span class="k">assert</span> <span class="n">dim</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># even dims</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># odd dims</span>
 
-    sin = torch.sin(theta)
-    cos = torch.cos(theta)
+    <span class="n">sin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">cos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
-    x_rotated = torch.stack([
-        x1 * cos - x2 * sin,
-        x1 * sin + x2 * cos
-    ], dim=-1)
-    return x_rotated.flatten(-2)  # (batch, seq_len, dim)
-</code></pre>
+    <span class="n">x_rotated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+        <span class="n">x1</span> <span class="o">*</span> <span class="n">cos</span> <span class="o">-</span> <span class="n">x2</span> <span class="o">*</span> <span class="n">sin</span><span class="p">,</span>
+        <span class="n">x1</span> <span class="o">*</span> <span class="n">sin</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">*</span> <span class="n">cos</span>
+    <span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_rotated</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># (batch, seq_len, dim)</span>
+</code></pre></div>
 
 <ul>
 <li>Equivalent pytorch code (if you prefer summation and q, m are known). Note that equivalence here is referred to simplicity and flexibility and does not guarantee efficiency, especially when training large deep neural nets from scratch.</li>
 </ul>
-<pre class="codehilite"><code class="language-python">import torch
-def apply_rope(q, thetas, m):
-    # q: (d,), thetas: (d//2,), m: scalar
-    q = q.view(-1, 2)  # (d/2, 2)
-    angles = m * thetas
-    cos = torch.cos(angles)
-    sin = torch.sin(angles)
+<div class="codehilite-container codehilite"><div class="code-toolbar">
+    <span class="language-name"></span>
+    <button class="copy-btn" onclick="copyCode(this, 'code-block-26bbfd')" aria-label="Copy code to clipboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    </button>
+    <a class="anchor-link" href="#code-block-26bbfd" aria-label="Link to this code block">🔗</a>
+</div><pre id="code-block-26bbfd"><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="k">def</span> <span class="nf">apply_rope</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="c1"># q: (d,), thetas: (d//2,), m: scalar</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># (d/2, 2)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">thetas</span>
+    <span class="n">cos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+    <span class="n">sin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
 
-    rot = torch.stack([
-        torch.stack([cos, -sin], dim=1),
-        torch.stack([sin,  cos], dim=1)
-    ], dim=1)  # (d/2, 2, 2)
+    <span class="n">rot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="n">sin</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">sin</span><span class="p">,</span>  <span class="n">cos</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (d/2, 2, 2)</span>
 
-    q_rotated = torch.einsum('bij,bj-&gt;bi', rot, q)  # (d/2, 2)
-    return q_rotated.flatten()
-</code></pre>
+    <span class="n">q_rotated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;bij,bj-&gt;bi&#39;</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>  <span class="c1"># (d/2, 2)</span>
+    <span class="k">return</span> <span class="n">q_rotated</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</code></pre></div>
 
 <figure style="text-align: center;">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/rope_rotation_demo.gif" style="max-width: 100%; height: auto;" />
@@ -87,45 +105,51 @@ def apply_rope(q, thetas, m):
 
 <h2>Fused RoPE kernel in metal</h2>
 <p>The implementation uses a fused kernel approach where each thread processes one rotation pair (even/odd elements), achieving optimal GPU utilization and memory coalescing. </p>
-<pre class="codehilite"><code class="language-cpp">kernel void fused_rope(
-    device const float* input     [[ buffer(0) ]],
-    device const float* cos_table [[ buffer(1) ]],
-    device const float* sin_table [[ buffer(2) ]],
-    device float*       output    [[ buffer(3) ]],
-    constant uint&amp;      S         [[ buffer(4) ]],
-    constant uint&amp;      B         [[ buffer(5) ]],
-    constant uint&amp;      H         [[ buffer(6) ]],
-    constant uint&amp;      D         [[ buffer(7) ]],
-    uint3 gid                   [[ thread_position_in_grid ]])
-{
-    uint idx = gid.x;
-    uint total_elements = S * B * H * (D / 2);
+<div class="codehilite-container codehilite"><div class="code-toolbar">
+    <span class="language-name"></span>
+    <button class="copy-btn" onclick="copyCode(this, 'code-block-9e8128')" aria-label="Copy code to clipboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    </button>
+    <a class="anchor-link" href="#code-block-9e8128" aria-label="Link to this code block">🔗</a>
+</div><pre id="code-block-9e8128"><span></span><code><span class="n">kernel</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">fused_rope</span><span class="p">(</span>
+<span class="w">    </span><span class="n">device</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">input</span><span class="w">     </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">device</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">cos_table</span><span class="w"> </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">device</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sin_table</span><span class="w"> </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">device</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w">       </span><span class="n">output</span><span class="w">    </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">constant</span><span class="w"> </span><span class="n">uint</span><span class="o">&amp;</span><span class="w">      </span><span class="n">S</span><span class="w">         </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">constant</span><span class="w"> </span><span class="n">uint</span><span class="o">&amp;</span><span class="w">      </span><span class="n">B</span><span class="w">         </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">constant</span><span class="w"> </span><span class="n">uint</span><span class="o">&amp;</span><span class="w">      </span><span class="n">H</span><span class="w">         </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">constant</span><span class="w"> </span><span class="n">uint</span><span class="o">&amp;</span><span class="w">      </span><span class="n">D</span><span class="w">         </span><span class="p">[[</span><span class="w"> </span><span class="n">buffer</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="p">]],</span>
+<span class="w">    </span><span class="n">uint3</span><span class="w"> </span><span class="n">gid</span><span class="w">                   </span><span class="p">[[</span><span class="w"> </span><span class="n">thread_position_in_grid</span><span class="w"> </span><span class="p">]])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gid</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">total_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 
-    if (idx &gt;= total_elements) return;
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">total_elements</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
 
-    uint half_d = D / 2;
-    uint d_pair = idx % half_d;
-    uint remaining = idx / half_d;
-    uint h = remaining % H;
-    remaining = remaining / H;
-    uint b = remaining % B;
-    uint s = remaining / B;
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">half_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">d_pair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">half_d</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">half_d</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">H</span><span class="p">;</span>
+<span class="w">    </span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">H</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
 
-    uint base_idx = ((s * B + b) * H + h) * D;
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">base_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">((</span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
 
-    uint even_idx = base_idx + 2 * d_pair;
-    uint odd_idx = base_idx + 2 * d_pair + 1;
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">even_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">d_pair</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">odd_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">d_pair</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-    float x_even = input[even_idx];
-    float x_odd = input[odd_idx];
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x_even</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="p">[</span><span class="n">even_idx</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x_odd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="p">[</span><span class="n">odd_idx</span><span class="p">];</span>
 
-    float cos_val = cos_table[s * half_d + d_pair];
-    float sin_val = sin_table[s * half_d + d_pair];
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">cos_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos_table</span><span class="p">[</span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">half_d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">d_pair</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">sin_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin_table</span><span class="p">[</span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">half_d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">d_pair</span><span class="p">];</span>
 
-    output[even_idx] = x_even * cos_val - x_odd * sin_val;
-    output[odd_idx] = x_even * sin_val + x_odd * cos_val;
-}
-</code></pre>
+<span class="w">    </span><span class="n">output</span><span class="p">[</span><span class="n">even_idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_even</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cos_val</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x_odd</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin_val</span><span class="p">;</span>
+<span class="w">    </span><span class="n">output</span><span class="p">[</span><span class="n">odd_idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_even</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin_val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x_odd</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cos_val</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
 
 <p>When dispatching threads , dispatch with (S * B * H * D/2) threads in the x-dimension</p>
 <p><code>MTLSize threadsPerGrid = MTLSizeMake(S * B * H * (D/2), 1, 1);</code></p>
@@ -137,26 +161,6 @@ Ongoing Work is focussed in benchmarking the kernel against rope implementations
 </aside>
 
 <p>Until then… heavy caffeine ☕️ and peace ☮️</p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 05 September 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../cyclic-redundancy-checks/">Next: cyclic redundancy checks &rarr;</a></li>
-      <li><a href="../state-of-ipv6-in-2025/">&larr; Previous: virtually infinte addresses</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -185,6 +189,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

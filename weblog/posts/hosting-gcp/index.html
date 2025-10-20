@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>Hosting website as a subdomain on Google Cloud</title>
 </head>
 <body>
-<main>
-  <h1>Hosting website as a subdomain on Google Cloud</h1>
-  <div class="weblog-body"><p>I wanted to create a subdomain <a href="http://emailer.gaurv.me">emailer.gaurv.me</a> for hosting an automated cold email drafting service as a Flask website on Google Cloud Protocol. I get that this is a pretty lame name - I am also not good with naming things. That being said, first I had to log into Cloudflare Dashboard and add a new DNS record with type: CNAME and name: emailer and select the proxy status as <strong>DNS only.</strong></p>
+  <div class="weblog-post">
+    <h1>Hosting website as a subdomain on Google Cloud</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-06-24</span>
+      <span class="weblog-tags">
+        <a href="../../tags/cloud.html" class="weblog-tag">cloud</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>I wanted to create a subdomain <a href="http://emailer.gaurv.me">emailer.gaurv.me</a> for hosting an automated cold email drafting service as a Flask website on Google Cloud Protocol. I get that this is a pretty lame name - I am also not good with naming things. That being said, first I had to log into Cloudflare Dashboard and add a new DNS record with type: CNAME and name: emailer and select the proxy status as <strong>DNS only.</strong></p>
 <p>I figured that the best way to enable HTTPS for Flask app is just to go with DNS (orange cloud OFF). Once the records are set, create a new project (recommended) on Google Cloud and choose an Email API - I am using <a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com">Gmail API</a>. Create an OAuth 2.0 Client ID and add a redirect URI(s) which is your subdomain/callback URL - (<em>https://emailer.gaurv.me/oauth2callback</em> in this case). This creates a secret client JSON file which is visible for download only once.</p>
 <p align="center">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/hosting-gcp/Screenshot%202025-06-24%20at%203.52.51%E2%80%AFAM.png" style="max-width: 100%; height: auto;" />
@@ -43,26 +49,6 @@
 <p align="center">
   <img src="https://pub-91e1a485198740aabff1705e89606dc3.r2.dev/hosting-gcp/Screenshot%202025-06-24%20at%204.46.49%E2%80%AFAM.png" style="max-width: 100%; height: auto;" />
 </p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 24 June 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../bypassing-code-signing-mac-zip-binaries/">Next: Bypassing macOS code signing for ZIP-appended binaries &rarr;</a></li>
-      <li><a href="../perlin-noise/">&larr; Previous: Create image textures using Perlin Noise</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -91,6 +77,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>Integrating TLS via mbedTLS in web server</title>
 </head>
 <body>
-<main>
-  <h1>Integrating TLS via mbedTLS in web server</h1>
-  <div class="weblog-body"><p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
+  <div class="weblog-post">
+    <h1>Integrating TLS via mbedTLS in web server</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-07-06</span>
+      <span class="weblog-tags">
+        <a href="../../tags/TLS.html" class="weblog-tag">TLS</a><a href="../../tags/C.html" class="weblog-tag">C</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>I added TLS support to a web server I’m building. The idea was to serve both static and dynamic content securely — no reverse proxies, no bloated frameworks. Just raw HTTP(S), and optional TLS. I chose <code>mbedTLS</code> because it’s portable, open source, and suitable for zero-dependency systems. I did not bother to chose <code>openssl</code> as it would overkill for my lightweight server.</p>
 <p>Initially, I tried wiring in <code>mbedtls_ssl_conf_rng()</code>, as almost all examples suggested. It failed. After digging through the migration guide, I realized that mbedTLS 4.0+ dropped this function entirely in favor of internal PSA crypto. So I dropped the legacy logic and focused on initializing TLS, cleaning deprecated APIs.</p>
 <p>In the actual server setup, this is how I gated TLS setup logic:</p>
 <pre class="codehilite"><code class="language-c">#ifdef USE_TLS
@@ -54,26 +60,6 @@ if (tls) {
 
 <p>Fallback to HTTP works via <code>--dev</code> or when certs are not supplied. Devs can toggle TLS with <code>--tls --cert cert.pem --key key.pem</code>. It is platform-agnostic and uses no system daemon.</p>
 <p>This TLS handshake now works directly over port 443 or any specified port, and can handle browser connections.</p>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 06 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../rss-feed/">Next: Subscribe via RSS &rarr;</a></li>
-      <li><a href="../bypassing-code-signing-mac-zip-binaries/">&larr; Previous: Bypassing macOS code signing for ZIP-appended binaries</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -102,6 +88,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>

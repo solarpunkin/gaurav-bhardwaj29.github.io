@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="fediverse:creator" content="@wiredguy@mastodon.social">                  
   <link rel="stylesheet" href="../../weblog-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -9,7 +8,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function()  {
+    document.addEventListener("DOMContentLoaded", function() {
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
@@ -23,9 +22,16 @@
   <title>Custom browser picker on macOS with finicky</title>
 </head>
 <body>
-<main>
-  <h1>Custom browser picker on macOS with finicky</h1>
-  <div class="weblog-body"><p>Many apps and links on macOS simply open in whatever browser is set as the default or last active, without offering a choice each time. By default, macOS uses the single system default browser (set in System Preferences/Settings) and does not prompt per-link. This means you might end up opening links repeatedly in the same browser even when you want to choose a different one.
+  <div class="weblog-post">
+    <h1>Custom browser picker on macOS with finicky</h1>
+    <div class="weblog-meta">
+      <span class="weblog-date">2025-07-29</span>
+      <span class="weblog-tags">
+        <a href="../../tags/mac.html" class="weblog-tag">mac</a><a href="../../tags/markdown.html" class="weblog-tag">markdown</a>
+      </span>
+    </div>
+    <div class="weblog-content">
+      <p>Many apps and links on macOS simply open in whatever browser is set as the default or last active, without offering a choice each time. By default, macOS uses the single system default browser (set in System Preferences/Settings) and does not prompt per-link. This means you might end up opening links repeatedly in the same browser even when you want to choose a different one.
 I created a <strong>custom browser picker pop-up (aka kawaii)</strong> using <a href="https://github.com/johnste/finicky">Finicky</a>. This allows me to <strong>intercept link clicks</strong> and choose between browsers like Safari, Chrome, Firefox, and Brave — and even choose which browser profile to use — all from a native-looking UI.</p>
 <hr />
 <h2>kawaii UI</h2>
@@ -124,26 +130,6 @@ export default {
 <li><a href="https://github.com/johnste/finicky">Finicky GitHub Repo</a></li>
 <li><a href="https://github.com/koekeishiya/yabai">Yabai</a></li>
 </ul>
-
-  <!-- Perlin noise image row (only for the perlin-noise post) -->
-  
-    <!-- simplex noise image row (only for the simplex-noise post) -->
-  
-  </div>
-  <div class="weblog-date">Posted on 29 July 2025 (IST) · Follow me on <a href="https://x.com/wiredguys">Twitter</a> or <a rel="me" href="https://mastodon.social/@wiredguy">Mastodon</a></div>
-
-  <ul class="weblog-list">
-    <li><a href="../../index.html">&laquo; LOGS</a></li>
-  </ul>
-  <div class="weblog-sidebar">
-    <h5>Jump to</h5>
-    <ul>
-      <li><a href="../iac-using-terraform-gcp/">Next: I wrote my first Infrastructure as Code &rarr;</a></li>
-      <li><a href="../rss-feed/">&larr; Previous: Subscribe via RSS</a></li>
-    </ul>
-  </div>
-</main>
-
 <script>
 function copyCode(button, preId) {
     const preElement = document.getElementById(preId);
@@ -172,6 +158,39 @@ function copyCode(button, preId) {
     }
 }
 </script>
-
+    </div>
+    <div class="weblog-footer">
+      <a href="../../" class="weblog-back">← Back to all posts</a>
+    </div>
+  </div>
+  
+<script>
+function copyCode(button, preId) {
+    const preElement = document.getElementById(preId);
+    if (preElement) {
+        const codeElement = preElement.querySelector('code');
+        if (!codeElement) return;
+        const codeText = codeElement.innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Copied!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            const originalContent = button.innerHTML;
+            button.innerHTML = 'Error!';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }, 2000);
+        });
+    }
+}
+</script>
 </body>
 </html>
