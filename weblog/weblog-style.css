@@ -641,8 +641,8 @@ div.codehilite.codehilite-container {
     padding: 4px 8px;
     border-radius: 5px;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    z-index: 1;
+    z-index: 10; /* Increased z-index to ensure it's always on top */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
 }
 
 .codehilite-container:hover .code-toolbar {
