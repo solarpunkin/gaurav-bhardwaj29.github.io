@@ -4,23 +4,7 @@
     box-sizing: border-box;
 }
 
-/* Base container */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
-    color: var(--text);
-    background-color: var(--bg);
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-}
 
-/* Responsive container */
-@media (max-width: 600px) {
-    body {
-        padding: 1rem 1rem;
-    }
-}
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -136,8 +120,8 @@ body {
 }
 
 main {
-  max-width: 100%;
-  margin: 0;
+  max-width: 800px; /* Or 600px if we want it to be exactly like the homepage */
+  margin: 0 auto;
 }
 h1 {
   font-size: 2.2rem;
